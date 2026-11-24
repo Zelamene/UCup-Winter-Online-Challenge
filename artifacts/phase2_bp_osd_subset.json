@@ -1,0 +1,12 @@
+{
+  "bp_info_ber": 0.01748971193415638,
+  "bp_mean_score": 7297.248402903056,
+  "bp_osd0_info_ber": 0.017592592592592594,
+  "bp_osd0_mean_score": 7284.823475762404,
+  "bp_osd1_info_ber": 0.018484224965706446,
+  "bp_osd1_mean_score": 7285.195603288748,
+  "diagnostic_only": true,
+  "runtime_seconds": 14.468042300024536,
+  "samples": 20,
+  "truth_mean_score": 7267.412845164259
+}

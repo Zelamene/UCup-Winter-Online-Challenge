@@ -1,0 +1,11 @@
+{
+  "diagnostic_only": true,
+  "hard_ber": 0.05353360768175583,
+  "osd0_ber": 0.03215363511659808,
+  "osd0_mean_score": 7304.334750360522,
+  "osd1_ber": 0.02797119341563786,
+  "osd1_mean_score": 7312.6499452057515,
+  "runtime_seconds": 105.60286769998493,
+  "samples": 500,
+  "truth_mean_score": 7310.574343092964
+}
