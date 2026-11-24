@@ -1,0 +1,82 @@
+{
+  "checks_passed": {
+    "answers_valid": true,
+    "g_matches_h": true,
+    "g_systematic_form": true,
+    "h_systematic_form": true,
+    "sample_matches": true
+  },
+  "public_baselines": {
+    "answer_mismatches_against_uG": 0,
+    "answer_rows_failing_any_check": 0,
+    "answer_rows_satisfying_all_checks": 500,
+    "answer_syndrome_ones": 0,
+    "hard_decision_errors_info_bits": 39026,
+    "hard_decision_info_ber": 0.05353360768175583,
+    "hard_decision_info_bits_total": 729000,
+    "hard_decision_rows_with_any_check_failure": 500,
+    "hard_decision_syndrome_ones": 66273,
+    "llr_max": 41.4805084787,
+    "llr_mean_absolute": 7.698186406898119,
+    "llr_min": -44.1303747034,
+    "llr_zero_count": 0,
+    "negative_llr_matches_bit_one_rate": 0.9464656718507735,
+    "positive_llr_matches_bit_zero_rate": 0.9464540895529754
+  },
+  "public_structure": {
+    "a_column_weight_counts": {
+      "2": 1458
+    },
+    "a_row_weight_counts": {
+      "6": 486
+    },
+    "b": 500,
+    "expected_a_column_weight": 2.0,
+    "g_equals_concat_identity_a_transpose": true,
+    "g_parity_matches_h_information": true,
+    "h_equals_concat_a_identity": true,
+    "h_row_weight_counts": {
+      "7": 486
+    },
+    "k": 1458,
+    "label": "publish.in",
+    "m": 486,
+    "n": 1944,
+    "rate": 0.75,
+    "snr_db": 10.3,
+    "trailing_nonempty_input_lines": 0
+  },
+  "sample": {
+    "answer_satisfies_all_checks": true,
+    "matches_pdf_sample_output": true,
+    "parsed_header": {
+      "b": 1,
+      "k": 7,
+      "n": 14,
+      "snr_db": 6.0
+    },
+    "structure": {
+      "a_column_weight_counts": {
+        "6": 7
+      },
+      "a_row_weight_counts": {
+        "6": 7
+      },
+      "b": 1,
+      "expected_a_column_weight": 6.0,
+      "g_equals_concat_identity_a_transpose": true,
+      "g_parity_matches_h_information": true,
+      "h_equals_concat_a_identity": true,
+      "h_row_weight_counts": {
+        "7": 7
+      },
+      "k": 7,
+      "label": "PDF sample",
+      "m": 7,
+      "n": 14,
+      "rate": 0.5,
+      "snr_db": 6.0,
+      "trailing_nonempty_input_lines": 0
+    }
+  }
+}
