@@ -18,19 +18,23 @@ Objective: increase the judge score beyond the current accepted best while keepi
 | Item | Value |
 |---|---:|
 | Best accepted | v9, `1,606,841` |
-| Last submitted, rejected | v10, `1,605,473` (`-1,368` vs v9) |
-| Pending candidate | v11 rebased on v9, combining v10's case-5 gain and v11's case-6 refinement |
+| Last submitted | v11, `1,606,575` (`-266` vs v9) |
+| Active decision | stop after documentation; do **not** proceed to v12 |
 | Public input dispatch | `N=1944, R=3/4, SNR≈10.5` |
-| Public BER, v8–v10 | `0.024784636` |
-| Accepted per-case scores, v9 | `[90167,144269,171480,90957,143207,167094,89867,142847,167085,89806,142852,167210]` |
+| Public BER, v8–v11 | `0.024784636` |
+| v9 per-case scores | `[90167,144269,171480,90957,143207,167094,89867,142847,167085,89806,142852,167210]` |
+| v11 per-case scores | `[90167,144269,171480,90957,143578,166457,89867,142847,167085,89806,142852,167210]` |
+| v11 runtime | `27,613ms` total, `5,784ms` peak — well under the limit |
 
-The accepted architecture is:
+The best accepted architecture remains:
 
 - exact v1 probe decoder for all `R=1/2` cases;
 - per-case six-trajectory dSB/QAIA energy portfolios for `R=2/3` and `R=3/4`;
 - dispatch by `(N, K, SNR)`;
 - decoder lambda and energy-selection lambda are separate parameters;
 - 50 steps, at most 6 trajectories, QAIA/dSB only.
+
+Judge status `Accepted` means the submission was valid. It does not mean the score improved; v10 and v11 were both accepted but scored below v9.
 
 ## Submission history
 
@@ -45,9 +49,10 @@ The accepted architecture is:
 | v7 | `1,600,231` | `+2,998` | refined the other three `R=2/3` cases |
 | v8 | `1,601,303` | `+1,072` | directly tuned case 9 on public input |
 | v9 | `1,606,841` | `+5,538` | refined cases 3, 6, 12 (`R=3/4`) |
-| v10 | `1,605,473` | `-1,368` | rejected; case 11 regressed despite positive synthetic checks |
+| v10 | `1,605,473` | `-1,368` vs v9 | accepted by judge but below best; case 11 regressed |
+| v11 | `1,606,575` | `-266` vs v9 | accepted by judge but no improvement; case 6 regressed |
 
-Rate-level totals show where all progress came from:
+Rate-level totals show where all durable progress came from:
 
 | Version | `R=1/2` | `R=2/3` | `R=3/4` | Total |
 |---|---:|---:|---:|---:|
@@ -58,8 +63,9 @@ Rate-level totals show where all progress came from:
 | v8 | `360,797` | `573,175` | `667,331` | `1,601,303` |
 | v9 | `360,797` | `573,175` | `672,869` | `1,606,841` |
 | v10 | `360,797` | `571,807` | `672,869` | `1,605,473` |
+| v11 | `360,797` | `573,546` | `672,232` | `1,606,575` |
 
-`R=1/2` has never improved over v1. Every durable gain came from high-rate per-case tuning.
+`R=1/2` has never improved over v1. Every durable gain came from high-rate per-case tuning. v11 recovered the v10 case-11 loss, kept the v10 case-5 gain, and lost the same amount again through case 6.
 
 ## Strategies that worked
 
@@ -69,20 +75,22 @@ Rate-level totals show where all progress came from:
 4. **Six-trajectory energy portfolios.** Multiple dSB trajectories with energy-based selection consistently beat single trajectories at high rates.
 5. **Separating decoder strength from selection strength.** Decoder `lambda` and energy-selection `lambda` are distinct; v6 established this and later versions rely on it.
 6. **Direct public-data tuning for case 9.** With 500 public frames and labels, a 250/250 selection-validation split produced a real `+1,072` judge gain (v8).
-7. **One-case-at-a-time changes.** Every successful version changed one or a tight group of cases, making judge deltas attributable.
-8. **Cross-seed robustness checks.** They filtered out several apparent gains (v10 `N=648`, v11 cases 3, 9, 12) before submission. They are useful but not sufficient.
+7. **One-case-at-a-time changes.** Successful versions changed one or a tight group of cases, making judge deltas attributable.
+8. **Rebasing away a bad case works.** v11 rebuilt from v9 removed v10's `-1,739` case-11 regression exactly and preserved the `+371` case-5 gain.
+9. **Cross-seed robustness checks are useful only as a weak filter.** They rejected several apparent gains before submission, but they failed to predict both v10 case 11 and v11 case 6.
 
 ## Assumptions and directions that proved wrong
 
 1. **Synthetic `6 dB` extrapolation for `R=1/2`.** v2's per-case tuning reversed the judge ranking for all four `R=1/2` cases. The probe decoder remains frozen.
 2. **"Fallback" means accepted baseline.** v3 used the wrong local `submission.cpp` instead of the judge-accepted probe, losing `5,448` points versus v1 on `R=1/2`.
 3. **Broad energy-lambda tuning.** The v5 global energy retune worsened public BER and was rejected before submission.
-4. **Synthetic BER ratios as score predictors.** Large ratios translated into much smaller judge gains, and small ratios sometimes reversed sign. v7 ratios around `1.37–1.53` produced gains from `+265` to `+1,420`; v10's `N=3888` cross-seed-positive retune produced `-1,739`.
-5. **Energy-only retuning at `N=3888, R=2/3`.** v10 case 11 changed only energy-selection lambdas and regressed badly. This is the strongest evidence that synthetic energy selection can overfit channel/model mismatch at large `N`.
-6. **Marginal cross-seed gains.** Ratios near `1.00–1.02` are not reliable. The rejected v11 cases 3, 9, and 12 and v10 case 8 all looked weakly positive locally but did not justify submission risk. The accepted-quality signal is closer to `>=1.03` consistently across seeds, and even that is not a guarantee.
-7. **Public BER as a global proxy.** The public input dispatches only to case 9. Changes to the other 11 cases leave public output bit-identical, so public BER cannot validate them.
-8. **Attributing gains to large trajectory changes.** v10 case 5 gained only `+371` despite a `1.085` tuning-seed ratio; v10 case 11 regressed despite multi-seed robustness. Judge transfer remains the final authority.
-9. **Combining independently positive case changes blindly.** v10 combined a positive case 5 change with a misleading case 11 change and net regressed. Cases must be judged independently and regressions must be removed before combining.
+4. **Synthetic BER ratios as score predictors.** Ratios do not transfer linearly, and small ratios often reverse sign. v7 ratios around `1.37–1.53` produced gains from `+265` to `+1,420`; v10 case 11 had ratios `1.025–1.027` but lost `1,739`; v11 case 6 had ratios `1.021–1.024` but lost `637`.
+5. **Energy-only retuning at `N=3888, R=2/3`.** v10 case 11 changed only energy-selection lambdas and regressed badly. This is the clearest example of synthetic energy selection overfitting channel/model mismatch at large `N`.
+6. **Marginal cross-seed gains near `1.02`.** v11 case 6 looked consistently positive on three synthetic comparisons but still cost `637` on the judge. Multi-seed consistency in the `1.00–1.03` band is not evidence of a real judge gain.
+7. **Public BER as a global proxy.** The public input dispatches only to case 9. v9, v10, and v11 all produced the same public output, despite materially different judge scores on cases 5, 6, and 11.
+8. **Judge `Accepted` status as evidence of improvement.** v10 and v11 were both accepted as valid submissions but were below v9. The score table, not the status label, decides the best version.
+9. **Adding independently "supported" case changes.** v10 combined a genuine case-5 gain with a bad case-11 change. v11 removed the bad case-11 change but added a bad case-6 change. The case-5 gain is repeatable, but it was too small to absorb another regression.
+10. **Trajectory replacement being automatically safer than energy-only tuning.** v11 case 6 changed the portfolio/trajectory set and still regressed. The previous conclusion that trajectory changes were safer was too broad.
 
 ## v10 post-mortem
 
@@ -92,7 +100,27 @@ Rate-level totals show where all progress came from:
 | 11 `N=3888, R=2/3` | energy-lambda-only retune | `-1,739` |
 | total |  | `-1,368` |
 
-Lesson: salvage case 5, discard case 11. Any successor to v10 must be rebuilt on accepted v9, not on v10.
+Lesson: salvage case 5, discard case 11, and rebuild on accepted v9. The rebuild hypothesis was confirmed by v11.
+
+## v11 post-mortem and key findings
+
+v11 rebuilt from accepted v9 and changed only cases 5 and 6. It scored `1,606,575`, down `266` from v9.
+
+| Case | Change | Judge delta | Finding |
+|---|---|---:|---|
+| 5 `N=1296, R=2/3` | v10 salvage | `+371` | Gain reproduced exactly; rebase/salvage logic was correct |
+| 6 `N=1296, R=3/4` | second-pass portfolio replacement | `-637` | Consistent synthetic ratios `1.021–1.024` did not transfer |
+| total |  | `-266` | No improvement over v9 |
+
+Key findings from this run:
+
+1. **The v9 rebase was successful.** Case 11 returned from `141,113` in v10 to `142,852` in v11, exactly matching v9. The v10 case-11 change is definitively discarded.
+2. **Case 5 is the only repeatable judge-validated gain after v9.** It produced `+371` in both v10 and v11. A case-5-only successor would mathematically be `1,607,212`, but no such v12 was built or submitted.
+3. **Case 6 should be discarded.** Its v11 score fell `167,094 → 166,457`. The synthetic improvement signal was not merely weak on one seed; it was consistent across three comparisons and still wrong on the judge.
+4. **Small synthetic gains are noise for this task.** Multi-seed ratios around `1.02` should not be used to justify a submission. Even a ratio near `1.06` failed at large `N` in v10.
+5. **The public proxy remains blind.** v11's public output was bit-identical to v9, so public BER offered no evidence about cases 5 and 6.
+6. **Runtime and memory were never the limiting factor.** v11 used `27,613ms` total and peaked at `5,784ms`, far below the `2 minute` per-case limit; the loss was entirely BER/scoring.
+7. **Do not combine a validated small gain with an unvalidated synthetic gain.** The one reliable `+371` was overwhelmed by the `-637` case-6 change.
 
 ## Current knowledge base and tools
 
@@ -118,11 +146,6 @@ Validation gate for every candidate:
 - Python/C++ bit parity on synthetic cases for every changed case;
 - public dispatch cases remain bit-identical unless public tuning is intentional.
 
-## Next step
+## Stop condition
 
-Submit `submission_v11.cpp` from `submissions/v11_rebased_candidate/`. It contains only the two individually supported changes:
-
-- case 5 `N=1296, R=2/3` from v10 (`+371` judge gain);
-- case 6 `N=1296, R=3/4` from the second-pass refinement (consistent synthetic cross-seed ratios around `1.02`).
-
-Do not carry v10's case 11 change forward. Future work should prefer trajectory-changing refinements with consistent multi-seed ratios, avoid energy-only micro-tuning at `N=3888`, and continue testing one or two cases at a time so judge feedback remains attributable.
+No v12 was built or submitted. Keep v9 as the best accepted source. Future work should not reuse v11 case 6 and should treat v10/v11 synthetic evidence as historical context only, not as proof of expected judge gains.

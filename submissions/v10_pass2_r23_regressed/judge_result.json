@@ -21,5 +21,5 @@
   ],
   "delta_vs_v9": -1368,
   "delta_vs_v1": 89601,
-  "outcome": "rejected: case 11 regressed by 1739 while case 5 gained 371"
+  "outcome": "accepted but below best: case 11 regressed by 1739 while case 5 gained 371"
 }

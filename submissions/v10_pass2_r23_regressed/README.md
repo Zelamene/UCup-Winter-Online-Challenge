@@ -1,6 +1,6 @@
 # v10 — second-pass `R=2/3` refinement candidate
 
-Status: rejected. Judge score `1,605,473`, down `1,368` from accepted v9.
+Status: accepted by the judge but below the best accepted v9. Judge score `1,605,473`, down `1,368` from v9.
 
 Base: accepted v9 (`1,606,841`). This candidate changes only two cases:
 
