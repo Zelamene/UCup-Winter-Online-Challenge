@@ -156,7 +156,7 @@ def select_energies(
                 candidates[index]["hards"][case_index],
                 case["llr"],
                 case["checks"],
-                candidates[index]["lambd"],
+                candidates[index].get("energy_lambda", candidates[index]["lambd"]),
             )
             for index in subset
         ])
@@ -343,6 +343,41 @@ def greedy_portfolio(cases: list[dict], candidates: list[dict], limit: int = 6) 
     }
 
 
+def tune_energy_scale(
+    cases: list[dict],
+    candidates: list[dict],
+    subset: list[int],
+    scales: tuple[float, ...] = (0.5, 0.75, 1.0, 1.5, 2.0, 3.0),
+) -> tuple[float, float, list[np.ndarray], dict[int, float]]:
+    """Tune a common scale on energy penalties without changing decoding."""
+    original = {
+        index: float(candidates[index].get("energy_lambda", candidates[index]["lambd"]))
+        for index in subset
+    }
+    best_scale = 1.0
+    best_ber = ber_of(cases, select_energies(cases, candidates, subset))
+    best_hards = select_energies(cases, candidates, subset)
+
+    for scale in scales:
+        if scale == 1.0:
+            continue
+        for index in subset:
+            candidates[index]["energy_lambda"] = original[index] * scale
+        hards = select_energies(cases, candidates, subset)
+        value = ber_of(cases, hards)
+        if value < best_ber:
+            best_scale = scale
+            best_ber = value
+            best_hards = hards
+
+    for index in subset:
+        candidates[index]["energy_lambda"] = original[index] * best_scale
+    print(f"Energy scale tuning: scale={best_scale:.3f} ber={best_ber:.9f}")
+    return best_scale, best_ber, best_hards, {
+        index: original[index] * best_scale for index in subset
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--n", type=int, default=3888)
@@ -468,6 +503,7 @@ def main() -> None:
     candidates.append({
         "name": "global_learned",
         "lambd": 6.0,
+        "energy_lambda": 6.0,
         "hards": global_hards,
     })
     for tau, xi, lambd, delta in FIXED_CANDIDATES:
@@ -477,11 +513,13 @@ def main() -> None:
         candidates.append({
             "name": f"fixed_{tau:g}_{xi:g}_{lambd:g}_{delta:g}",
             "lambd": lambd,
+            "energy_lambda": lambd,
             "hards": decode_config(val_cases, config),
         })
     candidates.append({
         "name": "per_case_learned",
         "lambd": float(best_config[2]),
+        "energy_lambda": float(best_config[2]),
         "hards": learned_hards,
     })
     for rank, item in enumerate(grid[: args.top_grid]):
@@ -492,6 +530,7 @@ def main() -> None:
         candidates.append({
             "name": f"grid{rank}_{tau:g}_{xi:g}_{lambd:g}_{delta:g}",
             "lambd": lambd,
+            "energy_lambda": lambd,
             "hards": item["hards"] if item["config"] == best_config else decode_config(val_cases, config),
         })
 
@@ -500,6 +539,20 @@ def main() -> None:
     baseline_subset = list(range(6))
     baseline_selected = select_energies(val_cases, candidates, baseline_subset)
     baseline_portfolio_ber = ber_of(val_cases, baseline_selected)
+
+    energy_scale, energy_ber, energy_hards, energy_lambdas = tune_energy_scale(
+        val_cases, candidates, portfolio["indices"]
+    )
+    if energy_ber < portfolio["ber"]:
+        portfolio = dict(portfolio)
+        portfolio["ber"] = energy_ber
+        portfolio["syndrome_ones"] = syndrome_ones(val_cases, energy_hards)
+        portfolio["energy_scale"] = energy_scale
+        portfolio["energy_lambdas"] = {
+            candidates[index]["name"]: energy_lambdas[index]
+            for index in portfolio["indices"]
+        }
+        print(f"  tuned portfolio ber={energy_ber:.9f}")
 
     summary = {
         "case": {"n": args.n, "rate": args.rate, "snr": args.snr},

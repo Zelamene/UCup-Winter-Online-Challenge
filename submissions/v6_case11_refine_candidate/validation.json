@@ -1,0 +1,18 @@
+{
+  "source_bytes": 83889,
+  "case_count": 12,
+  "max_guess_count": 6,
+  "public_ber": 0.025788751714677642,
+  "accepted_public_ber": 0.027281207133058986,
+  "accepted_bit_mismatches": 16748,
+  "public_syndrome_ones": 6257,
+  "gate": {
+    "source_under_512k": true,
+    "at_most_six_guesses": true,
+    "at_most_twelve_cases_dispatched": true,
+    "public_ber_not_worse": true,
+    "no_unreplaced_tokens": true,
+    "all_output_bits_binary": true
+  },
+  "all_passed": true
+}

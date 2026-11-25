@@ -1,0 +1,155 @@
+{
+  "case": {
+    "n": 3888,
+    "rate": 0.6666666666666666,
+    "snr": 9.0
+  },
+  "data": {
+    "train_codes": 2,
+    "train_samples_per_code": 64,
+    "val_codes": 2,
+    "val_samples_per_code": 48,
+    "seed": 711
+  },
+  "best_fixed_config": [
+    1.7600000000000002,
+    0.5,
+    6.0,
+    2.5
+  ],
+  "local_search_history": [
+    {
+      "round": 0,
+      "config": [
+        2.0,
+        0.5,
+        6.0,
+        2.5
+      ],
+      "ber": 0.01408982767489712
+    },
+    {
+      "round": 1,
+      "config": [
+        1.7600000000000002,
+        0.5,
+        6.0,
+        2.5
+      ],
+      "ber": 0.013957208076131686
+    },
+    {
+      "round": 2,
+      "config": [
+        1.7600000000000002,
+        0.5,
+        6.0,
+        2.5
+      ],
+      "ber": 0.013957208076131686
+    }
+  ],
+  "global_learned_single": {
+    "ber": 0.01870338220164609,
+    "syndrome_ones": 3129
+  },
+  "per_case_learned_single": {
+    "ber": 0.013957208076131686,
+    "syndrome_ones": 1557
+  },
+  "accepted_portfolio_ber": 0.01722849151234568,
+  "optimized_portfolio": {
+    "indices": [
+      6,
+      12,
+      11,
+      13,
+      9
+    ],
+    "names": [
+      "per_case_learned",
+      "grid5_2_0.4_6_2.5",
+      "grid4_2_0.5_8_2.5",
+      "grid6_4_0.4_8_2.5",
+      "grid2_2_0.4_8_2.5"
+    ],
+    "ber": 0.013579443158436214,
+    "syndrome_ones": 1356,
+    "history": [
+      {
+        "added": "per_case_learned",
+        "ber": 0.013957208076131686,
+        "subset": [
+          6
+        ]
+      },
+      {
+        "added": "grid5_2_0.4_6_2.5",
+        "ber": 0.01382056970164609,
+        "subset": [
+          6,
+          12
+        ]
+      },
+      {
+        "added": "grid4_2_0.5_8_2.5",
+        "ber": 0.013732156635802469,
+        "subset": [
+          6,
+          12,
+          11
+        ]
+      },
+      {
+        "added": "grid6_4_0.4_8_2.5",
+        "ber": 0.013671875,
+        "subset": [
+          6,
+          12,
+          11,
+          13
+        ]
+      },
+      {
+        "added": "grid2_2_0.4_8_2.5",
+        "ber": 0.013639724794238682,
+        "subset": [
+          6,
+          12,
+          11,
+          13,
+          9
+        ]
+      }
+    ],
+    "energy_lambdas": {
+      "per_case_learned": 6.0,
+      "grid5_2_0.4_6_2.5": 6.0,
+      "grid4_2_0.5_8_2.5": 8.0,
+      "grid6_4_0.4_8_2.5": 6.0,
+      "grid2_2_0.4_8_2.5": 6.0
+    },
+    "energy_tuning": {
+      "rounds": 2,
+      "lambdas": [
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0,
+        8.0,
+        10.0,
+        12.0,
+        16.0,
+        24.0
+      ]
+    }
+  },
+  "training_history": [],
+  "gate": {
+    "per_case_beats_global_single": true,
+    "portfolio_beats_accepted_portfolio": true,
+    "guess_count_at_most_six": true
+  }
+}
