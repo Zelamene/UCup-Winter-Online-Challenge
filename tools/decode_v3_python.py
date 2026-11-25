@@ -79,16 +79,27 @@ def _check_contribution(
     spins: np.ndarray,
     sparse: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, int, int],
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Return one check product per row and its sum into variable sites."""
+    """Return one check product per row and excluded products summed into variable sites."""
     safe, mask, flat_cols, counts, m, n = sparse
     if m == 0:
         return np.zeros(0, dtype=np.float64), np.zeros(n, dtype=np.float64)
     gathered = spins[safe]
     neutral = np.where(mask, gathered, 1.0)
-    products = np.prod(neutral, axis=1)
+    deg = neutral.shape[1]
+    if deg == 0:
+        return np.ones(m, dtype=np.float64), np.zeros(n, dtype=np.float64)
+
+    pref_excl = np.ones((m, deg + 1), dtype=np.float64)
+    pref_excl[:, 1:] = np.cumprod(neutral, axis=1)
+    suff_excl = np.ones((m, deg + 1), dtype=np.float64)
+    suff_excl[:, :-1] = np.cumprod(neutral[:, ::-1], axis=1)[:, ::-1]
+
+    products = suff_excl[:, 0]
+    prod_excl = pref_excl[:, :deg] * suff_excl[:, 1:]
+
     weighted_sum = np.zeros(n, dtype=np.float64)
     if flat_cols.size:
-        np.add.at(weighted_sum, flat_cols, np.repeat(products, counts))
+        np.add.at(weighted_sum, flat_cols, prod_excl[mask])
     return products, weighted_sum
 
 
@@ -136,7 +147,7 @@ def _decode_trajectory_sparse(
         xi = float(schedules["xi"][step])
         delta = float(schedules["delta"][step])
         dt_step = float(dt_values[step])
-        force = rates + (0.5 * lambd) * spins * weighted_sum
+        force = rates + (0.5 * lambd) * weighted_sum
         schedule = step / (steps - 1) if steps > 1 else 0.0
         pump = -(delta - schedule) * x
         y = y + dt_step * (pump + xi * force)
