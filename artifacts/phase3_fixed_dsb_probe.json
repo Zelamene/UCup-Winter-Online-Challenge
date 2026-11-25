@@ -2,7 +2,7 @@
   "best": {
     "config": {
       "delta": 0.5,
-      "dt": 0.1,
+      "dt": 0.2,
       "gradient_sign": 1,
       "lambd": 2.0,
       "steps": 50,
@@ -11,12 +11,12 @@
     },
     "frame_error_rate": 1.0,
     "frame_errors": 500,
-    "info_ber": 0.04024965706447188,
-    "info_errors": 29342,
-    "mean_energy": -14749.867945933818,
+    "info_ber": 0.032862825788751715,
+    "info_errors": 23957,
+    "mean_energy": -14778.98375526017,
     "rows_with_failed_checks": 500,
     "samples": 500,
-    "syndrome_ones": 29432
+    "syndrome_ones": 19008
   },
   "diagnostic_ground_truth_used_only_for_evaluation": true,
   "framework": "fixed_parameter_dsb",
@@ -33,25 +33,6 @@
     {
       "config": {
         "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.0387517146776406,
-      "info_errors": 565,
-      "mean_energy": -14824.22333696844,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 569
-    },
-    {
-      "config": {
-        "delta": 0.5,
         "dt": 0.2,
         "gradient_sign": 1,
         "lambd": 2.0,
@@ -61,12 +42,50 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.03888888888888889,
-      "info_errors": 567,
-      "mean_energy": -14825.65586607912,
+      "info_ber": 0.030521262002743483,
+      "info_errors": 445,
+      "mean_energy": -14851.335091599602,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 558
+      "syndrome_ones": 375
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.031207133058984912,
+      "info_errors": 455,
+      "mean_energy": -14856.67750928746,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 374
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03141289437585734,
+      "info_errors": 458,
+      "mean_energy": -14845.3591492743,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 351
     },
     {
       "config": {
@@ -80,9 +99,427 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.03888888888888889,
-      "info_errors": 567,
-      "mean_energy": -14825.351328369681,
+      "info_ber": 0.03155006858710562,
+      "info_errors": 460,
+      "mean_energy": -14848.539752427198,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 360
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03189300411522634,
+      "info_errors": 465,
+      "mean_energy": -14867.058244461241,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 430
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.032030178326474625,
+      "info_errors": 467,
+      "mean_energy": -14867.247199413841,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 435
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03223593964334705,
+      "info_errors": 470,
+      "mean_energy": -14846.578247618,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 406
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.032373113854595334,
+      "info_errors": 472,
+      "mean_energy": -14866.810417129218,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 447
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.032373113854595334,
+      "info_errors": 472,
+      "mean_energy": -14866.810417129218,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 447
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.032784636488340194,
+      "info_errors": 478,
+      "mean_energy": -14869.96940211604,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 483
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03285322359396434,
+      "info_errors": 479,
+      "mean_energy": -14861.8381590901,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 450
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03285322359396434,
+      "info_errors": 479,
+      "mean_energy": -14900.958498936121,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 494
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03292181069958848,
+      "info_errors": 480,
+      "mean_energy": -14865.67076401884,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 465
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03299039780521262,
+      "info_errors": 481,
+      "mean_energy": -14868.757352788938,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 485
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03299039780521262,
+      "info_errors": 481,
+      "mean_energy": -14869.764773540199,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 494
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03305898491083676,
+      "info_errors": 482,
+      "mean_energy": -14868.40618890246,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 484
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03326474622770919,
+      "info_errors": 485,
+      "mean_energy": -14870.34099460936,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 498
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03326474622770919,
+      "info_errors": 485,
+      "mean_energy": -14870.2857568012,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 498
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03333333333333333,
+      "info_errors": 486,
+      "mean_energy": -14885.957317024417,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 446
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.033401920438957476,
+      "info_errors": 487,
+      "mean_energy": -14870.91621239456,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 503
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03381344307270233,
+      "info_errors": 493,
+      "mean_energy": -14760.992141907398,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 327
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03381344307270233,
+      "info_errors": 493,
+      "mean_energy": -14923.59050511022,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 575
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03388203017832647,
+      "info_errors": 494,
+      "mean_energy": -14869.220403163281,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 557
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03388203017832647,
+      "info_errors": 494,
+      "mean_energy": -14869.220403163281,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 557
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.033950617283950615,
+      "info_errors": 495,
+      "mean_energy": -14870.188974520319,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 537
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.0340877914951989,
+      "info_errors": 497,
+      "mean_energy": -14924.596570260557,
       "rows_with_failed_checks": 10,
       "samples": 10,
       "syndrome_ones": 580
@@ -94,150 +531,17 @@
         "gradient_sign": 1,
         "lambd": 2.0,
         "steps": 50,
-        "tau": 4.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.03916323731138546,
-      "info_errors": 571,
-      "mean_energy": -14825.849440182039,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 570
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.03916323731138546,
-      "info_errors": 571,
-      "mean_energy": -14825.626789903381,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 647
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.03984910836762689,
-      "info_errors": 581,
-      "mean_energy": -14840.921950678481,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 657
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.03991769547325103,
-      "info_errors": 582,
-      "mean_energy": -14840.927295915379,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 657
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.03991769547325103,
-      "info_errors": 582,
-      "mean_energy": -14838.894137448719,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 686
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.03991769547325103,
-      "info_errors": 582,
-      "mean_energy": -14838.926147596421,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 687
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
         "tau": 16.0,
         "xi": 0.01
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.03991769547325103,
-      "info_errors": 582,
-      "mean_energy": -14891.202516748182,
+      "info_ber": 0.034156378600823045,
+      "info_errors": 498,
+      "mean_energy": -14762.594402299801,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 704
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04039780521262003,
-      "info_errors": 589,
-      "mean_energy": -14837.283737603142,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 694
+      "syndrome_ones": 373
     },
     {
       "config": {
@@ -251,31 +555,12 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.04080932784636488,
-      "info_errors": 595,
-      "mean_energy": -14890.690623868519,
+      "info_ber": 0.034156378600823045,
+      "info_errors": 498,
+      "mean_energy": -14889.389447076299,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 767
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.040877914951989024,
-      "info_errors": 596,
-      "mean_energy": -14840.219855822279,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 740
+      "syndrome_ones": 517
     },
     {
       "config": {
@@ -285,73 +570,73 @@
         "lambd": 2.0,
         "steps": 50,
         "tau": 4.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04094650205761317,
-      "info_errors": 597,
-      "mean_energy": -14840.06494234656,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 743
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 16.0,
         "xi": 0.01
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.04101508916323731,
-      "info_errors": 598,
-      "mean_energy": -14838.68304985048,
+      "info_ber": 0.03422496570644719,
+      "info_errors": 499,
+      "mean_energy": -14756.610155030019,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 724
+      "syndrome_ones": 413
     },
     {
       "config": {
         "delta": 0.5,
         "dt": 0.1,
         "gradient_sign": 1,
-        "lambd": 2.0,
+        "lambd": 1.0,
         "steps": 50,
-        "tau": 16.0,
-        "xi": 0.06
+        "tau": 4.0,
+        "xi": 0.03
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.04108367626886145,
-      "info_errors": 599,
-      "mean_energy": -14841.222974758119,
+      "info_ber": 0.03422496570644719,
+      "info_errors": 499,
+      "mean_energy": -14811.292971403982,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 735
+      "syndrome_ones": 445
     },
     {
       "config": {
         "delta": 0.5,
-        "dt": 0.2,
+        "dt": 0.1,
         "gradient_sign": 1,
-        "lambd": 2.0,
+        "lambd": 1.0,
         "steps": 50,
-        "tau": 16.0,
+        "tau": 8.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03422496570644719,
+      "info_errors": 499,
+      "mean_energy": -14923.794087126062,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 568
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 4.0,
         "xi": 0.06
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.04122085048010974,
-      "info_errors": 601,
-      "mean_energy": -14843.51444905668,
+      "info_ber": 0.0345679012345679,
+      "info_errors": 504,
+      "mean_energy": -14924.456264308761,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 710
+      "syndrome_ones": 578
     },
     {
       "config": {
@@ -365,54 +650,282 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.04122085048010974,
-      "info_errors": 601,
-      "mean_energy": -14917.33328522658,
+      "info_ber": 0.03463648834019204,
+      "info_errors": 505,
+      "mean_energy": -14911.196655215961,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 774
+      "syndrome_ones": 537
     },
     {
       "config": {
         "delta": 0.25,
-        "dt": 0.2,
+        "dt": 0.1,
         "gradient_sign": 1,
         "lambd": 2.0,
         "steps": 50,
-        "tau": 8.0,
+        "tau": 4.0,
         "xi": 0.06
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.04142661179698217,
-      "info_errors": 604,
-      "mean_energy": -14841.02186922958,
+      "info_ber": 0.034910836762688614,
+      "info_errors": 509,
+      "mean_energy": -14865.748069088999,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 757
+      "syndrome_ones": 607
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.0350480109739369,
+      "info_errors": 511,
+      "mean_energy": -14865.570347151599,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 611
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.0360082304526749,
+      "info_errors": 525,
+      "mean_energy": -14688.016321837198,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 395
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.0360082304526749,
+      "info_errors": 525,
+      "mean_energy": -14862.98728164034,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 665
     },
     {
       "config": {
         "delta": 0.25,
         "dt": 0.2,
         "gradient_sign": 1,
-        "lambd": 2.0,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03614540466392318,
+      "info_errors": 527,
+      "mean_energy": -14927.821226639022,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 649
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 1.0,
         "steps": 50,
         "tau": 16.0,
         "xi": 0.03
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.04142661179698217,
-      "info_errors": 604,
-      "mean_energy": -14841.02186922958,
+      "info_ber": 0.03641975308641975,
+      "info_errors": 531,
+      "mean_energy": -14932.526306312819,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 757
+      "syndrome_ones": 690
     },
     {
       "config": {
         "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.036488340192043896,
+      "info_errors": 532,
+      "mean_energy": -14932.59469879632,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 692
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03662551440329218,
+      "info_errors": 534,
+      "mean_energy": -14962.34100050758,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 689
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03676268861454047,
+      "info_errors": 536,
+      "mean_energy": -14932.269691949119,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 719
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03683127572016461,
+      "info_errors": 537,
+      "mean_energy": -14967.0535164025,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 744
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03689986282578875,
+      "info_errors": 538,
+      "mean_energy": -14932.810924509442,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 714
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03696844993141289,
+      "info_errors": 539,
+      "mean_energy": -14932.757932124281,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 712
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.037037037037037035,
+      "info_errors": 540,
+      "mean_energy": -14858.916433729039,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 715
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03731138545953361,
+      "info_errors": 544,
+      "mean_energy": -14964.24349561416,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 725
+    },
+    {
+      "config": {
+        "delta": 0.25,
         "dt": 0.2,
         "gradient_sign": 1,
         "lambd": 1.0,
@@ -422,35 +935,73 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.04149519890260631,
-      "info_errors": 605,
-      "mean_energy": -14897.493928123638,
+      "info_ber": 0.037448559670781895,
+      "info_errors": 546,
+      "mean_energy": -14933.10923746452,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 789
+      "syndrome_ones": 750
     },
     {
       "config": {
-        "delta": 0.25,
+        "delta": 0.5,
         "dt": 0.2,
         "gradient_sign": 1,
-        "lambd": 2.0,
+        "lambd": 1.0,
         "steps": 50,
         "tau": 16.0,
         "xi": 0.06
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.04197530864197531,
-      "info_errors": 612,
-      "mean_energy": -14841.12934003846,
+      "info_ber": 0.03792866941015089,
+      "info_errors": 553,
+      "mean_energy": -14934.45218683968,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 766
+      "syndrome_ones": 764
     },
     {
       "config": {
         "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.038203017832647464,
+      "info_errors": 557,
+      "mean_energy": -14934.55558488128,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 776
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03827160493827161,
+      "info_errors": 558,
+      "mean_energy": -14601.579547427822,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 394
+    },
+    {
+      "config": {
+        "delta": 0.25,
         "dt": 0.2,
         "gradient_sign": 1,
         "lambd": 1.0,
@@ -460,16 +1011,16 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.04204389574759945,
-      "info_errors": 613,
-      "mean_energy": -14918.615628516758,
+      "info_ber": 0.03834019204389575,
+      "info_errors": 559,
+      "mean_energy": -14934.24197322542,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 813
+      "syndrome_ones": 775
     },
     {
       "config": {
-        "delta": 0.5,
+        "delta": 0.25,
         "dt": 0.2,
         "gradient_sign": 1,
         "lambd": 1.0,
@@ -479,31 +1030,12 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.04231824417009602,
-      "info_errors": 617,
-      "mean_energy": -14918.977837842202,
+      "info_ber": 0.038408779149519894,
+      "info_errors": 560,
+      "mean_energy": -14934.26436235336,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 813
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04252400548696845,
-      "info_errors": 620,
-      "mean_energy": -14716.94078489088,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 596
+      "syndrome_ones": 777
     },
     {
       "config": {
@@ -512,14 +1044,33 @@
         "gradient_sign": 1,
         "lambd": 2.0,
         "steps": 50,
-        "tau": 16.0,
+        "tau": 8.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03868312757201646,
+      "info_errors": 564,
+      "mean_energy": -14852.924642389678,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 797
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 8.0,
         "xi": 0.06
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.042661179698216735,
-      "info_errors": 622,
-      "mean_energy": -14839.998490263859,
+      "info_ber": 0.03888888888888889,
+      "info_errors": 567,
+      "mean_energy": -14934.650721027017,
       "rows_with_failed_checks": 10,
       "samples": 10,
       "syndrome_ones": 802
@@ -527,291 +1078,63 @@
     {
       "config": {
         "delta": 0.25,
-        "dt": 0.1,
+        "dt": 0.2,
         "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04327846364883402,
-      "info_errors": 631,
-      "mean_energy": -14838.141571776441,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 839
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 2.0,
+        "lambd": 1.0,
         "steps": 50,
         "tau": 16.0,
         "xi": 0.03
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.04327846364883402,
-      "info_errors": 631,
-      "mean_energy": -14838.141571776441,
+      "info_ber": 0.03888888888888889,
+      "info_errors": 567,
+      "mean_energy": -14934.650721027017,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 839
+      "syndrome_ones": 802
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.03909465020576132,
+      "info_errors": 570,
+      "mean_energy": -14934.88519397504,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 811
     },
     {
       "config": {
         "delta": 0.5,
-        "dt": 0.1,
+        "dt": 0.2,
         "gradient_sign": 1,
-        "lambd": 1.0,
+        "lambd": 0.5,
         "steps": 50,
         "tau": 8.0,
         "xi": 0.03
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.04327846364883402,
-      "info_errors": 631,
-      "mean_energy": -14921.90446176448,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 840
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04327846364883402,
-      "info_errors": 631,
-      "mean_energy": -14836.9583866906,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 866
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04334705075445816,
-      "info_errors": 632,
-      "mean_energy": -14921.87592025124,
+      "info_ber": 0.039574759945130315,
+      "info_errors": 577,
+      "mean_energy": -14976.088898547177,
       "rows_with_failed_checks": 10,
       "samples": 10,
       "syndrome_ones": 842
     },
     {
       "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04334705075445816,
-      "info_errors": 632,
-      "mean_energy": -14836.71304753696,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 868
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04368998628257888,
-      "info_errors": 637,
-      "mean_energy": -14713.71460204064,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 674
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04410150891632373,
-      "info_errors": 643,
-      "mean_energy": -14923.425755507622,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 896
-    },
-    {
-      "config": {
         "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04410150891632373,
-      "info_errors": 643,
-      "mean_energy": -14926.176120093278,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 901
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04410150891632373,
-      "info_errors": 643,
-      "mean_energy": -14926.176120093278,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 901
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04417009602194787,
-      "info_errors": 644,
-      "mean_energy": -14833.203346752804,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 908
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.044238683127572016,
-      "info_errors": 645,
-      "mean_energy": -14778.48384095792,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 718
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.044238683127572016,
-      "info_errors": 645,
-      "mean_energy": -14969.524485843202,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 915
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.044238683127572016,
-      "info_errors": 645,
-      "mean_energy": -14925.480492535038,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 931
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.044238683127572016,
-      "info_errors": 645,
-      "mean_energy": -14925.480492535038,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 931
-    },
-    {
-      "config": {
-        "delta": 0.25,
         "dt": 0.2,
         "gradient_sign": 1,
         "lambd": 1.0,
@@ -821,164 +1144,12 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.044238683127572016,
-      "info_errors": 645,
-      "mean_energy": -14925.25050277582,
+      "info_ber": 0.039780521262002745,
+      "info_errors": 580,
+      "mean_energy": -14698.696304020099,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 935
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04430727023319616,
-      "info_errors": 646,
-      "mean_energy": -14971.377308945282,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 960
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.0443758573388203,
-      "info_errors": 647,
-      "mean_energy": -14829.82331088484,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 941
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04451303155006859,
-      "info_errors": 649,
-      "mean_energy": -14969.53837993628,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 946
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04451303155006859,
-      "info_errors": 649,
-      "mean_energy": -14926.71636543438,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 952
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.0448559670781893,
-      "info_errors": 654,
-      "mean_energy": -14926.523806796959,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 960
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04506172839506173,
-      "info_errors": 657,
-      "mean_energy": -14926.184439308761,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 979
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04513031550068587,
-      "info_errors": 658,
-      "mean_energy": -14926.323295379721,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 976
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04513031550068587,
-      "info_errors": 658,
-      "mean_energy": -14926.09587757786,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 981
+      "syndrome_ones": 563
     },
     {
       "config": {
@@ -992,107 +1163,12 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.0453360768175583,
-      "info_errors": 661,
-      "mean_energy": -14976.73922703254,
+      "info_ber": 0.039780521262002745,
+      "info_errors": 580,
+      "mean_energy": -14976.395981529558,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 1003
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.045404663923182445,
-      "info_errors": 662,
-      "mean_energy": -14926.538603142599,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 987
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.045404663923182445,
-      "info_errors": 662,
-      "mean_energy": -14926.538603142599,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 987
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.045404663923182445,
-      "info_errors": 662,
-      "mean_energy": -14926.8388278596,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 992
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.045404663923182445,
-      "info_errors": 662,
-      "mean_energy": -14976.78407375984,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1006
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04567901234567901,
-      "info_errors": 666,
-      "mean_energy": -14825.280312016383,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 997
+      "syndrome_ones": 848
     },
     {
       "config": {
@@ -1106,12 +1182,12 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.045747599451303154,
-      "info_errors": 667,
-      "mean_energy": -14926.01148742742,
+      "info_ber": 0.040329218106995884,
+      "info_errors": 588,
+      "mean_energy": -14934.630166971121,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 1022
+      "syndrome_ones": 844
     },
     {
       "config": {
@@ -1125,579 +1201,9 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.04588477366255144,
-      "info_errors": 669,
-      "mean_energy": -14925.87646850834,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1036
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04588477366255144,
-      "info_errors": 669,
-      "mean_energy": -14925.87646850834,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1036
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.046159122085048014,
-      "info_errors": 673,
-      "mean_energy": -14977.50328201814,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1043
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.046159122085048014,
-      "info_errors": 673,
-      "mean_energy": -14977.50328201814,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1043
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04705075445816186,
-      "info_errors": 686,
-      "mean_energy": -14924.190341061778,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1075
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04705075445816186,
-      "info_errors": 686,
-      "mean_energy": -14924.190341061778,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1075
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04705075445816186,
-      "info_errors": 686,
-      "mean_energy": -14978.245947877736,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1087
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04718792866941015,
-      "info_errors": 688,
-      "mean_energy": -14814.8208377027,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1089
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.047325102880658436,
-      "info_errors": 690,
-      "mean_energy": -14923.525499979198,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1095
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04739368998628258,
-      "info_errors": 691,
-      "mean_energy": -14978.716138334023,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1094
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04739368998628258,
-      "info_errors": 691,
-      "mean_energy": -14978.716138334023,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1094
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04766803840877915,
-      "info_errors": 695,
-      "mean_energy": -14978.59010940454,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1111
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04766803840877915,
-      "info_errors": 695,
-      "mean_energy": -14978.59010940454,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1111
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.047736625514403296,
-      "info_errors": 696,
-      "mean_energy": -14978.816252811279,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1119
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04780521262002743,
-      "info_errors": 697,
-      "mean_energy": -14978.3177907385,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1118
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04780521262002743,
-      "info_errors": 697,
-      "mean_energy": -14978.572556719644,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1121
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.047873799725651575,
-      "info_errors": 698,
-      "mean_energy": -14922.480734683859,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1118
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04794238683127572,
-      "info_errors": 699,
-      "mean_energy": -14978.890811885682,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1124
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04801097393689986,
-      "info_errors": 700,
-      "mean_energy": -14687.637219123362,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 752
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.048079561042524005,
-      "info_errors": 701,
-      "mean_energy": -14978.71584312322,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1129
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.048079561042524005,
-      "info_errors": 701,
-      "mean_energy": -14978.71584312322,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1129
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04814814814814815,
-      "info_errors": 702,
-      "mean_energy": -14978.83553926152,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1131
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04814814814814815,
-      "info_errors": 702,
-      "mean_energy": -14978.83553926152,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1131
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04842249657064472,
-      "info_errors": 706,
-      "mean_energy": -14978.76751267032,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1136
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04842249657064472,
-      "info_errors": 706,
-      "mean_energy": -14921.566420795198,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1137
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04910836762688615,
-      "info_errors": 716,
-      "mean_energy": -14978.305660464539,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1155
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04910836762688615,
-      "info_errors": 716,
-      "mean_energy": -14978.190392243961,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1160
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.04910836762688615,
-      "info_errors": 716,
-      "mean_energy": -14978.190392243961,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1160
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.049657064471879286,
-      "info_errors": 724,
-      "mean_energy": -14977.83919534976,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1181
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.049657064471879286,
-      "info_errors": 724,
-      "mean_energy": -14977.83919534976,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1181
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.049862825788751716,
-      "info_errors": 727,
-      "mean_energy": -14790.217166441482,
+      "info_ber": 0.04128943758573388,
+      "info_errors": 602,
+      "mean_energy": -14934.062645944417,
       "rows_with_failed_checks": 10,
       "samples": 10,
       "syndrome_ones": 876
@@ -1709,17 +1215,568 @@
         "gradient_sign": 1,
         "lambd": 1.0,
         "steps": 50,
+        "tau": 16.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.04128943758573388,
+      "info_errors": 602,
+      "mean_energy": -14934.062645944417,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 876
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.04128943758573388,
+      "info_errors": 602,
+      "mean_energy": -14977.857577585697,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 878
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.04135802469135803,
+      "info_errors": 603,
+      "mean_energy": -14977.929036072459,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 880
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.04183813443072702,
+      "info_errors": 610,
+      "mean_energy": -14933.350394239842,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 912
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.041906721536351166,
+      "info_errors": 611,
+      "mean_energy": -14933.3050550862,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 914
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.042112482853223596,
+      "info_errors": 614,
+      "mean_energy": -14784.379081161218,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 712
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.04218106995884774,
+      "info_errors": 615,
+      "mean_energy": -14979.514391795881,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 933
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
         "tau": 4.0,
         "xi": 0.01
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.049862825788751716,
-      "info_errors": 727,
-      "mean_energy": -14917.531793677079,
+      "info_ber": 0.04224965706447188,
+      "info_errors": 616,
+      "mean_energy": -14838.97835682334,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 1198
+      "syndrome_ones": 934
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.04252400548696845,
+      "info_errors": 620,
+      "mean_energy": -14932.57816483664,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 943
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.04293552812071331,
+      "info_errors": 626,
+      "mean_energy": -14931.87286651482,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 964
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.04300411522633745,
+      "info_errors": 627,
+      "mean_energy": -14980.324164499918,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 958
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.04300411522633745,
+      "info_errors": 627,
+      "mean_energy": -14980.324164499918,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 958
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.043072702331961595,
+      "info_errors": 628,
+      "mean_energy": -14980.34664475662,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 963
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.043072702331961595,
+      "info_errors": 628,
+      "mean_energy": -14980.34664475662,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 963
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.043072702331961595,
+      "info_errors": 628,
+      "mean_energy": -14980.34664475662,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 963
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.04355281207133059,
+      "info_errors": 635,
+      "mean_energy": -14980.537678610082,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 981
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.04368998628257888,
+      "info_errors": 637,
+      "mean_energy": -14980.818445566401,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 996
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.044032921810699586,
+      "info_errors": 642,
+      "mean_energy": -14980.891494902,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 1007
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.04417009602194787,
+      "info_errors": 644,
+      "mean_energy": -14980.73175580458,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 1007
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.044238683127572016,
+      "info_errors": 645,
+      "mean_energy": -14980.74319407368,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 1009
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.0443758573388203,
+      "info_errors": 647,
+      "mean_energy": -14980.939164943042,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 1017
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.0443758573388203,
+      "info_errors": 647,
+      "mean_energy": -14980.939164943042,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 1017
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.044444444444444446,
+      "info_errors": 648,
+      "mean_energy": -14980.94332157512,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 1019
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.044444444444444446,
+      "info_errors": 648,
+      "mean_energy": -14929.59867289884,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 1019
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.044993141289437585,
+      "info_errors": 656,
+      "mean_energy": -14980.897918706662,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 1049
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.045404663923182445,
+      "info_errors": 662,
+      "mean_energy": -14980.69370660208,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 1058
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.045404663923182445,
+      "info_errors": 662,
+      "mean_energy": -14980.69370660208,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 1058
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.04622770919067215,
+      "info_errors": 674,
+      "mean_energy": -14980.409847672801,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 1089
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.04622770919067215,
+      "info_errors": 674,
+      "mean_energy": -14980.409847672801,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 1089
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.04622770919067215,
+      "info_errors": 674,
+      "mean_energy": -14925.461665694942,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 1096
     },
     {
       "config": {
@@ -1733,12 +1790,12 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.04993141289437586,
-      "info_errors": 728,
-      "mean_energy": -14977.337108975258,
+      "info_ber": 0.04643347050754458,
+      "info_errors": 677,
+      "mean_energy": -14980.14764383974,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 1202
+      "syndrome_ones": 1104
     },
     {
       "config": {
@@ -1752,110 +1809,53 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.050205761316872426,
-      "info_errors": 732,
-      "mean_energy": -14977.104123112342,
+      "info_ber": 0.04698216735253772,
+      "info_errors": 685,
+      "mean_energy": -14979.78313681026,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 1126
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.04739368998628258,
+      "info_errors": 691,
+      "mean_energy": -14979.42220999432,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 1146
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.04890260631001372,
+      "info_errors": 713,
+      "mean_energy": -14977.57883665278,
       "rows_with_failed_checks": 10,
       "samples": 10,
       "syndrome_ones": 1212
     },
     {
       "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.050411522633744855,
-      "info_errors": 735,
-      "mean_energy": -14976.781850450881,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1226
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.051440329218107,
-      "info_errors": 750,
-      "mean_energy": -14975.37993722664,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 1268
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.05150891632373114,
-      "info_errors": 751,
-      "mean_energy": -14540.0877580567,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 769
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.05336076817558299,
-      "info_errors": 778,
-      "mean_energy": -14676.482378008479,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 844
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.06412894375857339,
-      "info_errors": 935,
-      "mean_energy": -14435.670850734841,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 822
-    },
-    {
-      "config": {
         "delta": 0.5,
         "dt": 0.1,
         "gradient_sign": 1,
@@ -1866,12 +1866,12 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.1855281207133059,
-      "info_errors": 2705,
-      "mean_energy": -11555.87435725956,
+      "info_ber": 0.18964334705075445,
+      "info_errors": 2765,
+      "mean_energy": -11678.086145683921,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 1726
+      "syndrome_ones": 1754
     },
     {
       "config": {
@@ -1885,12 +1885,31 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.4313443072702332,
-      "info_errors": 6289,
-      "mean_energy": -7948.09596647068,
+      "info_ber": 0.23676268861454047,
+      "info_errors": 3452,
+      "mean_energy": -10253.256954318562,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 2386
+      "syndrome_ones": 2232
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.4527434842249657,
+      "info_errors": 6601,
+      "mean_energy": -7497.32258625892,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 2398
     },
     {
       "config": {
@@ -1904,12 +1923,12 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.48079561042524005,
-      "info_errors": 7010,
-      "mean_energy": 7648.13691960598,
+      "info_ber": 0.500480109739369,
+      "info_errors": 7297,
+      "mean_energy": 7886.10494789356,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 2426
+      "syndrome_ones": 2442
     },
     {
       "config": {
@@ -1923,12 +1942,88 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.5018518518518519,
-      "info_errors": 7317,
-      "mean_energy": 8108.2470174996,
+      "info_ber": 0.5483539094650206,
+      "info_errors": 7995,
+      "mean_energy": 8628.97234371948,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 2439
+      "syndrome_ones": 2427
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.6290123456790123,
+      "info_errors": 9171,
+      "mean_energy": -2929.93395215676,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 2255
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.6316186556927298,
+      "info_errors": 9209,
+      "mean_energy": -2207.2157780320804,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 1786
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": 1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.6753086419753086,
+      "info_errors": 9846,
+      "mean_energy": -2366.06477715416,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 2373
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": 1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.6860768175582991,
+      "info_errors": 10003,
+      "mean_energy": -1754.1034213052396,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 2052
     },
     {
       "config": {
@@ -1937,134 +2032,20 @@
         "gradient_sign": 1,
         "lambd": 0.5,
         "steps": 50,
-        "tau": 8.0,
+        "tau": 4.0,
         "xi": 0.01
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.5352537722908093,
-      "info_errors": 7804,
-      "mean_energy": -6521.57519568772,
+      "info_ber": 0.6895061728395062,
+      "info_errors": 10053,
+      "mean_energy": -2262.1647090409997,
       "rows_with_failed_checks": 10,
       "samples": 10,
       "syndrome_ones": 2414
     },
     {
       "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.559122085048011,
-      "info_errors": 8152,
-      "mean_energy": 9170.707774993822,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 2444
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.6757887517146777,
-      "info_errors": 9853,
-      "mean_energy": -2176.9906056601803,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 2363
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.6789437585733882,
-      "info_errors": 9899,
-      "mean_energy": -1643.1570330406,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 2011
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.6901234567901234,
-      "info_errors": 10062,
-      "mean_energy": -2159.6024213322003,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 2415
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": 1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.6943072702331962,
-      "info_errors": 10123,
-      "mean_energy": -2198.7930948783405,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 2410
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": 1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.7010288065843622,
-      "info_errors": 10221,
-      "mean_energy": -1593.73352525488,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 2220
-    },
-    {
-      "config": {
         "delta": 0.5,
         "dt": 0.2,
         "gradient_sign": 1,
@@ -2075,12 +2056,12 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.7085733882030179,
-      "info_errors": 10331,
-      "mean_energy": -1614.42953394788,
+      "info_ber": 0.702400548696845,
+      "info_errors": 10241,
+      "mean_energy": -1683.2733382826398,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 2303
+      "syndrome_ones": 2216
     },
     {
       "config": {
@@ -2094,12 +2075,31 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.7347050754458162,
-      "info_errors": 10712,
-      "mean_energy": -145.01704991089997,
+      "info_ber": 0.7248285322359397,
+      "info_errors": 10568,
+      "mean_energy": -345.57811718422,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 2235
+      "syndrome_ones": 2032
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.7292181069958847,
+      "info_errors": 10632,
+      "mean_energy": 10853.68363200066,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 2504
     },
     {
       "config": {
@@ -2113,12 +2113,12 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.7374485596707819,
-      "info_errors": 10752,
-      "mean_energy": -332.1366262463599,
+      "info_ber": 0.7342249657064472,
+      "info_errors": 10705,
+      "mean_energy": -387.32512945258,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 2351
+      "syndrome_ones": 2242
     },
     {
       "config": {
@@ -2132,12 +2132,12 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.7402606310013717,
-      "info_errors": 10793,
-      "mean_energy": -374.80857191648,
+      "info_ber": 0.7388888888888889,
+      "info_errors": 10773,
+      "mean_energy": -401.98447331322,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 2421
+      "syndrome_ones": 2361
     },
     {
       "config": {
@@ -2151,50 +2151,12 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.9031550068587105,
-      "info_errors": 13168,
-      "mean_energy": 14748.21624541828,
+      "info_ber": 0.937037037037037,
+      "info_errors": 13662,
+      "mean_energy": 15089.200813141939,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 3488
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9375171467764061,
-      "info_errors": 13669,
-      "mean_energy": 14974.1302062584,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3771
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9486282578875171,
-      "info_errors": 13831,
-      "mean_energy": 15218.29766543374,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3590
+      "syndrome_ones": 4010
     },
     {
       "config": {
@@ -2204,339 +2166,16 @@
         "lambd": 0.5,
         "steps": 50,
         "tau": 4.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9486968449931413,
-      "info_errors": 13832,
-      "mean_energy": 15217.639421593401,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3571
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9487654320987654,
-      "info_errors": 13833,
-      "mean_energy": 15217.725460647061,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3573
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9489026063100137,
-      "info_errors": 13835,
-      "mean_energy": 15218.64471804436,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3599
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9489026063100137,
-      "info_errors": 13835,
-      "mean_energy": 15219.08441389474,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3611
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9489026063100137,
-      "info_errors": 13835,
-      "mean_energy": 15399.591237995122,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3611
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9491083676268861,
-      "info_errors": 13838,
-      "mean_energy": 15218.800177709922,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3604
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9491083676268861,
-      "info_errors": 13838,
-      "mean_energy": 15219.4447289906,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3624
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9492455418381345,
-      "info_errors": 13840,
-      "mean_energy": 15400.571687468522,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3623
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9493827160493827,
-      "info_errors": 13842,
-      "mean_energy": 15219.5773262078,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3631
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9494513031550068,
-      "info_errors": 13843,
-      "mean_energy": 15219.690159445698,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3633
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9495884773662552,
-      "info_errors": 13845,
-      "mean_energy": 15219.799757771081,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3635
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9496570644718793,
-      "info_errors": 13846,
-      "mean_energy": 15219.922448858459,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3642
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9497256515775034,
-      "info_errors": 13847,
-      "mean_energy": 15220.032223746883,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3644
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 8.0,
         "xi": 0.01
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
       "info_ber": 0.9497256515775034,
       "info_errors": 13847,
-      "mean_energy": 15220.05379811626,
+      "mean_energy": 15219.12529197328,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 3648
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9497942386831276,
-      "info_errors": 13848,
-      "mean_energy": 15220.04079989988,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3645
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9497942386831276,
-      "info_errors": 13848,
-      "mean_energy": 15220.065142853817,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3649
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9501371742112483,
-      "info_errors": 13853,
-      "mean_energy": 15220.432407877059,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3663
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9502743484224966,
-      "info_errors": 13855,
-      "mean_energy": 15220.604429916179,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3669
+      "syndrome_ones": 3605
     },
     {
       "config": {
@@ -2544,284 +2183,18 @@
         "dt": 0.1,
         "gradient_sign": -1,
         "lambd": 0.5,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9503429355281207,
-      "info_errors": 13856,
-      "mean_energy": 15220.566488970338,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3664
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9503429355281207,
-      "info_errors": 13856,
-      "mean_energy": 15404.114300141042,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3669
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9504115226337448,
-      "info_errors": 13857,
-      "mean_energy": 15220.693257057243,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3669
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.950480109739369,
-      "info_errors": 13858,
-      "mean_energy": 15220.791455613018,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3673
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.950480109739369,
-      "info_errors": 13858,
-      "mean_energy": 15220.887501538022,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3679
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.950480109739369,
-      "info_errors": 13858,
-      "mean_energy": 15220.96589157562,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3680
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9505486968449931,
-      "info_errors": 13859,
-      "mean_energy": 15404.799711521342,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3679
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9506858710562415,
-      "info_errors": 13861,
-      "mean_energy": 15404.742139505961,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3679
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9507544581618655,
-      "info_errors": 13862,
-      "mean_energy": 15220.936755463243,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3681
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9508230452674897,
-      "info_errors": 13863,
-      "mean_energy": 15221.165505605662,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3690
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9508916323731138,
-      "info_errors": 13864,
-      "mean_energy": 15221.223023229639,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3698
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9508916323731138,
-      "info_errors": 13864,
-      "mean_energy": 15221.014923287541,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3699
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.950960219478738,
-      "info_errors": 13865,
-      "mean_energy": 15221.22052888024,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3692
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.950960219478738,
-      "info_errors": 13865,
-      "mean_energy": 15221.1984332219,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3694
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 1.0,
         "steps": 50,
         "tau": 4.0,
         "xi": 0.01
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.950960219478738,
-      "info_errors": 13865,
-      "mean_energy": 15406.616064340338,
+      "info_ber": 0.95,
+      "info_errors": 13851,
+      "mean_energy": 15219.26994714466,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 3705
+      "syndrome_ones": 3609
     },
     {
       "config": {
@@ -2830,135 +2203,192 @@
         "gradient_sign": -1,
         "lambd": 0.5,
         "steps": 50,
-        "tau": 16.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9510288065843622,
-      "info_errors": 13866,
-      "mean_energy": 15221.388588808139,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3698
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 4.0,
+        "tau": 8.0,
         "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9510973936899862,
-      "info_errors": 13867,
-      "mean_energy": 15777.2582082398,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3706
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9511659807956104,
-      "info_errors": 13868,
-      "mean_energy": 15406.53708822054,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3701
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9511659807956104,
-      "info_errors": 13868,
-      "mean_energy": 15777.410521786762,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3706
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9512345679012346,
-      "info_errors": 13869,
-      "mean_energy": 15406.6917393182,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3707
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9512345679012346,
-      "info_errors": 13869,
-      "mean_energy": 15221.35773516282,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3710
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.06
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
       "info_ber": 0.9513031550068587,
       "info_errors": 13870,
-      "mean_energy": 15221.463474586479,
+      "mean_energy": 15220.88789431126,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 3706
+      "syndrome_ones": 3655
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9515089163237311,
+      "info_errors": 13873,
+      "mean_energy": 15221.162003301139,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3665
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.951920438957476,
+      "info_errors": 13879,
+      "mean_energy": 15221.47394238682,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3677
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9520576131687243,
+      "info_errors": 13881,
+      "mean_energy": 15406.825973327339,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3695
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9521947873799725,
+      "info_errors": 13883,
+      "mean_energy": 15221.81320025454,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3686
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.952400548696845,
+      "info_errors": 13886,
+      "mean_energy": 15222.18975737072,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3703
     },
     {
       "config": {
         "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.952400548696845,
+      "info_errors": 13886,
+      "mean_energy": 15222.22879235314,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3704
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.952400548696845,
+      "info_errors": 13886,
+      "mean_energy": 15407.452172571959,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3704
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9526748971193416,
+      "info_errors": 13890,
+      "mean_energy": 15222.56170854808,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3714
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9528120713305899,
+      "info_errors": 13892,
+      "mean_energy": 15222.533165472341,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3716
+    },
+    {
+      "config": {
+        "delta": 0.5,
         "dt": 0.1,
         "gradient_sign": -1,
         "lambd": 0.5,
@@ -2968,475 +2398,228 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.9515089163237311,
-      "info_errors": 13873,
-      "mean_energy": 15221.284989477042,
+      "info_ber": 0.952880658436214,
+      "info_errors": 13893,
+      "mean_energy": 15222.62052421488,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 3720
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9515775034293553,
-      "info_errors": 13874,
-      "mean_energy": 15407.714279914198,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3722
+      "syndrome_ones": 3721
     },
     {
       "config": {
         "delta": 0.25,
         "dt": 0.2,
         "gradient_sign": -1,
-        "lambd": 1.0,
+        "lambd": 0.5,
         "steps": 50,
         "tau": 4.0,
         "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9517146776406036,
-      "info_errors": 13876,
-      "mean_energy": 15407.909184611519,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3728
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9518518518518518,
-      "info_errors": 13878,
-      "mean_energy": 15407.79375897622,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3727
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9518518518518518,
-      "info_errors": 13878,
-      "mean_energy": 15407.979758313639,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3731
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.951920438957476,
-      "info_errors": 13879,
-      "mean_energy": 15408.75544247654,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3738
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9521262002743485,
-      "info_errors": 13882,
-      "mean_energy": 15408.94700692748,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3746
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9522633744855967,
-      "info_errors": 13884,
-      "mean_energy": 15408.41994675602,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3742
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9523319615912208,
-      "info_errors": 13885,
-      "mean_energy": 15408.853615179143,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3742
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9523319615912208,
-      "info_errors": 13885,
-      "mean_energy": 15409.32520523706,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3753
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.06
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
       "info_ber": 0.9530178326474623,
       "info_errors": 13895,
-      "mean_energy": 15410.63447645276,
+      "mean_energy": 15222.756353548282,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 3781
+      "syndrome_ones": 3730
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9530864197530864,
+      "info_errors": 13896,
+      "mean_energy": 15222.83680966854,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3726
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9532235939643348,
+      "info_errors": 13898,
+      "mean_energy": 15222.94165486388,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3732
     },
     {
       "config": {
         "delta": 0.25,
         "dt": 0.2,
         "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9530864197530864,
-      "info_errors": 13896,
-      "mean_energy": 15410.0298048593,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3772
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9530864197530864,
-      "info_errors": 13896,
-      "mean_energy": 15410.3481993545,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3775
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 2.0,
+        "lambd": 0.5,
         "steps": 50,
         "tau": 8.0,
         "xi": 0.01
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.9531550068587106,
-      "info_errors": 13897,
-      "mean_energy": 15787.14828703212,
+      "info_ber": 0.9532235939643348,
+      "info_errors": 13898,
+      "mean_energy": 15223.00726670396,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3740
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9532921810699588,
+      "info_errors": 13899,
+      "mean_energy": 15222.888969924223,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3737
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9534979423868313,
+      "info_errors": 13902,
+      "mean_energy": 15223.00943110632,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3742
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9536351165980795,
+      "info_errors": 13904,
+      "mean_energy": 15223.281792307458,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3760
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9537037037037037,
+      "info_errors": 13905,
+      "mean_energy": 15412.057017942341,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3773
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9537722908093278,
+      "info_errors": 13906,
+      "mean_energy": 15223.263247639139,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3756
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.953840877914952,
+      "info_errors": 13907,
+      "mean_energy": 15411.75854219982,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3765
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.953840877914952,
+      "info_errors": 13907,
+      "mean_energy": 15223.503721373581,
       "rows_with_failed_checks": 10,
       "samples": 10,
       "syndrome_ones": 3774
     },
     {
       "config": {
-        "delta": 0.25,
-        "dt": 0.1,
+        "delta": 0.5,
+        "dt": 0.2,
         "gradient_sign": -1,
         "lambd": 0.5,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9532235939643348,
-      "info_errors": 13898,
-      "mean_energy": 15219.79148513718,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3776
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9532235939643348,
-      "info_errors": 13898,
-      "mean_energy": 15788.91338161896,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3781
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.953360768175583,
-      "info_errors": 13900,
-      "mean_energy": 15218.90411440186,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3780
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.953360768175583,
-      "info_errors": 13900,
-      "mean_energy": 15410.563841176621,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3786
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.953360768175583,
-      "info_errors": 13900,
-      "mean_energy": 15411.222592124479,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3792
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9534293552812071,
-      "info_errors": 13901,
-      "mean_energy": 15410.315067179297,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3779
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9536351165980795,
-      "info_errors": 13904,
-      "mean_energy": 15410.67895717762,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3789
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9537722908093278,
-      "info_errors": 13906,
-      "mean_energy": 15789.59589407272,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3791
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 0.5,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9537722908093278,
-      "info_errors": 13906,
-      "mean_energy": 15079.06488811682,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3986
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.953840877914952,
-      "info_errors": 13907,
-      "mean_energy": 15792.607987679079,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3811
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.953840877914952,
-      "info_errors": 13907,
-      "mean_energy": 15411.72749943438,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3812
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 1.0,
         "steps": 50,
         "tau": 16.0,
         "xi": 0.03
@@ -3445,10 +2628,143 @@
       "frame_errors": 10,
       "info_ber": 0.9539094650205762,
       "info_errors": 13908,
-      "mean_energy": 15410.943660186236,
+      "mean_energy": 15223.526566352439,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 3796
+      "syndrome_ones": 3766
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9540466392318244,
+      "info_errors": 13910,
+      "mean_energy": 15223.522599600701,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3766
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9540466392318244,
+      "info_errors": 13910,
+      "mean_energy": 15223.524496039401,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3778
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9541838134430727,
+      "info_errors": 13912,
+      "mean_energy": 15223.568778362522,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3778
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9545953360768176,
+      "info_errors": 13918,
+      "mean_energy": 15413.064789851842,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3790
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9545953360768176,
+      "info_errors": 13918,
+      "mean_energy": 15223.692924326639,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3795
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9545953360768176,
+      "info_errors": 13918,
+      "mean_energy": 15223.75749421868,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3799
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9546639231824418,
+      "info_errors": 13919,
+      "mean_energy": 15223.8200886142,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3798
     },
     {
       "config": {
@@ -3458,51 +2774,108 @@
         "lambd": 1.0,
         "steps": 50,
         "tau": 8.0,
-        "xi": 0.06
+        "xi": 0.01
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.9540466392318244,
-      "info_errors": 13910,
-      "mean_energy": 15410.24779036824,
+      "info_ber": 0.9548696844993141,
+      "info_errors": 13922,
+      "mean_energy": 15063.7889739873,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 3802
+      "syndrome_ones": 4181
     },
     {
       "config": {
         "delta": 0.25,
         "dt": 0.1,
         "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9541152263374486,
-      "info_errors": 13911,
-      "mean_energy": 15409.5313348799,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3810
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 1.0,
+        "lambd": 0.5,
         "steps": 50,
         "tau": 16.0,
         "xi": 0.06
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.9542524005486969,
-      "info_errors": 13913,
-      "mean_energy": 15411.14984406572,
+      "info_ber": 0.9550068587105625,
+      "info_errors": 13924,
+      "mean_energy": 15223.76684018372,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3817
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9550754458161865,
+      "info_errors": 13925,
+      "mean_energy": 15413.861810305523,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3801
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9550754458161865,
+      "info_errors": 13925,
+      "mean_energy": 15794.104537526418,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3802
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9551440329218107,
+      "info_errors": 13926,
+      "mean_energy": 15796.24728963694,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3817
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.955281207133059,
+      "info_errors": 13928,
+      "mean_energy": 15223.682579431881,
       "rows_with_failed_checks": 10,
       "samples": 10,
       "syndrome_ones": 3806
@@ -3512,35 +2885,16 @@
         "delta": 0.25,
         "dt": 0.1,
         "gradient_sign": -1,
-        "lambd": 1.0,
+        "lambd": 0.5,
         "steps": 50,
         "tau": 16.0,
-        "xi": 0.06
+        "xi": 0.03
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.9542524005486969,
-      "info_errors": 13913,
-      "mean_energy": 15410.8592461714,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3811
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9544581618655693,
-      "info_errors": 13916,
-      "mean_energy": 15792.658748558202,
+      "info_ber": 0.9553497942386832,
+      "info_errors": 13929,
+      "mean_energy": 15223.62167220972,
       "rows_with_failed_checks": 10,
       "samples": 10,
       "syndrome_ones": 3823
@@ -3548,382 +2902,268 @@
     {
       "config": {
         "delta": 0.25,
-        "dt": 0.1,
+        "dt": 0.2,
         "gradient_sign": -1,
         "lambd": 1.0,
         "steps": 50,
-        "tau": 8.0,
-        "xi": 0.03
+        "tau": 4.0,
+        "xi": 0.01
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.9545267489711934,
-      "info_errors": 13917,
-      "mean_energy": 15408.183007131918,
+      "info_ber": 0.9554869684499314,
+      "info_errors": 13931,
+      "mean_energy": 15414.411310815241,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3818
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9555555555555556,
+      "info_errors": 13932,
+      "mean_energy": 15223.452172407802,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3818
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9556241426611797,
+      "info_errors": 13933,
+      "mean_energy": 15415.681943775679,
       "rows_with_failed_checks": 10,
       "samples": 10,
       "syndrome_ones": 3837
     },
     {
       "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9545953360768176,
-      "info_errors": 13918,
-      "mean_energy": 15410.36271747758,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3826
-    },
-    {
-      "config": {
         "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9545953360768176,
-      "info_errors": 13918,
-      "mean_energy": 15794.74693223596,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3836
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9548696844993141,
-      "info_errors": 13922,
-      "mean_energy": 15797.795308348901,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3853
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9549382716049383,
-      "info_errors": 13923,
-      "mean_energy": 15800.8996450562,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3889
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9550068587105625,
-      "info_errors": 13924,
-      "mean_energy": 15794.82569269884,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3841
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9550754458161865,
-      "info_errors": 13925,
-      "mean_energy": 15796.297259432638,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3853
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9550754458161865,
-      "info_errors": 13925,
-      "mean_energy": 15800.08764433674,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3880
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9551440329218107,
-      "info_errors": 13926,
-      "mean_energy": 15796.38817411096,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3875
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9551440329218107,
-      "info_errors": 13926,
-      "mean_energy": 15711.1778742098,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 4032
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9552126200274348,
-      "info_errors": 13927,
-      "mean_energy": 15797.67134480498,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3870
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 1.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.01
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9552126200274348,
-      "info_errors": 13927,
-      "mean_energy": 15397.590705498598,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3903
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 4.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9553497942386832,
-      "info_errors": 13929,
-      "mean_energy": 15798.55242308756,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3886
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9556241426611797,
-      "info_errors": 13933,
-      "mean_energy": 15799.88916157916,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3903
-    },
-    {
-      "config": {
-        "delta": 0.25,
         "dt": 0.1,
         "gradient_sign": -1,
         "lambd": 1.0,
         "steps": 50,
         "tau": 4.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9556241426611797,
-      "info_errors": 13933,
-      "mean_energy": 15395.385697971102,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3910
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 8.0,
         "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9558299039780521,
-      "info_errors": 13936,
-      "mean_energy": 15799.436040362203,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3890
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 8.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9558984910836763,
-      "info_errors": 13937,
-      "mean_energy": 15800.88991713746,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3917
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9558984910836763,
-      "info_errors": 13937,
-      "mean_energy": 15807.50838390736,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3997
-    },
-    {
-      "config": {
-        "delta": 0.5,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.03
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
       "info_ber": 0.9559670781893004,
       "info_errors": 13938,
-      "mean_energy": 15807.629251236003,
+      "mean_energy": 15415.34232818846,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 3968
+      "syndrome_ones": 3832
     },
     {
       "config": {
         "delta": 0.25,
-        "dt": 0.2,
+        "dt": 0.1,
         "gradient_sign": -1,
-        "lambd": 2.0,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.956241426611797,
+      "info_errors": 13942,
+      "mean_energy": 15223.16137808476,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3854
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 1.0,
         "steps": 50,
         "tau": 16.0,
         "xi": 0.01
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.9560356652949246,
-      "info_errors": 13939,
-      "mean_energy": 15802.043430658261,
+      "info_ber": 0.9563100137174211,
+      "info_errors": 13943,
+      "mean_energy": 15416.19913654644,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 3935
+      "syndrome_ones": 3855
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9565157750342935,
+      "info_errors": 13946,
+      "mean_energy": 15416.6027025252,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3861
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9568587105624142,
+      "info_errors": 13951,
+      "mean_energy": 15417.77710560436,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3891
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9569958847736626,
+      "info_errors": 13953,
+      "mean_energy": 15416.812537695741,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3869
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9569958847736626,
+      "info_errors": 13953,
+      "mean_energy": 15417.679750767256,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3879
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9574074074074074,
+      "info_errors": 13959,
+      "mean_energy": 15418.014039261878,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3887
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9574759945130316,
+      "info_errors": 13960,
+      "mean_energy": 15418.16114835766,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3898
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9574759945130316,
+      "info_errors": 13960,
+      "mean_energy": 15418.44531511532,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3901
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9575445816186557,
+      "info_errors": 13961,
+      "mean_energy": 15418.67408753408,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3914
     },
     {
       "config": {
@@ -3933,32 +3173,165 @@
         "lambd": 2.0,
         "steps": 50,
         "tau": 8.0,
-        "xi": 0.06
+        "xi": 0.01
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.9560356652949246,
-      "info_errors": 13939,
-      "mean_energy": 15807.786413027963,
+      "info_ber": 0.9578189300411523,
+      "info_errors": 13965,
+      "mean_energy": 15811.274370315097,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 3966
+      "syndrome_ones": 3921
     },
     {
       "config": {
         "delta": 0.25,
-        "dt": 0.1,
+        "dt": 0.2,
         "gradient_sign": -1,
-        "lambd": 2.0,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9578189300411523,
+      "info_errors": 13965,
+      "mean_energy": 15418.75152384062,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3929
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9578875171467764,
+      "info_errors": 13966,
+      "mean_energy": 15418.761764278199,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3919
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 1.0,
         "steps": 50,
         "tau": 8.0,
         "xi": 0.06
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.9563100137174211,
-      "info_errors": 13943,
-      "mean_energy": 15798.08340862134,
+      "info_ber": 0.958161865569273,
+      "info_errors": 13970,
+      "mean_energy": 15419.397499526898,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3927
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.958161865569273,
+      "info_errors": 13970,
+      "mean_energy": 15811.874880900801,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3933
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9582304526748971,
+      "info_errors": 13971,
+      "mean_energy": 15419.569434766,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3929
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9585048010973937,
+      "info_errors": 13975,
+      "mean_energy": 15419.449743808098,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3944
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9586419753086419,
+      "info_errors": 13977,
+      "mean_energy": 15419.58985166904,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3946
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9587105624142661,
+      "info_errors": 13978,
+      "mean_energy": 15219.41957858928,
       "rows_with_failed_checks": 10,
       "samples": 10,
       "syndrome_ones": 3953
@@ -3966,6 +3339,215 @@
     {
       "config": {
         "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9589849108367627,
+      "info_errors": 13982,
+      "mean_energy": 15420.05086071748,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3963
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.959122085048011,
+      "info_errors": 13984,
+      "mean_energy": 15218.974237519618,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3956
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.959122085048011,
+      "info_errors": 13984,
+      "mean_energy": 15420.6725322063,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3979
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9592592592592593,
+      "info_errors": 13986,
+      "mean_energy": 15815.457355832643,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3962
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9592592592592593,
+      "info_errors": 13986,
+      "mean_energy": 15818.688026933882,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3981
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9593278463648834,
+      "info_errors": 13987,
+      "mean_energy": 15420.397844705181,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3976
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.95960219478738,
+      "info_errors": 13991,
+      "mean_energy": 15419.111355230561,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3978
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9599451303155007,
+      "info_errors": 13996,
+      "mean_energy": 15418.0205621405,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3988
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9602194787379973,
+      "info_errors": 14000,
+      "mean_energy": 15419.864576133381,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 3995
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9602194787379973,
+      "info_errors": 14000,
+      "mean_energy": 15818.417677049782,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4004
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9608367626886145,
+      "info_errors": 14009,
+      "mean_energy": 15418.826052673181,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4023
+    },
+    {
+      "config": {
+        "delta": 0.5,
         "dt": 0.1,
         "gradient_sign": -1,
         "lambd": 2.0,
@@ -3975,12 +3557,31 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.9563100137174211,
-      "info_errors": 13943,
-      "mean_energy": 15792.08459703434,
+      "info_ber": 0.9609739368998629,
+      "info_errors": 14011,
+      "mean_energy": 15821.28439856032,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 3956
+      "syndrome_ones": 4018
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9612482853223594,
+      "info_errors": 14015,
+      "mean_energy": 15416.100078555319,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4058
     },
     {
       "config": {
@@ -3990,111 +3591,54 @@
         "lambd": 2.0,
         "steps": 50,
         "tau": 16.0,
-        "xi": 0.06
+        "xi": 0.01
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.9564471879286695,
-      "info_errors": 13945,
-      "mean_energy": 15803.588110019442,
+      "info_ber": 0.9617283950617284,
+      "info_errors": 14022,
+      "mean_energy": 15824.709523331758,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 3943
+      "syndrome_ones": 4059
     },
     {
       "config": {
-        "delta": 0.25,
+        "delta": 0.5,
         "dt": 0.2,
         "gradient_sign": -1,
         "lambd": 2.0,
         "steps": 50,
         "tau": 16.0,
-        "xi": 0.06
+        "xi": 0.01
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.9565157750342935,
-      "info_errors": 13946,
-      "mean_energy": 15805.59679207424,
+      "info_ber": 0.9617969821673525,
+      "info_errors": 14023,
+      "mean_energy": 15826.476014722919,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 3969
+      "syndrome_ones": 4054
     },
     {
       "config": {
-        "delta": 0.25,
+        "delta": 0.5,
         "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.03
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9565843621399177,
-      "info_errors": 13947,
-      "mean_energy": 15798.457056387982,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3980
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
         "gradient_sign": -1,
         "lambd": 2.0,
         "steps": 50,
         "tau": 8.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.956721536351166,
-      "info_errors": 13949,
-      "mean_energy": 15804.032332063201,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3941
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.2,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 16.0,
         "xi": 0.03
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.956721536351166,
-      "info_errors": 13949,
-      "mean_energy": 15804.946108476139,
+      "info_ber": 0.9617969821673525,
+      "info_errors": 14023,
+      "mean_energy": 15826.00023107316,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 3955
-    },
-    {
-      "config": {
-        "delta": 0.25,
-        "dt": 0.1,
-        "gradient_sign": -1,
-        "lambd": 2.0,
-        "steps": 50,
-        "tau": 16.0,
-        "xi": 0.06
-      },
-      "frame_error_rate": 1.0,
-      "frame_errors": 10,
-      "info_ber": 0.9569958847736626,
-      "info_errors": 13953,
-      "mean_energy": 15802.55516908718,
-      "rows_with_failed_checks": 10,
-      "samples": 10,
-      "syndrome_ones": 3958
+      "syndrome_ones": 4071
     },
     {
       "config": {
@@ -4108,12 +3652,392 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.9573388203017833,
-      "info_errors": 13958,
-      "mean_energy": 15729.844912433142,
+      "info_ber": 0.9621399176954732,
+      "info_errors": 14028,
+      "mean_energy": 15704.79843021828,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 4045
+      "syndrome_ones": 4286
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9626200274348422,
+      "info_errors": 14035,
+      "mean_energy": 15827.723110484763,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4098
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9626886145404664,
+      "info_errors": 14036,
+      "mean_energy": 15722.582487259502,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4302
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 0.5,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9627572016460906,
+      "info_errors": 14037,
+      "mean_energy": 15061.92688913882,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4275
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9628257887517147,
+      "info_errors": 14038,
+      "mean_energy": 15830.853780958802,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4103
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9633058984910837,
+      "info_errors": 14045,
+      "mean_energy": 15832.039297040503,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4119
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.963443072702332,
+      "info_errors": 14047,
+      "mean_energy": 15828.721945687237,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4130
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9636488340192044,
+      "info_errors": 14050,
+      "mean_energy": 15831.161345271339,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4129
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9641289437585734,
+      "info_errors": 14057,
+      "mean_energy": 15831.59949900932,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4137
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9642661179698216,
+      "info_errors": 14059,
+      "mean_energy": 15394.081106539961,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4189
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9645404663923183,
+      "info_errors": 14063,
+      "mean_energy": 15834.293899181479,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4175
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9648148148148148,
+      "info_errors": 14067,
+      "mean_energy": 15839.524667288619,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4221
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9650205761316872,
+      "info_errors": 14070,
+      "mean_energy": 15838.6811355957,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4206
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9650891632373114,
+      "info_errors": 14071,
+      "mean_energy": 15832.13041137954,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4198
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 1.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.01
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9650891632373114,
+      "info_errors": 14071,
+      "mean_energy": 15399.348779155542,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4216
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9651577503429355,
+      "info_errors": 14072,
+      "mean_energy": 15833.878664006601,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4170
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9656378600823046,
+      "info_errors": 14079,
+      "mean_energy": 15837.56096648302,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4209
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9657750342935528,
+      "info_errors": 14081,
+      "mean_energy": 15837.448658704223,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4208
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 4.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9658436213991769,
+      "info_errors": 14082,
+      "mean_energy": 15818.444305881701,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4258
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 8.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9659122085048011,
+      "info_errors": 14083,
+      "mean_energy": 15830.19442591418,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4247
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.966323731138546,
+      "info_errors": 14089,
+      "mean_energy": 15839.3839603612,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4249
     },
     {
       "config": {
@@ -4127,15 +4051,91 @@
       },
       "frame_error_rate": 1.0,
       "frame_errors": 10,
-      "info_ber": 0.9576131687242798,
-      "info_errors": 13962,
-      "mean_energy": 15785.6035337314,
+      "info_ber": 0.966323731138546,
+      "info_errors": 14089,
+      "mean_energy": 15806.512888703379,
       "rows_with_failed_checks": 10,
       "samples": 10,
-      "syndrome_ones": 3997
+      "syndrome_ones": 4299
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.96639231824417,
+      "info_errors": 14090,
+      "mean_energy": 15837.17307624688,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4225
+    },
+    {
+      "config": {
+        "delta": 0.5,
+        "dt": 0.2,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9665980795610425,
+      "info_errors": 14093,
+      "mean_energy": 15843.525897183757,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4296
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.06
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9668724279835391,
+      "info_errors": 14097,
+      "mean_energy": 15835.38795163384,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4272
+    },
+    {
+      "config": {
+        "delta": 0.25,
+        "dt": 0.1,
+        "gradient_sign": -1,
+        "lambd": 2.0,
+        "steps": 50,
+        "tau": 16.0,
+        "xi": 0.03
+      },
+      "frame_error_rate": 1.0,
+      "frame_errors": 10,
+      "info_ber": 0.9674211248285323,
+      "info_errors": 14105,
+      "mean_energy": 15826.587532692341,
+      "rows_with_failed_checks": 10,
+      "samples": 10,
+      "syndrome_ones": 4295
     }
   ],
   "sweep_samples": 10,
-  "sweep_seconds": 17.55737410002621,
-  "syndrome_reduction": 0.5558975751814464
+  "sweep_seconds": 281.72842290002154,
+  "syndrome_reduction": 0.7131863654882079
 }

@@ -1,0 +1,73 @@
+{
+  "framework": "QAIA_dSB_only_deep_unfolding_with_six_candidate_energy_selection",
+  "submission_file": "submission.cpp",
+  "submission_bytes": 15875,
+  "submission_under_512k": true,
+  "iteration_limit": {
+    "steps": 50,
+    "within_50": true
+  },
+  "initial_guesses": {
+    "count": 6,
+    "within_6": true,
+    "learned": "phase4_unfolded_dsb_params.json",
+    "fixed_candidates": [
+      [4.0, 0.5, 6.0, 2.5],
+      [4.0, 0.5, 5.0, 2.5],
+      [4.0, 0.4, 5.0, 2.0],
+      [4.0, 0.4, 6.0, 2.0],
+      [8.0, 0.5, 6.0, 2.5]
+    ]
+  },
+  "gradient_checks": {
+    "dt": "ratio 1.000",
+    "xi": "ratio 1.000",
+    "lam": "ratio 1.000",
+    "delta": "ratio 1.000",
+    "tau": "ratio 1.000",
+    "xi_mod": "ratio 1.000",
+    "lam_mod": "ratio 1.000",
+    "delta_mod": "ratio 1.000"
+  },
+  "phase4": {
+    "fixed_dsb_validation_ber": 0.02962962962962963,
+    "learned_validation_ber": 0.0289437585733882,
+    "learned_full_public_ber": 0.02916872427983539,
+    "gate_passed": true
+  },
+  "phase5_multi_guess": {
+    "samples_per_case": 20,
+    "all_codewords_valid": true,
+    "max_python_seconds_per_frame": 0.8871,
+    "runtime_under_120s": true,
+    "beats_hard_decision_in_every_case": true,
+    "worst_selected_ber": 0.032922
+  },
+  "phase6": {
+    "learned_validation_ber": 0.0289437585733882,
+    "selected_validation_ber": 0.02722222222222222,
+    "learned_full_public_ber": 0.02916872427983539,
+    "selected_full_public_ber": 0.027281207133058986,
+    "selected_full_public_syndrome_ones": 9487,
+    "pdf_sample_matches": true,
+    "python_seconds_per_frame": 0.08378630380006508,
+    "gate_passed": true
+  },
+  "cpp_parity": {
+    "public_frames_checked": 500,
+    "candidate_bit_mismatches": [0, 0, 0, 0, 0, 0],
+    "selected_bit_mismatches": 0,
+    "selection_index_mismatches": 0,
+    "pdf_sample_matches": true,
+    "unreplaced_template_tokens": 0,
+    "local_compiler_available": true,
+    "compiler": "g++ 15.2.0 via WSL",
+    "compile_flags": "-std=c++17 -O2 -Wall -Wextra -pedantic",
+    "compile_warnings": 0,
+    "sample_execution_matches": true,
+    "public_execution_lines_match": true,
+    "public_bit_mismatches": 0,
+    "public_runtime_seconds": 4.58,
+    "public_seconds_per_frame": 0.00916
+  }
+}

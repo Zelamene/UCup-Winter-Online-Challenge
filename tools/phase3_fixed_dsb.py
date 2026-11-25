@@ -57,16 +57,19 @@ class CheckTable:
     """Padded sparse access to parity-check neighbors."""
 
     def __init__(self, h: np.ndarray) -> None:
+        n = h.shape[1]
         rows = [np.flatnonzero(h[row]) for row in range(h.shape[0])]
         width = max((row.size for row in rows), default=1)
-        self.indices = np.zeros((len(rows), width), dtype=np.int64)
+        self.indices = np.full((len(rows), width), n, dtype=np.int64)
+        self.gather_indices = np.zeros((len(rows), width), dtype=np.int64)
         self.mask = np.zeros((len(rows), width), dtype=bool)
         for row, columns in enumerate(rows):
             self.indices[row, : columns.size] = columns
+            self.gather_indices[row, : columns.size] = columns
             self.mask[row, : columns.size] = True
 
     def parity_products(self, spins: np.ndarray) -> np.ndarray:
-        gathered = spins[:, self.indices]
+        gathered = spins[:, self.gather_indices]
         neutral = np.where(self.mask[None, :, :], gathered, 1)
         return np.prod(neutral, axis=2)
 
@@ -95,16 +98,9 @@ def decode_dsb(config: DSBConfig, h: np.ndarray, llr: np.ndarray) -> np.ndarray:
         products = checks.parity_products(spins)
 
         # dSB force: grad_i = r_i + (lambda/2) sum_{m contains i} P_m s_i.
-        force = llr.copy()
-        gathered = spins[:, checks.indices]
-        scatter = (
-            0.5
-            * config.lambd
-            * products[:, :, None]
-            * gathered
-            * checks.mask[None, :, :]
-        )
-        force[:, checks.indices] += scatter
+        # Dense incidence multiplication avoids duplicate-index scatter errors.
+        incidence_sum = products @ h.astype(np.float64)
+        force = llr + 0.5 * config.lambd * spins * incidence_sum
         force *= config.gradient_sign
 
         pump = -(config.delta - schedule[step]) * x
@@ -155,17 +151,15 @@ def config_grid() -> list[DSBConfig]:
             xi=xi,
             lambd=lambd,
             delta=delta,
-            dt=dt,
+            dt=0.2,
             steps=MAX_ALLOWED_STEPS,
-            gradient_sign=sign,
+            gradient_sign=1,
         )
-        for sign, tau, xi, lambd, delta, dt in itertools.product(
-            (1, -1),
-            (4.0, 8.0, 16.0),
-            (0.01, 0.03, 0.06),
-            (0.5, 1.0, 2.0),
-            (0.25, 0.5),
-            (0.1, 0.2),
+        for tau, xi, lambd, delta in itertools.product(
+            (8.0, 16.0),
+            (0.1, 0.2, 0.3, 0.4),
+            (5.0, 6.0, 8.0),
+            (1.0, 2.0, 2.5),
         )
     ]
 
