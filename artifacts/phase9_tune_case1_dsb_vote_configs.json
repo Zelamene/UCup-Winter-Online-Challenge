@@ -1,0 +1,37 @@
+[
+  {
+    "tau": 4.0,
+    "xi": 0.5,
+    "lambd": 6.0,
+    "delta": 2.5,
+    "energy_lambda": 6.0
+  },
+  {
+    "tau": 4.0,
+    "xi": 0.5,
+    "lambd": 5.0,
+    "delta": 2.5,
+    "energy_lambda": 5.0
+  },
+  {
+    "tau": 4.0,
+    "xi": 0.4,
+    "lambd": 5.0,
+    "delta": 2.0,
+    "energy_lambda": 5.0
+  },
+  {
+    "tau": 4.0,
+    "xi": 0.4,
+    "lambd": 6.0,
+    "delta": 2.0,
+    "energy_lambda": 6.0
+  },
+  {
+    "tau": 8.0,
+    "xi": 0.5,
+    "lambd": 6.0,
+    "delta": 2.5,
+    "energy_lambda": 6.0
+  }
+]

@@ -1,0 +1,35 @@
+# v9 — refined `R=3/4` cases candidate
+
+Status: accepted. Judge score `1,606,841`.
+
+Base: accepted v8 (`submission_v8.cpp`). v9 changes only the three `R=3/4` cases that were not directly tuned on public data:
+
+| Case | N | Synthetic ratio vs accepted |
+|---|---:|---:|
+| 3 | 648 | `1.201` |
+| 6 | 1296 | `1.178` |
+| 12 | 3888 | `1.119` |
+
+Case 9 stays at the public-tuned v8 configuration. All `R=1/2` and `R=2/3` cases are unchanged.
+
+## Method
+
+For each target case:
+
+- 216-configuration grid over `tau 1.4–4`, `xi 0.4–0.5`, `lambda 5–8`, `delta 2–2.5`
+- three local-search rounds
+- greedy six-trajectory portfolio
+- separate energy-lambda tuning
+
+## Validation
+
+- Public output bit-identical to v8
+- Python/C++ parity on synthetic inputs for all three changed cases: `0` bit mismatches
+- Source size: `78,782` bytes
+- Max guesses: `6`
+- 50 dSB iterations only
+- Clean C++17 compile with `-Wall -Wextra -pedantic`
+
+Judge outcome: cases 3, 6, and 12 rose from `168,188 → 171,480`, `165,603 → 167,094`, and `166,455 → 167,210`. All other cases were unchanged. Total score rose from `1,601,303` to `1,606,841` (`+5,538`).
+
+Manifest diff confirms v9 differs from accepted v8 only on cases 3, 6, and 12.

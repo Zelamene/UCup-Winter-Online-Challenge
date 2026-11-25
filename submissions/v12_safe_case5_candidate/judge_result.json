@@ -1,0 +1,27 @@
+{
+  "version": "v12",
+  "status": "Accepted",
+  "total_score": 1607212,
+  "delta_vs_v9": 371,
+  "per_case": [
+    {"case": 1, "status": "Accepted", "score": 90167, "time_ms": 480, "memory_mib": 3.7},
+    {"case": 2, "status": "Accepted", "score": 144269, "time_ms": 855, "memory_mib": 3.7},
+    {"case": 3, "status": "Accepted", "score": 171480, "time_ms": 759, "memory_mib": 3.6},
+    {"case": 4, "status": "Accepted", "score": 90957, "time_ms": 975, "memory_mib": 6.7},
+    {"case": 5, "status": "Accepted", "score": 143578, "time_ms": 1709, "memory_mib": 6.7},
+    {"case": 6, "status": "Accepted", "score": 167094, "time_ms": 1229, "memory_mib": 6.7},
+    {"case": 7, "status": "Accepted", "score": 89867, "time_ms": 1542, "memory_mib": 10.1},
+    {"case": 8, "status": "Accepted", "score": 142847, "time_ms": 2606, "memory_mib": 10.0},
+    {"case": 9, "status": "Accepted", "score": 167085, "time_ms": 2373, "memory_mib": 10.0},
+    {"case": 10, "status": "Accepted", "score": 89806, "time_ms": 3260, "memory_mib": 19.6},
+    {"case": 11, "status": "Accepted", "score": 142852, "time_ms": 5578, "memory_mib": 19.5},
+    {"case": 12, "status": "Accepted", "score": 167210, "time_ms": 4975, "memory_mib": 19.4}
+  ],
+  "runtime": {
+    "total_ms": 26341,
+    "peak_case_ms": 5578
+  },
+  "memory": {
+    "peak_mib": 19.6
+  }
+}

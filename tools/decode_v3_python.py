@@ -1,0 +1,309 @@
+#!/usr/bin/env python3
+"""Reference Python decoder for the structural QAIA v3 manifest.
+
+Only dSB/bSB check-product dynamics are implemented. There is no message
+passing, reliability propagation, or post-processing stage.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import math
+import sys
+from pathlib import Path
+
+import numpy as np
+
+TOOLS_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(TOOLS_DIR))
+
+from phase0_harness import parse_instance  # noqa: E402
+
+ROOT = TOOLS_DIR.parent
+DEFAULT_MANIFEST = ROOT / "artifacts" / "phase8_case_manifest_v3.json"
+DEFAULT_INPUT = ROOT / "Problem statements" / "publish.in"
+DEFAULT_OUTPUT = ROOT / "artifacts" / "phase8_python_v3_public.out"
+
+MODES = ("dsb", "bsb")
+COMBINES = ("energy", "vote", "soft_vote")
+MAX_TRAJECTORIES = 6
+MANIFEST_STEPS = 50
+SCHEDULE_KEYS = ("tau", "xi", "lambd", "delta", "dt")
+EPS = 1e-12
+
+
+def _finite(value: object, label: str) -> float:
+    try:
+        out = float(value)  # type: ignore[arg-type]
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"{label} must be a finite number, got {value!r}") from exc
+    if not math.isfinite(out):
+        raise ValueError(f"{label} must be a finite number, got {value!r}")
+    return out
+
+
+def _schedule_values(value: object, label: str, steps: int) -> np.ndarray:
+    """Return a positive per-step value array from a scalar or 50-value list."""
+    if isinstance(value, (list, tuple)):
+        if len(value) != steps:
+            raise ValueError(f"{label} must have {steps} values, got {len(value)}")
+        out = np.asarray([_finite(item, f"{label}[{i}]") for i, item in enumerate(value)], dtype=np.float64)
+    else:
+        out = np.full(steps, _finite(value, label), dtype=np.float64)
+    if not np.all(np.isfinite(out)) or np.any(out <= 0.0):
+        raise ValueError(f"{label} must contain only positive finite values")
+    return out
+
+
+def _build_sparse(h: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, int, int]:
+    """Padded check-neighbor lists in ascending column order."""
+    matrix = np.asarray(h)
+    if matrix.ndim != 2:
+        raise ValueError(f"h must be a 2-D array, got shape {matrix.shape}")
+    m, n = (int(value) for value in matrix.shape)
+    rows = [np.flatnonzero(matrix[row]) for row in range(m)]
+    max_degree = max((len(row) for row in rows), default=0)
+    safe = np.zeros((m, max_degree), dtype=np.intp)
+    mask = np.zeros((m, max_degree), dtype=bool)
+    for row_index, cols in enumerate(rows):
+        if cols.size:
+            safe[row_index, : cols.size] = cols
+            mask[row_index, : cols.size] = True
+    flat_cols = safe[mask]
+    counts = mask.sum(axis=1)
+    return safe, mask, flat_cols, counts, m, n
+
+
+def _check_contribution(
+    spins: np.ndarray,
+    sparse: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, int, int],
+) -> tuple[np.ndarray, np.ndarray]:
+    """Return one check product per row and its sum into variable sites."""
+    safe, mask, flat_cols, counts, m, n = sparse
+    if m == 0:
+        return np.zeros(0, dtype=np.float64), np.zeros(n, dtype=np.float64)
+    gathered = spins[safe]
+    neutral = np.where(mask, gathered, 1.0)
+    products = np.prod(neutral, axis=1)
+    weighted_sum = np.zeros(n, dtype=np.float64)
+    if flat_cols.size:
+        np.add.at(weighted_sum, flat_cols, np.repeat(products, counts))
+    return products, weighted_sum
+
+
+def _decode_trajectory_sparse(
+    llr: np.ndarray,
+    sparse: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, int, int],
+    traj: dict,
+    mode: str,
+    dt: float,
+    steps: int,
+) -> tuple[list[int], np.ndarray]:
+    if mode not in MODES:
+        raise ValueError(f"invalid mode {mode!r}; expected one of {MODES}")
+    if steps < 1:
+        raise ValueError(f"steps must be positive, got {steps}")
+
+    schedules = {
+        key: _schedule_values(traj.get(key), f"trajectory {key}", steps)
+        for key in ("tau", "xi", "lambd", "delta")
+    }
+    dt_values = _schedule_values(traj.get("dt", dt), "trajectory dt", steps)
+    tau = float(schedules["tau"][0])
+
+    rates = np.asarray(llr, dtype=np.float64)
+    if rates.ndim != 1:
+        raise ValueError(f"llr must be a 1-D array, got shape {rates.shape}")
+    if rates.size != sparse[5]:
+        raise ValueError(f"llr has {rates.size} entries, expected {sparse[5]}")
+
+    x = np.tanh(rates / tau).astype(np.float64, copy=True)
+    y = np.zeros_like(x)
+    for step in range(steps):
+        if mode == "dsb":
+            spins = np.where(x >= 0.0, 1.0, -1.0)
+        else:
+            soft = np.clip(x, -1.0, 1.0)
+            spins = np.where(
+                np.abs(soft) < EPS,
+                np.where(soft >= 0.0, EPS, -EPS),
+                soft,
+            )
+
+        _products, weighted_sum = _check_contribution(spins, sparse)
+        lambd = float(schedules["lambd"][step])
+        xi = float(schedules["xi"][step])
+        delta = float(schedules["delta"][step])
+        dt_step = float(dt_values[step])
+        force = rates + (0.5 * lambd) * spins * weighted_sum
+        schedule = step / (steps - 1) if steps > 1 else 0.0
+        pump = -(delta - schedule) * x
+        y = y + dt_step * (pump + xi * force)
+        x_new = x + dt_step * y
+        clipped = np.abs(x_new) > 1.0
+        if np.any(clipped):
+            x_new[clipped] = np.where(x_new[clipped] >= 0.0, 1.0, -1.0)
+            y[clipped] = 0.0
+        x = x_new
+
+    return (x < 0.0).astype(np.int64).tolist(), x
+
+
+def decode_trajectory(
+    llr: np.ndarray,
+    h: np.ndarray,
+    traj: dict,
+    mode: str = "dsb",
+    dt: float = 0.2,
+    steps: int = 50,
+) -> tuple[list[int], np.ndarray]:
+    """Run one QAIA trajectory and return (hard bits, final soft spins)."""
+    _schedule_values(dt, "dt", int(steps))
+    sparse = _build_sparse(h)
+    return _decode_trajectory_sparse(
+        np.asarray(llr, dtype=np.float64), sparse, traj, mode, dt, int(steps)
+    )
+
+
+def _validate_case(case: dict) -> tuple[str, str, list[dict], float, int]:
+    if not isinstance(case, dict):
+        raise ValueError(f"case must be a dict, got {type(case).__name__}")
+    mode = case.get("mode")
+    combine = case.get("combine")
+    if mode not in MODES:
+        raise ValueError(f"invalid mode {mode!r}; expected one of {MODES}")
+    if combine not in COMBINES:
+        raise ValueError(f"invalid combine {combine!r}; expected one of {COMBINES}")
+
+    trajectories = case.get("trajectories")
+    if not isinstance(trajectories, (list, tuple)):
+        raise ValueError("trajectories must be a list")
+    if not 1 <= len(trajectories) <= MAX_TRAJECTORIES:
+        raise ValueError(f"expected 1..{MAX_TRAJECTORIES} trajectories, got {len(trajectories)}")
+    if int(case.get("steps", -1)) != MANIFEST_STEPS:
+        raise ValueError(f"steps must be {MANIFEST_STEPS}, got {case.get('steps')!r}")
+
+    dt = case.get("dt", 0.2)
+    _schedule_values(dt, "dt", MANIFEST_STEPS)
+
+    for index, traj in enumerate(trajectories):
+        if not isinstance(traj, dict):
+            raise ValueError(f"trajectory {index} must be a dict")
+        for key in ("tau", "xi", "lambd", "delta"):
+            _schedule_values(traj.get(key), f"trajectory {index} {key}", MANIFEST_STEPS)
+        if "dt" in traj:
+            _schedule_values(traj["dt"], f"trajectory {index} dt", MANIFEST_STEPS)
+        if combine == "energy":
+            if "energy_lambda" not in traj:
+                raise ValueError(f"trajectory {index} needs energy_lambda for energy combine")
+            energy_lambda = _finite(
+                traj["energy_lambda"], f"trajectory {index} energy_lambda"
+            )
+            if energy_lambda < 0.0:
+                raise ValueError(
+                    f"trajectory {index} energy_lambda must be non-negative, got {energy_lambda}"
+                )
+    return mode, combine, list(trajectories), dt, MANIFEST_STEPS
+
+
+def _energy(
+    hard: list[int],
+    rates: np.ndarray,
+    sparse: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, int, int],
+    lambd: float,
+) -> float:
+    spins = np.where(np.asarray(hard, dtype=np.int8) == 0, 1.0, -1.0)
+    products, _weighted_sum = _check_contribution(spins, sparse)
+    channel = 0.0
+    for col in range(rates.size):
+        channel -= float(rates[col]) * float(spins[col])
+    penalty = 0.0
+    for product in products:
+        penalty += 1.0 - float(product)
+    return channel + 0.5 * lambd * penalty
+
+
+def decode_frame(llr: np.ndarray, h: np.ndarray, case: dict) -> list[int]:
+    """Decode one frame using the combine rule declared by ``case``."""
+    mode, combine, trajectories, dt, steps = _validate_case(case)
+    sparse = _build_sparse(h)
+    rates = np.asarray(llr, dtype=np.float64)
+    results = [
+        _decode_trajectory_sparse(rates, sparse, traj, mode, dt, steps)
+        for traj in trajectories
+    ]
+
+    if combine == "energy":
+        energies = [
+            _energy(
+                hard,
+                rates,
+                sparse,
+                _finite(traj["energy_lambda"], f"trajectory {index} energy_lambda"),
+            )
+            for index, (hard, _x) in enumerate(results)
+            for traj in (trajectories[index],)
+        ]
+        return results[int(np.argmin(energies))][0]
+
+    if combine == "vote":
+        hards = np.asarray([hard for hard, _x in results], dtype=np.int64)
+        ones = hards.sum(axis=0)
+        return (2 * ones >= len(results)).astype(np.int64).tolist()
+
+    total = np.zeros(rates.size, dtype=np.float64)
+    for _hard, x_final in results:
+        total += x_final
+    return (total < 0.0).astype(np.int64).tolist()
+
+
+def select_case(
+    manifest: dict,
+    n: int,
+    k: int,
+    snr: float,
+    tolerance: float = 0.25,
+) -> dict:
+    """Return the nearest matching case by SNR, or the fallback entry."""
+    nearest: dict | None = None
+    best_diff = math.inf
+    for case in manifest.get("cases", []):
+        if case.get("n") != n or case.get("k") != k:
+            continue
+        diff = abs(_finite(case.get("snr"), "case snr") - _finite(snr, "snr"))
+        if diff < float(tolerance) and diff < best_diff:
+            nearest = case
+            best_diff = diff
+    return nearest if nearest is not None else manifest["fallback"]
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
+    parser.add_argument("--input", type=Path, default=DEFAULT_INPUT)
+    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--frames", type=int, default=0)
+    args = parser.parse_args()
+
+    manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
+    instance = parse_instance(args.input.read_text(encoding="utf-8"), str(args.input))
+    case = select_case(manifest, instance.n, instance.k, instance.snr)
+    print(f"Selected case: n={case['n']} k={case['k']} snr={case['snr']}")
+    print(
+        f"Mode: {case['mode']}, combine: {case['combine']}, "
+        f"trajectories: {len(case['trajectories'])}"
+    )
+
+    count = instance.b if args.frames <= 0 else min(args.frames, instance.b)
+    lines = []
+    for index in range(count):
+        hard = decode_frame(instance.llr[index], instance.h, case)
+        lines.append(" ".join(str(int(value)) for value in hard))
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"Wrote {args.output} ({count} frames)")
+
+
+if __name__ == "__main__":
+    main()

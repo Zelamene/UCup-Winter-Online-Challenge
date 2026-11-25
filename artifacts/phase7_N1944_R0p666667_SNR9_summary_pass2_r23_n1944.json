@@ -1,0 +1,134 @@
+{
+  "case": {
+    "n": 1944,
+    "rate": 0.6666666666666666,
+    "snr": 9.0
+  },
+  "data": {
+    "manifest": "artifacts\\phase7_case_manifest_v9.json",
+    "train_codes": 0,
+    "train_samples_per_code": 0,
+    "val_codes": 2,
+    "val_samples_per_code": 64,
+    "seed": 911
+  },
+  "best_fixed_config": [
+    1.6,
+    0.55,
+    6.0,
+    2.75
+  ],
+  "local_search_history": [
+    {
+      "round": 0,
+      "config": [
+        1.6,
+        0.55,
+        6.0,
+        2.5
+      ],
+      "ber": 0.014515817901234568
+    },
+    {
+      "round": 1,
+      "config": [
+        1.6,
+        0.55,
+        6.0,
+        2.5
+      ],
+      "ber": 0.014515817901234568
+    }
+  ],
+  "accepted_portfolio_ber": 0.013304157021604939,
+  "optimized_portfolio": {
+    "indices": [
+      0,
+      1,
+      2,
+      11,
+      12,
+      5
+    ],
+    "names": [
+      "per_case_learned",
+      "fixed_1.6_0.55_6_2.75",
+      "fixed_1.4_0.55_5_2.5",
+      "grid5_1.5_0.5_6_2.5",
+      "grid6_1.6_0.5_6_2.5",
+      "fixed_2_0.5_7_2.75"
+    ],
+    "ber": 0.01285204475308642,
+    "syndrome_ones": 793,
+    "history": [
+      {
+        "stage": "accepted",
+        "ber": 0.013304157021604939,
+        "subset": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "stage": "swap",
+        "added": "grid5_1.5_0.5_6_2.5",
+        "ber": 0.013207706404320988,
+        "subset": [
+          0,
+          1,
+          2,
+          11,
+          4,
+          5
+        ]
+      },
+      {
+        "stage": "swap",
+        "added": "grid6_1.6_0.5_6_2.5",
+        "ber": 0.013050974151234568,
+        "subset": [
+          0,
+          1,
+          2,
+          11,
+          12,
+          5
+        ]
+      }
+    ],
+    "energy_lambdas": {
+      "per_case_learned": 7.5,
+      "fixed_1.6_0.55_6_2.75": 7.5,
+      "fixed_1.4_0.55_5_2.5": 8.0,
+      "grid5_1.5_0.5_6_2.5": 6.0,
+      "grid6_1.6_0.5_6_2.5": 6.0,
+      "fixed_2_0.5_7_2.75": 7.5
+    },
+    "energy_tuning": {
+      "rounds": 2,
+      "lambdas": [
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0,
+        7.5,
+        8.0,
+        9.0,
+        10.5,
+        12.0,
+        16.0,
+        24.0
+      ]
+    }
+  },
+  "gate": {
+    "portfolio_beats_accepted_portfolio": true,
+    "guess_count_at_most_six": true
+  }
+}

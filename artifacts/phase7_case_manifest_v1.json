@@ -1,0 +1,121 @@
+{
+  "fallback": {
+    "n": 0,
+    "k": 0,
+    "snr": 0.0,
+    "use_learned": true,
+    "params": "artifacts/probe_unfolded_params.json",
+    "learned_lambda": 2.0,
+    "fixed_candidates": []
+  },
+  "cases": [
+    {
+      "n": 648,
+      "k": 324,
+      "snr": 6.0,
+      "use_learned": true,
+      "params": "artifacts/probe_unfolded_params.json",
+      "learned_lambda": 2.0,
+      "fixed_candidates": []
+    },
+    {
+      "n": 648,
+      "k": 432,
+      "snr": 9.0,
+      "use_learned": true,
+      "params": "artifacts/probe_unfolded_params.json",
+      "learned_lambda": 2.0,
+      "fixed_candidates": []
+    },
+    {
+      "n": 648,
+      "k": 486,
+      "snr": 10.5,
+      "use_learned": true,
+      "params": "artifacts/probe_unfolded_params.json",
+      "learned_lambda": 2.0,
+      "fixed_candidates": []
+    },
+    {
+      "n": 1296,
+      "k": 648,
+      "snr": 6.0,
+      "use_learned": true,
+      "params": "artifacts/probe_unfolded_params.json",
+      "learned_lambda": 2.0,
+      "fixed_candidates": []
+    },
+    {
+      "n": 1296,
+      "k": 864,
+      "snr": 9.0,
+      "use_learned": true,
+      "params": "artifacts/probe_unfolded_params.json",
+      "learned_lambda": 2.0,
+      "fixed_candidates": []
+    },
+    {
+      "n": 1296,
+      "k": 972,
+      "snr": 10.5,
+      "use_learned": true,
+      "params": "artifacts/probe_unfolded_params.json",
+      "learned_lambda": 2.0,
+      "fixed_candidates": []
+    },
+    {
+      "n": 1944,
+      "k": 972,
+      "snr": 6.0,
+      "use_learned": true,
+      "params": "artifacts/probe_unfolded_params.json",
+      "learned_lambda": 2.0,
+      "fixed_candidates": []
+    },
+    {
+      "n": 1944,
+      "k": 1296,
+      "snr": 9.0,
+      "use_learned": true,
+      "params": "artifacts/probe_unfolded_params.json",
+      "learned_lambda": 2.0,
+      "fixed_candidates": []
+    },
+    {
+      "n": 1944,
+      "k": 1458,
+      "snr": 10.5,
+      "use_learned": true,
+      "params": "artifacts/probe_unfolded_params.json",
+      "learned_lambda": 2.0,
+      "fixed_candidates": []
+    },
+    {
+      "n": 3888,
+      "k": 1944,
+      "snr": 6.0,
+      "use_learned": true,
+      "params": "artifacts/probe_unfolded_params.json",
+      "learned_lambda": 2.0,
+      "fixed_candidates": []
+    },
+    {
+      "n": 3888,
+      "k": 2592,
+      "snr": 9.0,
+      "use_learned": true,
+      "params": "artifacts/probe_unfolded_params.json",
+      "learned_lambda": 2.0,
+      "fixed_candidates": []
+    },
+    {
+      "n": 3888,
+      "k": 2916,
+      "snr": 10.5,
+      "use_learned": true,
+      "params": "artifacts/probe_unfolded_params.json",
+      "learned_lambda": 2.0,
+      "fixed_candidates": []
+    }
+  ]
+}

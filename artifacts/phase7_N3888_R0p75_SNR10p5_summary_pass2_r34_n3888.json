@@ -1,0 +1,108 @@
+{
+  "case": {
+    "n": 3888,
+    "rate": 0.75,
+    "snr": 10.5
+  },
+  "data": {
+    "manifest": "artifacts\\phase7_case_manifest_v10.json",
+    "train_codes": 0,
+    "train_samples_per_code": 0,
+    "val_codes": 2,
+    "val_samples_per_code": 64,
+    "seed": 911
+  },
+  "best_fixed_config": [
+    1.6,
+    0.5,
+    5.0,
+    2.25
+  ],
+  "local_search_history": [
+    {
+      "round": 0,
+      "config": [
+        1.6,
+        0.45,
+        5.0,
+        2.0
+      ],
+      "ber": 0.02579250257201646
+    },
+    {
+      "round": 1,
+      "config": [
+        1.6,
+        0.45,
+        5.0,
+        2.0
+      ],
+      "ber": 0.02579250257201646
+    }
+  ],
+  "accepted_portfolio_ber": 0.025219157235939642,
+  "optimized_portfolio": {
+    "indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "names": [
+      "per_case_learned",
+      "fixed_1.6_0.5_5_2.25",
+      "fixed_1.4_0.5_6_2.25",
+      "fixed_4_0.5_6_2.5",
+      "fixed_1.4_0.45_5_2",
+      "fixed_2_0.5_6_2.5"
+    ],
+    "ber": 0.024913730281207132,
+    "syndrome_ones": 3568,
+    "history": [
+      {
+        "stage": "accepted",
+        "ber": 0.025219157235939642,
+        "subset": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      }
+    ],
+    "energy_lambdas": {
+      "per_case_learned": 8.0,
+      "fixed_1.6_0.5_5_2.25": 8.0,
+      "fixed_1.4_0.5_6_2.25": 9.0,
+      "fixed_4_0.5_6_2.5": 9.0,
+      "fixed_1.4_0.45_5_2": 8.0,
+      "fixed_2_0.5_6_2.5": 9.0
+    },
+    "energy_tuning": {
+      "rounds": 2,
+      "lambdas": [
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0,
+        7.5,
+        8.0,
+        9.0,
+        10.5,
+        12.0,
+        16.0,
+        24.0
+      ]
+    }
+  },
+  "gate": {
+    "portfolio_beats_accepted_portfolio": true,
+    "guess_count_at_most_six": true
+  }
+}

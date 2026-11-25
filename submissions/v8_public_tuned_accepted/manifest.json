@@ -1,0 +1,395 @@
+{
+  "fallback": {
+    "n": 0,
+    "k": 0,
+    "snr": 0.0,
+    "use_learned": true,
+    "params": "artifacts\\phase4_unfolded_dsb_params.json",
+    "learned_lambda": 6.0,
+    "fixed_candidates": [
+      [
+        4.0,
+        0.5,
+        6.0,
+        2.5
+      ],
+      [
+        4.0,
+        0.5,
+        5.0,
+        2.5
+      ],
+      [
+        4.0,
+        0.4,
+        5.0,
+        2.0
+      ],
+      [
+        4.0,
+        0.4,
+        6.0,
+        2.0
+      ],
+      [
+        8.0,
+        0.5,
+        6.0,
+        2.5
+      ]
+    ]
+  },
+  "cases": [
+    {
+      "n": 648,
+      "k": 324,
+      "snr": 6.0,
+      "use_learned": true,
+      "params": "artifacts\\probe_unfolded_params.json",
+      "learned_lambda": 0.0,
+      "fixed_candidates": [],
+      "summary": "artifacts/submission_probe.cpp",
+      "portfolio_ber": null
+    },
+    {
+      "n": 648,
+      "k": 432,
+      "snr": 9.0,
+      "use_learned": true,
+      "params": "artifacts\\phase7_N648_R2_3_SNR9_params_energy_refine_r23_n648.json",
+      "learned_lambda": 9.0,
+      "fixed_candidates": [
+        [
+          1.6,
+          0.5,
+          6.0,
+          2.25,
+          9.0
+        ],
+        [
+          1.8,
+          0.5,
+          6.0,
+          2.5,
+          8.0
+        ],
+        [
+          1.6,
+          0.5,
+          7.0,
+          2.5,
+          10.5
+        ],
+        [
+          1.4,
+          0.5,
+          6.0,
+          2.25,
+          9.0
+        ],
+        [
+          1.4,
+          0.5,
+          6.0,
+          2.5,
+          9.0
+        ]
+      ],
+      "summary": "artifacts\\phase7_N648_R2_3_SNR9_summary_energy_refine_r23_n648.json",
+      "portfolio_ber": 0.010543258101851851
+    },
+    {
+      "n": 648,
+      "k": 486,
+      "snr": 10.5,
+      "use_learned": true,
+      "params": "artifacts\\phase4_unfolded_dsb_params.json",
+      "learned_lambda": 6.0,
+      "fixed_candidates": [
+        [
+          2.0,
+          0.5,
+          6.0,
+          2.5
+        ],
+        [
+          4.0,
+          0.4,
+          6.0,
+          2.5
+        ],
+        [
+          4.0,
+          0.4,
+          6.0,
+          2.0
+        ]
+      ],
+      "summary": "artifacts\\phase7_N648_R3_4_SNR10p5_summary_sweep.json",
+      "portfolio_ber": 0.022676611796982167
+    },
+    {
+      "n": 1296,
+      "k": 648,
+      "snr": 6.0,
+      "use_learned": true,
+      "params": "artifacts\\probe_unfolded_params.json",
+      "learned_lambda": 0.0,
+      "fixed_candidates": [],
+      "summary": "artifacts/submission_probe.cpp",
+      "portfolio_ber": null
+    },
+    {
+      "n": 1296,
+      "k": 864,
+      "snr": 9.0,
+      "use_learned": true,
+      "params": "artifacts\\phase7_N1296_R2_3_SNR9_params_energy_refine_r23_n1296.json",
+      "learned_lambda": 6.0,
+      "fixed_candidates": [
+        [
+          2.0,
+          0.5,
+          7.0,
+          2.75,
+          6.0
+        ],
+        [
+          2.0,
+          0.55,
+          7.0,
+          2.75,
+          7.0
+        ],
+        [
+          4.0,
+          0.5,
+          6.0,
+          2.5,
+          6.0
+        ],
+        [
+          1.4,
+          0.5,
+          6.0,
+          2.5,
+          8.0
+        ],
+        [
+          1.6,
+          0.5,
+          6.0,
+          2.5,
+          6.0
+        ]
+      ],
+      "summary": "artifacts\\phase7_N1296_R2_3_SNR9_summary_energy_refine_r23_n1296.json",
+      "portfolio_ber": 0.012098524305555556
+    },
+    {
+      "n": 1296,
+      "k": 972,
+      "snr": 10.5,
+      "use_learned": true,
+      "params": "artifacts\\phase7_N1296_R3_4_SNR10p5_params_sweep.json",
+      "learned_lambda": 6.0,
+      "fixed_candidates": [
+        [
+          2.0,
+          0.5,
+          6.0,
+          2.5
+        ],
+        [
+          2.0,
+          0.5,
+          8.0,
+          2.5
+        ]
+      ],
+      "summary": "artifacts\\phase7_N1296_R3_4_SNR10p5_summary_sweep.json",
+      "portfolio_ber": 0.02606310013717421
+    },
+    {
+      "n": 1944,
+      "k": 972,
+      "snr": 6.0,
+      "use_learned": true,
+      "params": "artifacts\\probe_unfolded_params.json",
+      "learned_lambda": 0.0,
+      "fixed_candidates": [],
+      "summary": "artifacts/submission_probe.cpp",
+      "portfolio_ber": null
+    },
+    {
+      "n": 1944,
+      "k": 1296,
+      "snr": 9.0,
+      "use_learned": true,
+      "params": "artifacts\\phase7_N1944_R2_3_SNR9_params_energy_refine_r23_n1944.json",
+      "learned_lambda": 8.0,
+      "fixed_candidates": [
+        [
+          1.6,
+          0.55,
+          6.0,
+          2.75,
+          9.0
+        ],
+        [
+          1.4,
+          0.55,
+          5.0,
+          2.5,
+          7.5
+        ],
+        [
+          1.8,
+          0.5,
+          6.0,
+          2.25,
+          9.0
+        ],
+        [
+          1.6,
+          0.5,
+          6.0,
+          2.5,
+          9.0
+        ],
+        [
+          2.0,
+          0.5,
+          7.0,
+          2.75,
+          10.5
+        ]
+      ],
+      "summary": "artifacts\\phase7_N1944_R2_3_SNR9_summary_energy_refine_r23_n1944.json",
+      "portfolio_ber": 0.012219087577160493
+    },
+    {
+      "n": 1944,
+      "k": 1458,
+      "snr": 10.5,
+      "use_learned": true,
+      "params": "artifacts\\phase7_N1944_R3_4_SNR10p5_params_public_full.json",
+      "learned_lambda": 6.0,
+      "fixed_candidates": [
+        [
+          2.0,
+          0.5,
+          6.0,
+          2.5,
+          6.0
+        ],
+        [
+          4.0,
+          0.5,
+          6.0,
+          2.5,
+          6.0
+        ],
+        [
+          2.0,
+          0.4,
+          6.0,
+          2.5,
+          5.0
+        ],
+        [
+          1.4,
+          0.5,
+          5.0,
+          2.25,
+          5.0
+        ],
+        [
+          2.0,
+          0.5,
+          5.0,
+          2.5,
+          5.0
+        ]
+      ],
+      "summary": "artifacts\\phase7_N1944_R3_4_SNR10p5_summary_public_full.json",
+      "portfolio_ber": 0.024784636488340193
+    },
+    {
+      "n": 3888,
+      "k": 1944,
+      "snr": 6.0,
+      "use_learned": true,
+      "params": "artifacts\\probe_unfolded_params.json",
+      "learned_lambda": 0.0,
+      "fixed_candidates": [],
+      "summary": "artifacts/submission_probe.cpp",
+      "portfolio_ber": null
+    },
+    {
+      "n": 3888,
+      "k": 2592,
+      "snr": 9.0,
+      "use_learned": true,
+      "params": "artifacts\\phase7_N3888_R2_3_SNR9_params_energy_refine.json",
+      "learned_lambda": 8.0,
+      "fixed_candidates": [
+        [
+          1.4,
+          0.55,
+          6.0,
+          2.5,
+          6.0
+        ],
+        [
+          1.8,
+          0.5,
+          6.0,
+          2.5,
+          5.0
+        ],
+        [
+          1.4,
+          0.55,
+          5.0,
+          2.5,
+          5.0
+        ],
+        [
+          1.6,
+          0.5,
+          6.0,
+          2.5,
+          5.0
+        ],
+        [
+          1.4,
+          0.55,
+          6.0,
+          2.75,
+          5.0
+        ]
+      ],
+      "summary": "artifacts\\phase7_N3888_R2_3_SNR9_summary_energy_refine.json",
+      "portfolio_ber": 0.013900945216049383
+    },
+    {
+      "n": 3888,
+      "k": 2916,
+      "snr": 10.5,
+      "use_learned": true,
+      "params": "artifacts\\phase7_N3888_R3_4_SNR10p5_params_sweep.json",
+      "learned_lambda": 6.0,
+      "fixed_candidates": [
+        [
+          2.0,
+          0.5,
+          6.0,
+          2.5
+        ]
+      ],
+      "summary": "artifacts\\phase7_N3888_R3_4_SNR10p5_summary_sweep.json",
+      "portfolio_ber": 0.025323645404663923
+    }
+  ]
+}
