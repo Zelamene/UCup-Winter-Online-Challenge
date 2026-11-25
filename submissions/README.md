@@ -11,6 +11,7 @@ Each version is self-contained in its own folder.
 | v6 | `v6_case11_refined` | `1,597,233` | v4 with refined `N=3888, R=2/3` case only |
 | v7 | `v7_r23_refined_accepted` | `1,600,231` | v6 with all three remaining `R=2/3` cases refined |
 | v8 | `v8_public_tuned_candidate` | pending | v7 with case 9 tuned directly on public input |
+| v9 | `v9_r34_refined_candidate` | pending | v8 with the other three `R=3/4` cases refined |
 
 ## Rebuild
 
