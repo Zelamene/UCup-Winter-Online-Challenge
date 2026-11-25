@@ -1,0 +1,28 @@
+{
+  "summary": "Ratios are accepted BER divided by tuned BER. Values above 1 favor the tuned portfolio.",
+  "included": {
+    "case_6_N1296_R3_4": {
+      "tuning_seed_911": 1.0211,
+      "seed_1234": 1.0218,
+      "seed_2024": 1.0240
+    }
+  },
+  "excluded": {
+    "case_3_N648_R3_4": {
+      "tuning_seed_911": 1.0694,
+      "seed_1234": 1.0036,
+      "seed_2024": 0.9958
+    },
+    "case_9_N1944_R3_4": {
+      "tuning_seed_911": 1.0270,
+      "seed_1234": 1.0049,
+      "seed_2024": 1.0003
+    },
+    "case_12_N3888_R3_4": {
+      "tuning_seed_911": 1.0123,
+      "seed_1234": 1.0028,
+      "seed_2024": 1.0108,
+      "seed_3033": 1.0017
+    }
+  }
+}

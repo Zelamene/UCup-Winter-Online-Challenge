@@ -13,6 +13,7 @@ Each version is self-contained in its own folder.
 | v8 | `v8_public_tuned_accepted` | `1,601,303` | v7 with case 9 tuned directly on public input |
 | v9 | `v9_r34_refined_accepted` | `1,606,841` | v8 with the other three `R=3/4` cases refined |
 | v10 | `v10_pass2_r23_candidate` | pending | v9 with second-pass refinement on cases 5 and 11 |
+| v11 | `v11_pass2_r34_candidate` | pending | v10 with second-pass refinement on case 6 |
 
 ## Rebuild
 
