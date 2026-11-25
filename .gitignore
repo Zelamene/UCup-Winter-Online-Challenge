@@ -4,3 +4,5 @@ __pycache__/
 artifacts/*.out
 artifacts/synthetic_*.in
 artifacts/sample.in
+# portable C++ toolchain and throwaway test inputs/binaries
+artifacts/build/
