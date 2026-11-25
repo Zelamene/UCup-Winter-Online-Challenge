@@ -1,0 +1,127 @@
+{
+  "source_bytes": 56858,
+  "case_count": 12,
+  "max_trajectory_count": 6,
+  "cases": [
+    {
+      "n": 0,
+      "k": 0,
+      "snr": 0.0,
+      "mode": "dsb",
+      "combine": "energy",
+      "trajectory_count": 6
+    },
+    {
+      "n": 648,
+      "k": 324,
+      "snr": 6.0,
+      "mode": "bsb",
+      "combine": "energy",
+      "trajectory_count": 1
+    },
+    {
+      "n": 648,
+      "k": 432,
+      "snr": 9.0,
+      "mode": "dsb",
+      "combine": "energy",
+      "trajectory_count": 6
+    },
+    {
+      "n": 648,
+      "k": 486,
+      "snr": 10.5,
+      "mode": "dsb",
+      "combine": "energy",
+      "trajectory_count": 6
+    },
+    {
+      "n": 1296,
+      "k": 648,
+      "snr": 6.0,
+      "mode": "bsb",
+      "combine": "energy",
+      "trajectory_count": 1
+    },
+    {
+      "n": 1296,
+      "k": 864,
+      "snr": 9.0,
+      "mode": "dsb",
+      "combine": "energy",
+      "trajectory_count": 6
+    },
+    {
+      "n": 1296,
+      "k": 972,
+      "snr": 10.5,
+      "mode": "dsb",
+      "combine": "energy",
+      "trajectory_count": 4
+    },
+    {
+      "n": 1944,
+      "k": 972,
+      "snr": 6.0,
+      "mode": "bsb",
+      "combine": "energy",
+      "trajectory_count": 1
+    },
+    {
+      "n": 1944,
+      "k": 1296,
+      "snr": 9.0,
+      "mode": "dsb",
+      "combine": "energy",
+      "trajectory_count": 6
+    },
+    {
+      "n": 1944,
+      "k": 1458,
+      "snr": 10.5,
+      "mode": "dsb",
+      "combine": "energy",
+      "trajectory_count": 6
+    },
+    {
+      "n": 3888,
+      "k": 1944,
+      "snr": 6.0,
+      "mode": "bsb",
+      "combine": "energy",
+      "trajectory_count": 1
+    },
+    {
+      "n": 3888,
+      "k": 2592,
+      "snr": 9.0,
+      "mode": "dsb",
+      "combine": "energy",
+      "trajectory_count": 6
+    },
+    {
+      "n": 3888,
+      "k": 2916,
+      "snr": 10.5,
+      "mode": "dsb",
+      "combine": "energy",
+      "trajectory_count": 6
+    }
+  ],
+  "public_output": {
+    "lines": 500,
+    "all_binary": true
+  },
+  "forbidden_tokens": [],
+  "gate": {
+    "source_under_512k": true,
+    "at_most_twelve_cases": true,
+    "at_most_six_trajectories": true,
+    "fifty_steps": true,
+    "valid_modes": true,
+    "valid_combines": true,
+    "no_forbidden_tokens": true
+  },
+  "all_passed": true,
+  "errors": []
+}
