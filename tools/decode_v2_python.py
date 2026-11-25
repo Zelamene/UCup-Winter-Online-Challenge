@@ -77,7 +77,7 @@ def decode_frame(
             gradient_sign=1,
         )
         candidates.append(decode_fixed_sparse(config, h, llr[None, :])[0])
-        lambdas.append(lambd)
+        lambdas.append(float(values[4]) if len(values) >= 5 else lambd)
 
     safe, mask = sparse_access(checks)
     energies = []

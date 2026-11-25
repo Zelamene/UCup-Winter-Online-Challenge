@@ -92,6 +92,7 @@ def main() -> None:
             })
             continue
         names = data["optimized_portfolio"]["names"]
+        energy_lambdas = data["optimized_portfolio"].get("energy_lambdas", {})
         best_fixed = data["best_fixed_config"]
         learned_lambda = float(best_fixed[2])
         use_global = "global_learned" in names
@@ -103,15 +104,20 @@ def main() -> None:
         params_path = args.outdir / params_name
         if not params_path.exists() or use_global or not use_learned:
             params_rel = str(args.global_params.relative_to(ROOT))
-            learned_lambda = float(global_config["learned_energy_lambda"])
         else:
             params_rel = str(params_path.relative_to(ROOT))
+        if use_global:
+            learned_lambda = float(global_config["learned_energy_lambda"])
+        learned_name = "global_learned" if use_global else "per_case_learned"
+        if use_learned and learned_name in energy_lambdas:
+            learned_lambda = float(energy_lambdas[learned_name])
 
         fixed = []
         for name in names:
             config = parse_config(name)
             if config is not None:
-                fixed.append(config)
+                energy_lambda = energy_lambdas.get(name, config[2])
+                fixed.append(config + [float(energy_lambda)])
         if not fixed:
             fixed = [list(map(float, item)) for item in global_config["fixed_candidates"]]
         # Respect the six-initial-guess limit: six fixed candidates when the

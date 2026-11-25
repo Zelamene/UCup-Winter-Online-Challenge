@@ -30,6 +30,7 @@ struct FixedConfig {
     double xi;
     double lambd;
     double delta;
+    double energy_lambda;
 };
 
 struct LearnedParams {
@@ -280,7 +281,7 @@ int main() {
         }
         for (int i = 0; i < active->fixed_count; ++i) {
             candidates.push_back(decode_fixed(llr[sample], checks, active->fixed[i]));
-            lambdas.push_back(active->fixed[i].lambd);
+            lambdas.push_back(active->fixed[i].energy_lambda);
         }
 
         std::vector<int> best = candidates[0];
@@ -308,7 +309,15 @@ def fmt_array(values: list[float]) -> str:
 
 
 def fmt_fixed(configs: list[list[float]]) -> str:
-    return ", ".join("{" + fmt_array(list(config)) + "}" for config in configs)
+    rows = []
+    for config in configs:
+        row = [float(value) for value in config]
+        if len(row) == 4:
+            row.append(row[2])
+        if len(row) != 5:
+            raise ValueError(f"fixed config must have 4 or 5 values, got {len(row)}")
+        rows.append("{" + fmt_array(row) + "}")
+    return ", ".join(rows)
 
 
 def make_model(prefix: str, payload: dict) -> str:
