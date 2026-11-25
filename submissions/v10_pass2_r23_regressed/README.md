@@ -1,6 +1,6 @@
 # v10 — second-pass `R=2/3` refinement candidate
 
-Status: candidate for judge submission; not yet accepted.
+Status: rejected. Judge score `1,605,473`, down `1,368` from accepted v9.
 
 Base: accepted v9 (`1,606,841`). This candidate changes only two cases:
 
@@ -30,5 +30,7 @@ Cross-seed checks used independent synthetic cases at seeds `1234` and `2024`.
 - 50 dSB iterations only
 - Clean C++17 compile with `-Wall -Wextra -pedantic`
 - Python/C++ parity on synthetic inputs for both changed cases: `0` bit mismatches
+
+Judge outcome: case 5 improved `143,207 → 143,578` (`+371`), but case 11 regressed `142,852 → 141,113` (`-1,739`). Net change: `-1,368`. The cross-seed-positive `N=3888` change did not transfer; this is now the clearest example of synthetic energy-lambda tuning failing to predict judge behavior.
 
 Manifest diff confirms v10 differs from accepted v9 only on cases 5 and 11.

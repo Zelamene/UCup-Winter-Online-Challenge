@@ -12,8 +12,8 @@ Each version is self-contained in its own folder.
 | v7 | `v7_r23_refined_accepted` | `1,600,231` | v6 with all three remaining `R=2/3` cases refined |
 | v8 | `v8_public_tuned_accepted` | `1,601,303` | v7 with case 9 tuned directly on public input |
 | v9 | `v9_r34_refined_accepted` | `1,606,841` | v8 with the other three `R=3/4` cases refined |
-| v10 | `v10_pass2_r23_candidate` | pending | v9 with second-pass refinement on cases 5 and 11 |
-| v11 | `v11_pass2_r34_candidate` | pending | v10 with second-pass refinement on case 6 |
+| v10 | `v10_pass2_r23_regressed` | `1,605,473` | rejected: case 11 regressed despite positive synthetic cross-seed checks |
+| v11 | `v11_rebased_candidate` | pending | v9 rebase with case 5 salvage and case 6 refinement |
 
 ## Rebuild
 

@@ -1,6 +1,12 @@
 {
-  "summary": "Ratios are accepted BER divided by tuned BER. Values above 1 favor the tuned portfolio.",
+  "summary": "Ratios are accepted BER divided by tuned BER. Values above 1 favor the tuned portfolio. Judge evidence overrides synthetic evidence.",
   "included": {
+    "case_5_N1296_R2_3": {
+      "tuning_seed_911": 1.0849,
+      "seed_1234": 1.0380,
+      "seed_2024": 1.0316,
+      "judge_delta_in_v10": 371
+    },
     "case_6_N1296_R3_4": {
       "tuning_seed_911": 1.0211,
       "seed_1234": 1.0218,
@@ -8,6 +14,13 @@
     }
   },
   "excluded": {
+    "case_11_N3888_R2_3": {
+      "tuning_seed_911": 1.0620,
+      "seed_1234": 1.0248,
+      "seed_2024": 1.0274,
+      "judge_delta_in_v10": -1739,
+      "reason": "judge regression despite positive synthetic checks"
+    },
     "case_3_N648_R3_4": {
       "tuning_seed_911": 1.0694,
       "seed_1234": 1.0036,
