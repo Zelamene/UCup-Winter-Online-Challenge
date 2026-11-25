@@ -82,6 +82,12 @@ static std::vector<int> run_trajectory(
     std::vector<double> force(n);
     std::vector<double> x(n);
     std::vector<double> y(n);
+    int max_deg = 0;
+    for (int row = 0; row < m; ++row) {
+        max_deg = std::max(max_deg, starts[row + 1] - starts[row]);
+    }
+    std::vector<double> pref(max_deg + 1, 1.0);
+    std::vector<double> suff(max_deg + 1, 1.0);
 
     const double tau = cfg.tau_values ? cfg.tau_values[0] : cfg.tau;
     for (int col = 0; col < n; ++col) {
@@ -107,17 +113,24 @@ static std::vector<int> run_trajectory(
         }
         std::fill(weighted.begin(), weighted.end(), 0.0);
         for (int row = 0; row < m; ++row) {
-            double product = 1.0;
-            for (int pos = starts[row]; pos < starts[row + 1]; ++pos) {
-                product *= spins[cols[pos]];
+            const int start = starts[row];
+            const int deg = starts[row + 1] - start;
+            if (deg <= 0) continue;
+            pref[0] = 1.0;
+            for (int i = 0; i < deg; ++i) {
+                pref[i + 1] = pref[i] * spins[cols[start + i]];
             }
-            for (int pos = starts[row]; pos < starts[row + 1]; ++pos) {
-                weighted[cols[pos]] += product;
+            suff[deg] = 1.0;
+            for (int i = deg - 1; i >= 0; --i) {
+                suff[i] = suff[i + 1] * spins[cols[start + i]];
+            }
+            for (int i = 0; i < deg; ++i) {
+                weighted[cols[start + i]] += pref[i] * suff[i + 1];
             }
         }
         const double schedule = static_cast<double>(step) / (STEPS - 1);
         for (int col = 0; col < n; ++col) {
-            force[col] = llr[col] + (0.5 * lambd) * spins[col] * weighted[col];
+            force[col] = llr[col] + (0.5 * lambd) * weighted[col];
             const double pump = -(delta - schedule) * x[col];
             const double y_new = y[col] + dt * (pump + xi * force[col]);
             const double x_new = x[col] + dt * y_new;

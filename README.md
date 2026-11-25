@@ -125,7 +125,7 @@ Key findings from this run:
 
 ## Current knowledge base and tools
 
-All work lives on branch `optimize-phase8-case11`. Version folders are under `submissions/`, each with its own source, manifest, summaries, params, and judge result where available.
+All work now lives on `main`: the `optimize-phase8-case11` work was merged at `541dfab`, and the Phase 9 tooling follows in `9f6c6a5`, `b386ee8`, and `3c2d1c0`. Version folders are under `submissions/`, each with its own source, manifest, summaries, params, and judge result where available.
 
 Key tools:
 
@@ -151,6 +151,11 @@ New Phase 9 tooling:
 - `tools/convert_manifest_v2_to_v3.py` — converts accepted v2 trajectories into approximate v3 manifests (learned reliability modifiers are not preserved).
 - `tools/tune_v3_case.py` — paired gradient-free tuning on bench cases with a held-out split.
 - `tools/evaluate_v3_candidate.py` — full 12-case candidate-vs-baseline gate on shared bench frames.
+- `tools/bsb_vectorized.py` — batched bSB simulation over all frames at once, used by the tuners.
+- `tools/tune_bsb_stage_a.py` — Stage A wide-grid search for one bSB trajectory.
+- `tools/tune_bsb_stage_b.py` — Stage B piecewise-linear schedule search with multi-seed validation.
+- `tools/build_v13_manifest.py` — applies tuned bSB trajectories to the `R=1/2` cases of a v3 manifest.
+- `tools/summarize_stage_a.py` — tabulates Stage A results.
 
 Validation gate for every candidate:
 
@@ -171,7 +176,22 @@ Current status:
 2. **Phase 1 — real bench:** implemented. `H=[A|I]` has row weight `7` and info-column weights `6/3/2`; Gray-coded 16-QAM LLRs match the public raw BER and even/odd bit-position pattern. Calibration wrote `artifacts/phase9_public_calibration.json`; calibrated noise scale is about `1.001`.
 3. **Phase 2 — historical calibration:** a 100-frame 12-case run matched `106/108` known judge delta signs. A 500-frame rerun reproduced v10 case 5 (`+372` vs judge `+371`) and v10 case 11 (`-1,759` vs judge `-1,739`) almost exactly. It did not reproduce v11 case 6 (`+1,250` bench vs `-637` judge), so the bench screens large effects but is not an oracle for marginal gains.
 4. **Phase 3 — structural decoder:** v3 Python/C++ tools implement dSB, bSB, and six-trajectory energy/vote/soft-vote combining, including per-step schedule arrays for `tau/xi/lambd/delta/dt`. Generated C++ was compiled with `g++ -std=c++17 -O2 -Wall -Wextra -pedantic` and matched Python bit-for-bit on scalar and scheduled trajectories.
-5. **Phase 4 — tuning and dispatch:** `tools/tune_v3_case.py` provides paired train/validation tuning. Case-1 structural screen against the v9 approximate baseline `92,295`: bSB/vote `85,936`, bSB/energy `85,869`, dSB/vote `91,461`, dSB/soft-vote `91,693`. None cleared the `+1,000` held-out gate, so replacing dSB check products or energy selection with voting is rejected for now. Remaining structural work should target better energy selection or trajectory diversity.
+5. **Phase 4 — tuning and dispatch (superseded by item 6):** `tools/tune_v3_case.py` provides paired train/validation tuning. The original case-1 structural screen reported bSB/vote `85,936` and bSB/energy `85,869` against a `92,295` baseline and rejected bSB. That screen was measuring a defective gradient, so its verdict is withdrawn rather than confirmed.
+6. **bSB gradient defect and fix.** `_check_contribution` multiplied every check product by the target spin, so the soft-spin force became `x_i^2 * prod(j!=i)` instead of Eq. (1)'s `prod(j!=i)`; that shrinks the force on exactly the uncertain bits, which is why bSB lost to voting. `9f6c6a5` computes excluded products with prefix/suffix buffers in both the Python decoder and the C++ exporter. dSB cannot change by construction (the two forms are equal for ±1 spins) and was verified bit-identical to the v12 binary on all eight dSB cases and on the 500-frame public input.
+7. **Stage A — wide grid, four `R=1/2` cases.** One bSB trajectory per case, paired against v12 on 500 held-out frames (seed 2024). All four clear the `+3,000` gate: `N=648 +20,405`, `N=1296 +19,990`, `N=1944 +20,571`, `N=3888 +21,148`. Caveat: one seed, and `delta` landed on `5.0` for three of the four cases, which is what Stage B exists to test.
+8. **Stage B — schedules, all four `R=1/2` cases.** `tools/tune_bsb_stage_b.py` replaces `xi/lambd/delta/dt` with piecewise-linear schedules on five knots (steps `0, 12, 25, 37, 49`; 20 parameters) and runs a log-space coordinate pattern search on train seed `911`. Every number below is paired frame-for-frame against the v12 baseline on the same frames; seed `2024` is the Stage A validation seed, seed `31337` has never been used for any selection.
+
+| `N` | gain, seed 2024 | gain, seed 31337 | schedule advantage over flat, 2024 / 31337 |
+|---|---:|---:|---:|
+| 648 | `+21,653` | `+23,139` | `+1,248` / `+1,574` |
+| 1296 | `+21,164` | `+23,845` | `+1,175` / `+1,153` |
+| 1944 | `+21,080` | `+21,769` | `+814` / `+1,162` |
+| 3888 | `+22,683` | `+22,826` | `+1,519` / `+1,798` |
+
+Schedules beat the flat Stage A configuration on every case and every seed (`+814` to `+1,798`), so the effect is neither seed selection nor one lucky case. `delta` left `5.0` in every case (`4.44..5.66`), so Stage A's repeated boundary value was an artifact of searching only constants. `dt` also rose above the Stage A grid cap of `0.3` at `N=1296` (`0.345`) and `N=3888` (`0.321`), which suggests the flat grid was boundary-limited there too. The scheduled trajectory exports and compiles clean, matches the Python decoder bit-for-bit at `N=648`, and leaves the public output unchanged.
+9. **v13 candidate.** `artifacts/phase9_case_manifest_v13.json` applies the four Stage A trajectories to `R=1/2` and inherits every other case from the v3 conversion of the accepted v12 manifest (`artifacts/phase9_v3_from_v12_safe.json`). The first draft inherited from the v9 approximation instead, which silently reverted v12's case-5 salvage; it showed up as an `N=1296, R=2/3` output difference against the v12 binary and is fixed. `submissions/v13_bsb_r12_candidate/submission.cpp` is `41,919` bytes, compiles clean under the strict flags, passes `validate_submission_v3.py`, and is bit-identical to v12 on the public input and on all eight dSB cases. The Stage B schedules live in `artifacts/phase9_case_manifest_v13b.json` and are not part of the v13 submission yet.
+
+10. **Compiled-binary validation (v13c).** `tools/validate_binary_gains.py` rebuilds the exact Stage B validation frames (`real_bench.build_case`, seed 2024 and 31337, 500 frames, `noise_scale 1.001120`), writes them in judge format, and scores both compiled decoders on them, so the gain is measured between two `g++ -O2` binaries rather than taken from the Python simulator. All eight case/seed pairs reproduce the Python bit-error counts exactly (v13c 20,619/12,524 at `N=648` seed 2024 and so on; max gain delta `0.000`), with a minimum gain of `+21,080`. Runtime is far below the limit and well under v12 at the same size: `N=3888` 500 frames takes `19.7 s` against v12's `56.6 s`, `N=1944` takes `8.4 s` against `27.1 s`. Artifact: `artifacts/binary_validation.json`.
 
 Keep v12 as the best accepted source. Do not reuse v11 case 6, and do not treat v10/v11 synthetic evidence as proof of expected judge gains.
 
