@@ -17,14 +17,13 @@ Objective: increase the judge score beyond the current accepted best while keepi
 
 | Item | Value |
 |---|---:|
-| Best accepted | v9, `1,606,841` |
-| Last submitted | v11, `1,606,575` (`-266` vs v9) |
-| Active decision | stop after documentation; do **not** proceed to v12 |
+| Best accepted | v12, `1,607,212` |
+| Last submitted | v12, `1,607,212` (`+371` vs v9) |
+| Active decision | use v12 as the base for all future candidates |
 | Public input dispatch | `N=1944, R=3/4, SNR≈10.5` |
-| Public BER, v8–v11 | `0.024784636` |
-| v9 per-case scores | `[90167,144269,171480,90957,143207,167094,89867,142847,167085,89806,142852,167210]` |
-| v11 per-case scores | `[90167,144269,171480,90957,143578,166457,89867,142847,167085,89806,142852,167210]` |
-| v11 runtime | `27,613ms` total, `5,784ms` peak — well under the limit |
+| Public BER, v8–v12 | `0.024784636` |
+| v12 per-case scores | `[90167,144269,171480,90957,143578,167094,89867,142847,167085,89806,142852,167210]` |
+| v12 runtime | `26,341ms` total, `5,578ms` peak — well under the limit |
 
 The best accepted architecture remains:
 
@@ -51,6 +50,7 @@ Judge status `Accepted` means the submission was valid. It does not mean the sco
 | v9 | `1,606,841` | `+5,538` | refined cases 3, 6, 12 (`R=3/4`) |
 | v10 | `1,605,473` | `-1,368` vs v9 | accepted by judge but below best; case 11 regressed |
 | v11 | `1,606,575` | `-266` vs v9 | accepted by judge but no improvement; case 6 regressed |
+| v12 | `1,607,212` | `+371` vs v9 | accepted new best: v9 + case-5-only salvage |
 
 Rate-level totals show where all durable progress came from:
 
@@ -64,8 +64,9 @@ Rate-level totals show where all durable progress came from:
 | v9 | `360,797` | `573,175` | `672,869` | `1,606,841` |
 | v10 | `360,797` | `571,807` | `672,869` | `1,605,473` |
 | v11 | `360,797` | `573,546` | `672,232` | `1,606,575` |
+| v12 | `360,797` | `573,546` | `672,869` | `1,607,212` |
 
-`R=1/2` has never improved over v1. Every durable gain came from high-rate per-case tuning. v11 recovered the v10 case-11 loss, kept the v10 case-5 gain, and lost the same amount again through case 6.
+`R=1/2` has never improved over v1. Every durable gain came from high-rate per-case tuning. v12 recovered the v10 case-11 loss, discarded the v11 case-6 regression, and banked the repeatable case-5 gain for a new best score.
 
 ## Strategies that worked
 
@@ -166,14 +167,14 @@ Phase 9 replaces the invalid surrogate bench before any structural tuning is tru
 
 Current status:
 
-1. **Phase 0 — safe banking:** `submissions/v12_safe_case5_candidate/` is prepared, validated, and not submitted. It changes only case 5 from v9 and is expected to score `1,607,212` if the judge result repeats.
+1. **Phase 0 — safe banking:** `submissions/v12_safe_case5_candidate/` was submitted and accepted at `1,607,212`, exactly the predicted `+371` over v9. It now serves as the base for future candidates.
 2. **Phase 1 — real bench:** implemented. `H=[A|I]` has row weight `7` and info-column weights `6/3/2`; Gray-coded 16-QAM LLRs match the public raw BER and even/odd bit-position pattern. Calibration wrote `artifacts/phase9_public_calibration.json`; calibrated noise scale is about `1.001`.
 3. **Phase 2 — historical calibration:** a 100-frame 12-case run matched `106/108` known judge delta signs. A 500-frame rerun reproduced v10 case 5 (`+372` vs judge `+371`) and v10 case 11 (`-1,759` vs judge `-1,739`) almost exactly. It did not reproduce v11 case 6 (`+1,250` bench vs `-637` judge), so the bench screens large effects but is not an oracle for marginal gains.
 4. **Phase 3 — structural decoder:** v3 Python/C++ tools implement dSB, bSB, and six-trajectory energy/vote/soft-vote combining, including per-step schedule arrays for `tau/xi/lambd/delta/dt`. Generated C++ was compiled with `g++ -std=c++17 -O2 -Wall -Wextra -pedantic` and matched Python bit-for-bit on scalar and scheduled trajectories.
 5. **Phase 4 — tuning and dispatch:** `tools/tune_v3_case.py` provides paired train/validation tuning. Case-1 structural screen against the v9 approximate baseline `92,295`: bSB/vote `85,936`, bSB/energy `85,869`, dSB/vote `91,461`, dSB/soft-vote `91,693`. None cleared the `+1,000` held-out gate, so replacing dSB check products or energy selection with voting is rejected for now. Remaining structural work should target better energy selection or trajectory diversity.
 
-Keep v9 as the best accepted source. Do not reuse v11 case 6, and do not treat v10/v11 synthetic evidence as proof of expected judge gains.
+Keep v12 as the best accepted source. Do not reuse v11 case 6, and do not treat v10/v11 synthetic evidence as proof of expected judge gains.
 
 ## Stop condition
 
-Do not submit a structural candidate until Phase 2 sign calibration passes. Do not submit v12 unless explicitly authorized. Future submissions should preserve accepted sources and archive each version separately.
+Do not submit a structural candidate until it clears the real-bench gate on the v12 base. Future submissions should preserve accepted sources and archive each version separately.

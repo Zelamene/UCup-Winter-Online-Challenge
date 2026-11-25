@@ -62,6 +62,8 @@ Per-case deltas versus v9:
 
 So the 100-frame case-5 mismatch was sampling noise. The bench reproduces the v10 case-5 and case-11 deltas almost exactly. It does **not** reproduce the v11 case-6 regression, so marginal gains around `~1,000` points still require judge validation.
 
+The subsequently submitted v12 scored `1,607,212`, exactly the predicted `+371` over v9 from three independent judge runs. This further confirms that case 5 is a real, repeatable gain and that the bench is useful for this class of portfolio swap.
+
 ## Interpretation
 
 The bench is now historically credible for large effects and for the v10 deltas, but it is not a perfect oracle for every marginal case. It should be used for structural ranking and regression screening, not for claiming exact judge-point magnitudes.

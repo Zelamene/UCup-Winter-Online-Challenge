@@ -1,10 +1,10 @@
-# v12 — safe case-5-only candidate
+# v12 — accepted case-5-only improvement
 
-Status: prepared for judge submission, not yet submitted.
+Status: **accepted judge submission and current best**.
 
-Base: accepted v9 (`1,606,841`). v12 changes only case 5 (`N=1296`, `R=2/3`, `SNR=9.0`), using the exact configuration that produced `+371` twice on the judge in v10 and v11.
+Judge score: `1,607,212` (`+371` over v9).
 
-Expected score if the judge result transfers a third time: `1,607,212`.
+Base: accepted v9 (`1,606,841`). v12 changes only case 5 (`N=1296`, `R=2/3`, `SNR=9.0`), using the exact configuration that produced `+371` in both v10 and v11. The third judge run reproduced the gain exactly.
 
 This candidate does **not** include:
 
@@ -23,4 +23,11 @@ This candidate does **not** include:
 - Python/C++ parity on synthetic `N=1296, R=2/3`: `0` bit mismatches
 - Manifest diff vs v9: only case 5 changed
 
-If submitted, archive the judge result here immediately and mark it accepted or no-gain based on the score table.
+## Judge result
+
+- Total runtime: `26,341ms`
+- Peak case runtime: `5,578ms` on case 11
+- Peak memory: `19.6 MiB`
+- All 12 cases accepted
+
+Full per-case data is in `judge_result.json`.
