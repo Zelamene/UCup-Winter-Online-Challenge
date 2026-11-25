@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
-"""Build v13 manifest: v12 non-R=1/2 cases (v3 conversion) + fixed bSB for the four R=1/2 cases.
+"""Build the v13 manifests: v12 non-R=1/2 cases (v3 conversion) + fixed bSB for R=1/2.
 
-The R=1/2 cases use a single bSB trajectory tuned by Stage A.
+By default the four R=1/2 cases use a single bSB trajectory tuned by Stage A
+(`phase9_case_manifest_v13.json`). With `--stage-b` they use the piecewise schedules
+from the Stage B search instead (`phase9_case_manifest_v13c.json`).
 All other cases inherit from the v3 conversion of the accepted v12 manifest, so the
 v12 case-5 salvage is preserved (the v9 approximation would silently revert it).
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 
@@ -24,7 +27,16 @@ STAGE_A = {
     (3888, 1944): ROOT / "artifacts" / "stage_a_N3888_R0.5.json",
 }
 
-OUTPUT = ROOT / "artifacts" / "phase9_case_manifest_v13.json"
+# Stage B piecewise-schedule results for the same cases
+STAGE_B = {
+    (648,  324):  ROOT / "artifacts" / "stage_b_N648_R0.5.json",
+    (1296, 648):  ROOT / "artifacts" / "stage_b_N1296_R0.5.json",
+    (1944, 972):  ROOT / "artifacts" / "stage_b_N1944_R0.5.json",
+    (3888, 1944): ROOT / "artifacts" / "stage_b_N3888_R0.5.json",
+}
+
+OUTPUT_A = ROOT / "artifacts" / "phase9_case_manifest_v13.json"
+OUTPUT_B = ROOT / "artifacts" / "phase9_case_manifest_v13c.json"
 
 
 def bsb_trajectory(cfg: dict) -> dict:
@@ -40,24 +52,65 @@ def bsb_trajectory(cfg: dict) -> dict:
     }
 
 
+def bsb_scheduled_trajectory(result: dict) -> dict:
+    """Convert a Stage B result into a v3 trajectory dict with per-step schedules."""
+    schedules = result["schedules"]
+    steps = len(schedules["dt"])
+    for name in ("xi", "lambd", "delta", "dt"):
+        if len(schedules[name]) != steps:
+            raise ValueError(f"schedule {name} has {len(schedules[name])} steps, expected {steps}")
+    lambd = [float(v) for v in schedules["lambd"]]
+    return {
+        "tau":           float(result["stage_a_config"]["tau"]),
+        "xi":            [float(v) for v in schedules["xi"]],
+        "lambd":         lambd,
+        "delta":         [float(v) for v in schedules["delta"]],
+        "dt":            [float(v) for v in schedules["dt"]],
+        # Energy selection needs one scale per trajectory; the schedule average keeps it
+        # consistent with the lambda the dynamics actually ran at.
+        "energy_lambda": sum(lambd) / len(lambd),
+    }
+
+
 def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--stage-b", action="store_true",
+                        help="use Stage B piecewise schedules instead of flat Stage A constants")
+    parser.add_argument("--output", type=Path, default=None)
+    args = parser.parse_args()
+    output = args.output or (OUTPUT_B if args.stage_b else OUTPUT_A)
+
     base = json.loads(V3_V12_SAFE.read_text(encoding="utf-8"))
 
     r12_params: dict[tuple[int, int], dict] = {}
-    for (n, k), path in STAGE_A.items():
-        sa = json.loads(path.read_text(encoding="utf-8"))
-        r12_params[(n, k)] = sa["best_config"]
-        print(f"N={n} K={k}: best config tau={sa['best_config']['tau']:.4f} "
-              f"xi={sa['best_config']['xi']:.4f} lam={sa['best_config']['lambd']:.4f} "
-              f"delta={sa['best_config']['delta']:.4f} dt={sa['best_config']['dt']:.4f}  "
-              f"val_score={sa['val_score']:.1f} gain={sa['gain']:+.1f}")
+    for (n, k), path in (STAGE_B if args.stage_b else STAGE_A).items():
+        result = json.loads(path.read_text(encoding="utf-8"))
+        r12_params[(n, k)] = result if args.stage_b else result["best_config"]
+        if args.stage_b:
+            sched = result["schedules"]
+            gain = min(v["gain"] for v in result["validation"].values())
+            print(f"N={n} K={k}: scheduled tau={result['stage_a_config']['tau']:.4f} "
+                  f"xi=[{min(sched['xi']):.4f},{max(sched['xi']):.4f}] "
+                  f"lam=[{min(sched['lambd']):.4f},{max(sched['lambd']):.4f}] "
+                  f"delta=[{min(sched['delta']):.4f},{max(sched['delta']):.4f}] "
+                  f"dt=[{min(sched['dt']):.4f},{max(sched['dt']):.4f}]  min gain={gain:+.1f}")
+        else:
+            cfg = result["best_config"]
+            print(f"N={n} K={k}: best config tau={cfg['tau']:.4f} "
+                  f"xi={cfg['xi']:.4f} lam={cfg['lambd']:.4f} "
+                  f"delta={cfg['delta']:.4f} dt={cfg['dt']:.4f}  "
+                  f"val_score={result['val_score']:.1f} gain={result['gain']:+.1f}")
 
     new_cases = []
     for case in base["cases"]:
         n, k = case["n"], case["k"]
         if (n, k) in r12_params:
-            # Replace with single bSB trajectory
-            traj = bsb_trajectory(r12_params[(n, k)])
+            # Replace with a single bSB trajectory: flat Stage A, or scheduled Stage B
+            traj = (bsb_scheduled_trajectory(r12_params[(n, k)]) if args.stage_b
+                    else bsb_trajectory(r12_params[(n, k)]))
+            case_dt = traj["dt"]
+            if isinstance(case_dt, list):
+                case_dt = sum(case_dt) / len(case_dt)
             new_case = {
                 "n": n,
                 "k": k,
@@ -65,10 +118,11 @@ def main() -> None:
                 "mode": "bsb",
                 "combine": "energy",
                 "trajectories": [traj],
-                "dt": traj["dt"],
+                "dt": case_dt,
                 "steps": 50,
             }
-            print(f"  -> Case N={n} K={k}: replaced with bSB")
+            kind = "scheduled" if args.stage_b else "flat"
+            print(f"  -> Case N={n} K={k}: replaced with bSB ({kind})")
         else:
             new_case = case
         new_cases.append(new_case)
@@ -78,8 +132,8 @@ def main() -> None:
         "cases": new_cases,
     }
 
-    OUTPUT.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
-    print(f"\nWrote {OUTPUT} ({OUTPUT.stat().st_size} bytes)")
+    output.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    print(f"\nWrote {output} ({output.stat().st_size} bytes)")
     print(f"Cases: {len(new_cases)} total, 4 bSB R=1/2, {len(new_cases) - 4} inherited dSB")
 
 
