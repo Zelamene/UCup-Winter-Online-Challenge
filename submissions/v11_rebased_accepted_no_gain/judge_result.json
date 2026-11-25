@@ -1,0 +1,25 @@
+{
+  "score": 1606575,
+  "total_time_ms": 27613,
+  "peak_time_ms": 5784,
+  "peak_memory_mib": 19.6,
+  "language": "C++17(O2)",
+  "source_bytes": 78898,
+  "per_case_scores": [
+    90167,
+    144269,
+    171480,
+    90957,
+    143578,
+    166457,
+    89867,
+    142847,
+    167085,
+    89806,
+    142852,
+    167210
+  ],
+  "delta_vs_v9": -266,
+  "delta_vs_v10": 1102,
+  "outcome": "accepted but no improvement: case 5 gained 371 again, case 6 regressed 637"
+}

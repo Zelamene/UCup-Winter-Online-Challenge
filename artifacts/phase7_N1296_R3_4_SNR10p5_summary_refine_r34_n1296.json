@@ -1,0 +1,109 @@
+{
+  "case": {
+    "n": 1296,
+    "rate": 0.75,
+    "snr": 10.5
+  },
+  "data": {
+    "train_codes": 2,
+    "train_samples_per_code": 64,
+    "val_codes": 2,
+    "val_samples_per_code": 64,
+    "seed": 711
+  },
+  "best_fixed_config": [
+    1.6,
+    0.5,
+    6.0,
+    2.5
+  ],
+  "local_search_history": [
+    {
+      "round": 0,
+      "config": [
+        1.6,
+        0.5,
+        6.0,
+        2.5
+      ],
+      "ber": 0.02427340534979424
+    },
+    {
+      "round": 1,
+      "config": [
+        1.6,
+        0.5,
+        6.0,
+        2.5
+      ],
+      "ber": 0.02427340534979424
+    }
+  ],
+  "global_learned_single": {
+    "ber": 0.0285815329218107,
+    "syndrome_ones": 1687
+  },
+  "per_case_learned_single": {
+    "ber": 0.02427340534979424,
+    "syndrome_ones": 1111
+  },
+  "accepted_portfolio_ber": 0.026459619341563784,
+  "optimized_portfolio": {
+    "indices": [
+      6,
+      12,
+      9,
+      11
+    ],
+    "names": [
+      "per_case_learned",
+      "grid5_1.4_0.5_6_2.5",
+      "grid2_2_0.5_6_2.5",
+      "grid4_1.8_0.5_6_2.5"
+    ],
+    "ber": 0.022456918724279837,
+    "syndrome_ones": 920,
+    "history": [
+      {
+        "added": "per_case_learned",
+        "ber": 0.02427340534979424,
+        "subset": [
+          6
+        ]
+      },
+      {
+        "added": "grid5_1.4_0.5_6_2.5",
+        "ber": 0.023244598765432098,
+        "subset": [
+          6,
+          12
+        ]
+      },
+      {
+        "added": "grid2_2_0.5_6_2.5",
+        "ber": 0.02273019547325103,
+        "subset": [
+          6,
+          12,
+          9
+        ]
+      },
+      {
+        "added": "grid4_1.8_0.5_6_2.5",
+        "ber": 0.022456918724279837,
+        "subset": [
+          6,
+          12,
+          9,
+          11
+        ]
+      }
+    ]
+  },
+  "training_history": [],
+  "gate": {
+    "per_case_beats_global_single": true,
+    "portfolio_beats_accepted_portfolio": true,
+    "guess_count_at_most_six": true
+  }
+}

@@ -1,6 +1,6 @@
 # v6 — case-11 refinement candidate
 
-Status: candidate for judge submission; not yet accepted.
+Status: accepted. Judge score `1,597,233`.
 
 Base: v4 (`1,593,920`). Only the `N=3888, R=2/3, SNR=9.0` case is changed.
 
@@ -20,3 +20,5 @@ Validation:
 - Clean C++17 compile with `-Wall -Wextra -pedantic`.
 
 Synthetic validation on this case improved the optimized/accepted BER ratio from about `1.263` to `1.285`.
+
+Judge outcome: case 11 rose from `139,539` to `142,852` (`+3,313`). All other cases were unchanged. Total score rose from `1,593,920` to `1,597,233`.

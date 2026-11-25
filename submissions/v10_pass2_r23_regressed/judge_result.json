@@ -1,0 +1,25 @@
+{
+  "score": 1605473,
+  "total_time_ms": 24906,
+  "peak_time_ms": 4980,
+  "peak_memory_mib": 19.6,
+  "language": "C++17(O2)",
+  "code_length_kib": 80.7,
+  "per_case_scores": [
+    90167,
+    144269,
+    171480,
+    90957,
+    143578,
+    167094,
+    89867,
+    142847,
+    167085,
+    89806,
+    141113,
+    167210
+  ],
+  "delta_vs_v9": -1368,
+  "delta_vs_v1": 89601,
+  "outcome": "accepted but below best: case 11 regressed by 1739 while case 5 gained 371"
+}

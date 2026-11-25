@@ -1,0 +1,54 @@
+{
+  "n": 648,
+  "k": 324,
+  "rate": 0.5,
+  "snr": 6.0,
+  "mode": "bsb",
+  "combine": "energy",
+  "train_seed": 911,
+  "validation_seed": 2024,
+  "train_samples": 80,
+  "validation_samples": 100,
+  "trials": 30,
+  "train_score": 83995.13041047579,
+  "train_ber": 0.14456018518518518,
+  "validation_score": 85868.57409596632,
+  "validation_ber": 0.1384567901234568,
+  "trajectories": [
+    {
+      "tau": 4.0,
+      "xi": 0.5,
+      "lambd": 6.0,
+      "delta": 2.5,
+      "energy_lambda": 6.0
+    },
+    {
+      "tau": 4.0,
+      "xi": 0.5,
+      "lambd": 5.0,
+      "delta": 2.5,
+      "energy_lambda": 5.0
+    },
+    {
+      "tau": 4.0,
+      "xi": 0.4,
+      "lambd": 5.0,
+      "delta": 2.0,
+      "energy_lambda": 5.0
+    },
+    {
+      "tau": 4.0,
+      "xi": 0.4,
+      "lambd": 6.0,
+      "delta": 2.0,
+      "energy_lambda": 6.0
+    },
+    {
+      "tau": 8.0,
+      "xi": 0.5,
+      "lambd": 6.0,
+      "delta": 2.5,
+      "energy_lambda": 6.0
+    }
+  ]
+}

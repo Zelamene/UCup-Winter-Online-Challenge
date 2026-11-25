@@ -1,0 +1,51 @@
+{
+  "summary": "Ratios are accepted BER divided by tuned BER. Values above 1 favor the tuned portfolio. Judge outcomes override synthetic evidence.",
+  "judge_outcome": {
+    "score": 1606575,
+    "delta_vs_v9": -266,
+    "case_5_delta": 371,
+    "case_6_delta": -637
+  },
+  "included": {
+    "case_5_N1296_R2_3": {
+      "tuning_seed_911": 1.0849,
+      "seed_1234": 1.0380,
+      "seed_2024": 1.0316,
+      "judge_delta_in_v10": 371,
+      "judge_delta_in_v11": 371,
+      "interpretation": "repeatable small gain"
+    },
+    "case_6_N1296_R3_4": {
+      "tuning_seed_911": 1.0211,
+      "seed_1234": 1.0218,
+      "seed_2024": 1.0240,
+      "judge_delta_in_v11": -637,
+      "interpretation": "synthetic improvement did not transfer; discard configuration"
+    }
+  },
+  "excluded": {
+    "case_11_N3888_R2_3": {
+      "tuning_seed_911": 1.0620,
+      "seed_1234": 1.0248,
+      "seed_2024": 1.0274,
+      "judge_delta_in_v10": -1739,
+      "reason": "judge regression despite positive synthetic checks; removed by v11 rebase"
+    },
+    "case_3_N648_R3_4": {
+      "tuning_seed_911": 1.0694,
+      "seed_1234": 1.0036,
+      "seed_2024": 0.9958
+    },
+    "case_9_N1944_R3_4": {
+      "tuning_seed_911": 1.0270,
+      "seed_1234": 1.0049,
+      "seed_2024": 1.0003
+    },
+    "case_12_N3888_R3_4": {
+      "tuning_seed_911": 1.0123,
+      "seed_1234": 1.0028,
+      "seed_2024": 1.0108,
+      "seed_3033": 1.0017
+    }
+  }
+}
