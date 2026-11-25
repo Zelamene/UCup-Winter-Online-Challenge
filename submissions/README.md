@@ -14,6 +14,7 @@ Each version is self-contained in its own folder.
 | v9 | `v9_r34_refined_accepted` | `1,606,841` | v8 with the other three `R=3/4` cases refined |
 | v10 | `v10_pass2_r23_regressed` | `1,605,473` | accepted but below best: case 11 regressed despite positive synthetic cross-seed checks |
 | v11 | `v11_rebased_accepted_no_gain` | `1,606,575` | accepted but no improvement: case 5 gained 371, case 6 lost 637 |
+| v12 | `v12_safe_case5_candidate` | pending | prepared v9 + case-5-only salvage, not yet submitted |
 
 ## Rebuild
 

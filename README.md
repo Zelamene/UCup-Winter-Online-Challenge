@@ -115,7 +115,7 @@ v11 rebuilt from accepted v9 and changed only cases 5 and 6. It scored `1,606,57
 Key findings from this run:
 
 1. **The v9 rebase was successful.** Case 11 returned from `141,113` in v10 to `142,852` in v11, exactly matching v9. The v10 case-11 change is definitively discarded.
-2. **Case 5 is the only repeatable judge-validated gain after v9.** It produced `+371` in both v10 and v11. A case-5-only successor would mathematically be `1,607,212`, but no such v12 was built or submitted.
+2. **Case 5 is the only repeatable judge-validated gain after v9.** It produced `+371` in both v10 and v11. A case-5-only successor would mathematically be `1,607,212`. `submissions/v12_safe_case5_candidate/` now contains a prepared candidate with only that change; it has not been submitted.
 3. **Case 6 should be discarded.** Its v11 score fell `167,094 → 166,457`. The synthetic improvement signal was not merely weak on one seed; it was consistent across three comparisons and still wrong on the judge.
 4. **Small synthetic gains are noise for this task.** Multi-seed ratios around `1.02` should not be used to justify a submission. Even a ratio near `1.06` failed at large `N` in v10.
 5. **The public proxy remains blind.** v11's public output was bit-identical to v9, so public BER offered no evidence about cases 5 and 6.
@@ -137,6 +137,20 @@ Key tools:
 - `tools/validate_submission_v2.py` — checks size, dispatch count, guess count, binary output, and public BER.
 - `tools/decode_v2_python.py` — Python reference decoder for C++ parity checks.
 
+New Phase 9 tooling:
+
+- `tools/real_h_generator.py` — generates `H=[A|I]` with row weight `7` and correct info-column weights.
+- `tools/real_qam_channel.py` — Gray-coded 16-QAM + AWGN LLR generator.
+- `tools/real_bench.py` — shared-frame case builder for realistic `N/R/SNR` evaluation.
+- `tools/calibrate_public_channel.py` — public channel/code statistics and noise-scale calibration.
+- `tools/evaluate_history_on_real_bench.py` — checks whether the new bench reproduces historical judge delta signs.
+- `tools/decode_v3_python.py` — Python dSB/bSB ensemble decoder with energy, vote, and soft-vote combine.
+- `tools/export_submission_cpp_v3.py` — emits a C++17 v3 decoder from a manifest.
+- `tools/validate_submission_v3.py` — validates v3 manifest/source gates.
+- `tools/convert_manifest_v2_to_v3.py` — converts accepted v2 trajectories into approximate v3 manifests (learned reliability modifiers are not preserved).
+- `tools/tune_v3_case.py` — paired gradient-free tuning on bench cases with a held-out split.
+- `tools/evaluate_v3_candidate.py` — full 12-case candidate-vs-baseline gate on shared bench frames.
+
 Validation gate for every candidate:
 
 - clean `g++ -std=c++17 -O2 -Wall -Wextra -pedantic` compile;
@@ -146,6 +160,20 @@ Validation gate for every candidate:
 - Python/C++ bit parity on synthetic cases for every changed case;
 - public dispatch cases remain bit-identical unless public tuning is intentional.
 
+## Phase 9 implementation status
+
+Phase 9 replaces the invalid surrogate bench before any structural tuning is trusted.
+
+Current status:
+
+1. **Phase 0 — safe banking:** `submissions/v12_safe_case5_candidate/` is prepared, validated, and not submitted. It changes only case 5 from v9 and is expected to score `1,607,212` if the judge result repeats.
+2. **Phase 1 — real bench:** implemented. `H=[A|I]` has row weight `7` and info-column weights `6/3/2`; Gray-coded 16-QAM LLRs match the public raw BER and even/odd bit-position pattern. Calibration wrote `artifacts/phase9_public_calibration.json`; calibrated noise scale is about `1.001`.
+3. **Phase 2 — historical calibration:** a 100-frame 12-case run matched `106/108` known judge delta signs. A 500-frame rerun reproduced v10 case 5 (`+372` vs judge `+371`) and v10 case 11 (`-1,759` vs judge `-1,739`) almost exactly. It did not reproduce v11 case 6 (`+1,250` bench vs `-637` judge), so the bench screens large effects but is not an oracle for marginal gains.
+4. **Phase 3 — structural decoder:** v3 Python/C++ tools implement dSB, bSB, and six-trajectory energy/vote/soft-vote combining, including per-step schedule arrays for `tau/xi/lambd/delta/dt`. Generated C++ was compiled with `g++ -std=c++17 -O2 -Wall -Wextra -pedantic` and matched Python bit-for-bit on scalar and scheduled trajectories.
+5. **Phase 4 — tuning and dispatch:** `tools/tune_v3_case.py` provides paired train/validation tuning. Case-1 structural screen against the v9 approximate baseline `92,295`: bSB/vote `85,936`, bSB/energy `85,869`, dSB/vote `91,461`, dSB/soft-vote `91,693`. None cleared the `+1,000` held-out gate, so replacing dSB check products or energy selection with voting is rejected for now. Remaining structural work should target better energy selection or trajectory diversity.
+
+Keep v9 as the best accepted source. Do not reuse v11 case 6, and do not treat v10/v11 synthetic evidence as proof of expected judge gains.
+
 ## Stop condition
 
-No v12 was built or submitted. Keep v9 as the best accepted source. Future work should not reuse v11 case 6 and should treat v10/v11 synthetic evidence as historical context only, not as proof of expected judge gains.
+Do not submit a structural candidate until Phase 2 sign calibration passes. Do not submit v12 unless explicitly authorized. Future submissions should preserve accepted sources and archive each version separately.

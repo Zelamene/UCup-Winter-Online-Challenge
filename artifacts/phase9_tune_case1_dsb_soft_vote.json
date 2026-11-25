@@ -1,0 +1,54 @@
+{
+  "n": 648,
+  "k": 324,
+  "rate": 0.5,
+  "snr": 6.0,
+  "mode": "dsb",
+  "combine": "soft_vote",
+  "train_seed": 911,
+  "validation_seed": 2024,
+  "train_samples": 80,
+  "validation_samples": 100,
+  "trials": 30,
+  "train_score": 89551.60500554027,
+  "train_ber": 0.12719907407407408,
+  "validation_score": 91692.67020770763,
+  "validation_ber": 0.12108024691358024,
+  "trajectories": [
+    {
+      "tau": 4.0,
+      "xi": 0.5,
+      "lambd": 5.893866689616912,
+      "delta": 2.5,
+      "energy_lambda": 6.0
+    },
+    {
+      "tau": 4.0,
+      "xi": 0.46361215686287,
+      "lambd": 5.0,
+      "delta": 2.5,
+      "energy_lambda": 5.0
+    },
+    {
+      "tau": 3.8797970290621455,
+      "xi": 0.4,
+      "lambd": 5.0,
+      "delta": 1.8820599087993826,
+      "energy_lambda": 5.0
+    },
+    {
+      "tau": 4.0,
+      "xi": 0.347356087569196,
+      "lambd": 6.0,
+      "delta": 2.0,
+      "energy_lambda": 6.0
+    },
+    {
+      "tau": 8.0,
+      "xi": 0.5,
+      "lambd": 5.6103276030465,
+      "delta": 2.5,
+      "energy_lambda": 6.0
+    }
+  ]
+}

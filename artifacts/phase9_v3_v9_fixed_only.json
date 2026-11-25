@@ -1,0 +1,476 @@
+{
+  "fallback": {
+    "n": 0,
+    "k": 0,
+    "snr": 0.0,
+    "mode": "dsb",
+    "combine": "energy",
+    "trajectories": [
+      {
+        "tau": 4.0,
+        "xi": 0.5,
+        "lambd": 6.0,
+        "delta": 2.5,
+        "energy_lambda": 6.0
+      },
+      {
+        "tau": 4.0,
+        "xi": 0.5,
+        "lambd": 5.0,
+        "delta": 2.5,
+        "energy_lambda": 5.0
+      },
+      {
+        "tau": 4.0,
+        "xi": 0.4,
+        "lambd": 5.0,
+        "delta": 2.0,
+        "energy_lambda": 5.0
+      },
+      {
+        "tau": 4.0,
+        "xi": 0.4,
+        "lambd": 6.0,
+        "delta": 2.0,
+        "energy_lambda": 6.0
+      },
+      {
+        "tau": 8.0,
+        "xi": 0.5,
+        "lambd": 6.0,
+        "delta": 2.5,
+        "energy_lambda": 6.0
+      }
+    ],
+    "dt": 0.2,
+    "steps": 50
+  },
+  "cases": [
+    {
+      "n": 648,
+      "k": 324,
+      "snr": 6.0,
+      "mode": "dsb",
+      "combine": "energy",
+      "trajectories": [
+        {
+          "tau": 4.0,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 6.0
+        }
+      ],
+      "dt": 0.2,
+      "steps": 50
+    },
+    {
+      "n": 648,
+      "k": 432,
+      "snr": 9.0,
+      "mode": "dsb",
+      "combine": "energy",
+      "trajectories": [
+        {
+          "tau": 1.6,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.25,
+          "energy_lambda": 9.0
+        },
+        {
+          "tau": 1.8,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 8.0
+        },
+        {
+          "tau": 1.6,
+          "xi": 0.5,
+          "lambd": 7.0,
+          "delta": 2.5,
+          "energy_lambda": 10.5
+        },
+        {
+          "tau": 1.4,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.25,
+          "energy_lambda": 9.0
+        },
+        {
+          "tau": 1.4,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 9.0
+        }
+      ],
+      "dt": 0.2,
+      "steps": 50
+    },
+    {
+      "n": 648,
+      "k": 486,
+      "snr": 10.5,
+      "mode": "dsb",
+      "combine": "energy",
+      "trajectories": [
+        {
+          "tau": 1.6,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.25,
+          "energy_lambda": 6.0
+        },
+        {
+          "tau": 1.8,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 6.0
+        },
+        {
+          "tau": 1.4,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 6.0
+        },
+        {
+          "tau": 4.0,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 6.0
+        },
+        {
+          "tau": 1.4,
+          "xi": 0.45,
+          "lambd": 6.0,
+          "delta": 2.25,
+          "energy_lambda": 6.0
+        }
+      ],
+      "dt": 0.2,
+      "steps": 50
+    },
+    {
+      "n": 1296,
+      "k": 648,
+      "snr": 6.0,
+      "mode": "dsb",
+      "combine": "energy",
+      "trajectories": [
+        {
+          "tau": 4.0,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 6.0
+        }
+      ],
+      "dt": 0.2,
+      "steps": 50
+    },
+    {
+      "n": 1296,
+      "k": 864,
+      "snr": 9.0,
+      "mode": "dsb",
+      "combine": "energy",
+      "trajectories": [
+        {
+          "tau": 2.0,
+          "xi": 0.5,
+          "lambd": 7.0,
+          "delta": 2.75,
+          "energy_lambda": 6.0
+        },
+        {
+          "tau": 2.0,
+          "xi": 0.55,
+          "lambd": 7.0,
+          "delta": 2.75,
+          "energy_lambda": 7.0
+        },
+        {
+          "tau": 4.0,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 6.0
+        },
+        {
+          "tau": 1.4,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 8.0
+        },
+        {
+          "tau": 1.6,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 6.0
+        }
+      ],
+      "dt": 0.2,
+      "steps": 50
+    },
+    {
+      "n": 1296,
+      "k": 972,
+      "snr": 10.5,
+      "mode": "dsb",
+      "combine": "energy",
+      "trajectories": [
+        {
+          "tau": 1.4,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 6.0
+        },
+        {
+          "tau": 2.0,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 6.0
+        },
+        {
+          "tau": 1.8,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 6.0
+        }
+      ],
+      "dt": 0.2,
+      "steps": 50
+    },
+    {
+      "n": 1944,
+      "k": 972,
+      "snr": 6.0,
+      "mode": "dsb",
+      "combine": "energy",
+      "trajectories": [
+        {
+          "tau": 4.0,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 6.0
+        }
+      ],
+      "dt": 0.2,
+      "steps": 50
+    },
+    {
+      "n": 1944,
+      "k": 1296,
+      "snr": 9.0,
+      "mode": "dsb",
+      "combine": "energy",
+      "trajectories": [
+        {
+          "tau": 1.6,
+          "xi": 0.55,
+          "lambd": 6.0,
+          "delta": 2.75,
+          "energy_lambda": 9.0
+        },
+        {
+          "tau": 1.4,
+          "xi": 0.55,
+          "lambd": 5.0,
+          "delta": 2.5,
+          "energy_lambda": 7.5
+        },
+        {
+          "tau": 1.8,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.25,
+          "energy_lambda": 9.0
+        },
+        {
+          "tau": 1.6,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 9.0
+        },
+        {
+          "tau": 2.0,
+          "xi": 0.5,
+          "lambd": 7.0,
+          "delta": 2.75,
+          "energy_lambda": 10.5
+        }
+      ],
+      "dt": 0.2,
+      "steps": 50
+    },
+    {
+      "n": 1944,
+      "k": 1458,
+      "snr": 10.5,
+      "mode": "dsb",
+      "combine": "energy",
+      "trajectories": [
+        {
+          "tau": 2.0,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 6.0
+        },
+        {
+          "tau": 4.0,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 6.0
+        },
+        {
+          "tau": 2.0,
+          "xi": 0.4,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 5.0
+        },
+        {
+          "tau": 1.4,
+          "xi": 0.5,
+          "lambd": 5.0,
+          "delta": 2.25,
+          "energy_lambda": 5.0
+        },
+        {
+          "tau": 2.0,
+          "xi": 0.5,
+          "lambd": 5.0,
+          "delta": 2.5,
+          "energy_lambda": 5.0
+        }
+      ],
+      "dt": 0.2,
+      "steps": 50
+    },
+    {
+      "n": 3888,
+      "k": 1944,
+      "snr": 6.0,
+      "mode": "dsb",
+      "combine": "energy",
+      "trajectories": [
+        {
+          "tau": 4.0,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 6.0
+        }
+      ],
+      "dt": 0.2,
+      "steps": 50
+    },
+    {
+      "n": 3888,
+      "k": 2592,
+      "snr": 9.0,
+      "mode": "dsb",
+      "combine": "energy",
+      "trajectories": [
+        {
+          "tau": 1.4,
+          "xi": 0.55,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 6.0
+        },
+        {
+          "tau": 1.8,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 5.0
+        },
+        {
+          "tau": 1.4,
+          "xi": 0.55,
+          "lambd": 5.0,
+          "delta": 2.5,
+          "energy_lambda": 5.0
+        },
+        {
+          "tau": 1.6,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 5.0
+        },
+        {
+          "tau": 1.4,
+          "xi": 0.55,
+          "lambd": 6.0,
+          "delta": 2.75,
+          "energy_lambda": 5.0
+        }
+      ],
+      "dt": 0.2,
+      "steps": 50
+    },
+    {
+      "n": 3888,
+      "k": 2916,
+      "snr": 10.5,
+      "mode": "dsb",
+      "combine": "energy",
+      "trajectories": [
+        {
+          "tau": 1.6,
+          "xi": 0.5,
+          "lambd": 5.0,
+          "delta": 2.25,
+          "energy_lambda": 8.0
+        },
+        {
+          "tau": 1.4,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.25,
+          "energy_lambda": 9.0
+        },
+        {
+          "tau": 4.0,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 9.0
+        },
+        {
+          "tau": 1.4,
+          "xi": 0.45,
+          "lambd": 5.0,
+          "delta": 2.0,
+          "energy_lambda": 8.0
+        },
+        {
+          "tau": 2.0,
+          "xi": 0.5,
+          "lambd": 6.0,
+          "delta": 2.5,
+          "energy_lambda": 12.0
+        }
+      ],
+      "dt": 0.2,
+      "steps": 50
+    }
+  ]
+}
