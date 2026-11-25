@@ -15,6 +15,7 @@ import numpy as np
 TOOLS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(TOOLS_DIR))
 
+from bsb_vectorized import BatchedBSB  # noqa: E402
 from decode_v3_python import decode_frame  # noqa: E402
 from real_bench import build_case  # noqa: E402
 
@@ -40,6 +41,22 @@ def score_case(case: dict, config: dict) -> tuple[float, float]:
     config["n"] = case["n"]
     config["k"] = case["k"]
     config["snr"] = case.get("snr", case.get("snr_db"))
+
+    if config.get("mode") == "bsb":
+        if "_sim" not in case:
+            case["_sim"] = BatchedBSB(case["h"])
+        sim: BatchedBSB = case["_sim"]
+        score, ber, _ = sim.evaluate_ensemble(
+            case["llr"],
+            case["answers"],
+            case["k"],
+            config["trajectories"],
+            combine=config.get("combine", "vote"),
+            dt=config.get("dt", 0.2),
+            steps=config.get("steps", 50),
+        )
+        return score, ber
+
     n = case["n"]
     k = case["k"]
     errors = 0
