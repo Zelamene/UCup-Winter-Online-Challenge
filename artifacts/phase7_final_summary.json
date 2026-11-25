@@ -1,0 +1,274 @@
+{
+  "framework": "per_case_QAIA_dSB_six_guess_energy_selection",
+  "submission": "submission_v2.cpp",
+  "manifest": "artifacts/phase7_case_manifest.json",
+  "per_case": [
+    {
+      "n": 648,
+      "rate": 0.5,
+      "snr": 6.0,
+      "accepted_portfolio_ber": 0.006751543209876543,
+      "optimized_portfolio_ber": 0.0035686728395061726,
+      "improvement_ratio": 1.8918918918918919,
+      "best_fixed_config": [
+        1.5840000000000003,
+        0.55,
+        6.0,
+        2.5
+      ],
+      "portfolio": [
+        "per_case_learned",
+        "grid2_2_0.4_8_2.5",
+        "grid5_2_0.4_6_2.5",
+        "grid4_4_0.4_8_2.5",
+        "grid6_4_0.3_8_2.5"
+      ]
+    },
+    {
+      "n": 648,
+      "rate": 0.6666666666666666,
+      "snr": 9.0,
+      "accepted_portfolio_ber": 0.017288773148148147,
+      "optimized_portfolio_ber": 0.013454861111111112,
+      "improvement_ratio": 1.2849462365591395,
+      "best_fixed_config": [
+        1.5840000000000003,
+        0.55,
+        5.4,
+        2.5
+      ],
+      "portfolio": [
+        "per_case_learned",
+        "grid2_2_0.5_8_2.5",
+        "grid5_8_0.4_8_2.5",
+        "grid3_2_0.4_8_2.5"
+      ]
+    },
+    {
+      "n": 648,
+      "rate": 0.75,
+      "snr": 10.5,
+      "accepted_portfolio_ber": 0.026684670781893006,
+      "optimized_portfolio_ber": 0.022676611796982167,
+      "improvement_ratio": 1.1767485822306238,
+      "best_fixed_config": [
+        1.2672000000000003,
+        0.55,
+        6.0,
+        2.5
+      ],
+      "portfolio": [
+        "per_case_learned",
+        "grid1_2_0.5_6_2.5",
+        "grid5_4_0.4_6_2.5",
+        "fixed_4_0.4_6_2",
+        "global_learned"
+      ]
+    },
+    {
+      "n": 1296,
+      "rate": 0.5,
+      "snr": 6.0,
+      "accepted_portfolio_ber": 0.007555298353909465,
+      "optimized_portfolio_ber": 0.005031507201646091,
+      "improvement_ratio": 1.5015974440894568,
+      "best_fixed_config": [
+        1.6,
+        0.55,
+        6.0,
+        2.5
+      ],
+      "portfolio": [
+        "per_case_learned",
+        "grid2_2_0.4_8_2.5",
+        "grid1_2_0.5_6_2.5",
+        "grid7_4_0.4_8_2.5",
+        "fixed_4_0.5_6_2.5",
+        "grid5_2_0.5_8_2.5"
+      ]
+    },
+    {
+      "n": 1296,
+      "rate": 0.6666666666666666,
+      "snr": 9.0,
+      "accepted_portfolio_ber": 0.016975308641975308,
+      "optimized_portfolio_ber": 0.013201678240740741,
+      "improvement_ratio": 1.2858447488584475,
+      "best_fixed_config": [
+        1.5840000000000003,
+        0.5,
+        6.0,
+        2.25
+      ],
+      "portfolio": [
+        "per_case_learned",
+        "grid2_2_0.5_8_2.5",
+        "grid3_2_0.4_6_2.5",
+        "grid7_8_0.4_8_2.5",
+        "grid1_2_0.5_6_2.5",
+        "grid4_2_0.3_6_1.5"
+      ]
+    },
+    {
+      "n": 1296,
+      "rate": 0.75,
+      "snr": 10.5,
+      "accepted_portfolio_ber": 0.02745627572016461,
+      "optimized_portfolio_ber": 0.02606310013717421,
+      "improvement_ratio": 1.053453947368421,
+      "best_fixed_config": [
+        1.9800000000000002,
+        0.5,
+        6.0,
+        2.5
+      ],
+      "portfolio": [
+        "per_case_learned",
+        "grid1_2_0.5_6_2.5",
+        "grid5_2_0.5_8_2.5"
+      ]
+    },
+    {
+      "n": 1944,
+      "rate": 0.5,
+      "snr": 6.0,
+      "accepted_portfolio_ber": 0.006965877914951989,
+      "optimized_portfolio_ber": 0.004736796982167352,
+      "improvement_ratio": 1.4705882352941178,
+      "best_fixed_config": [
+        2.0,
+        0.4,
+        8.0,
+        2.5
+      ],
+      "portfolio": [
+        "per_case_learned",
+        "grid2_2_0.5_6_2.5",
+        "grid3_2_0.5_8_2.5",
+        "grid4_4_0.4_8_2.5",
+        "grid6_2_0.4_6_2.5",
+        "grid7_8_0.3_8_2.5"
+      ]
+    },
+    {
+      "n": 1944,
+      "rate": 0.6666666666666666,
+      "snr": 9.0,
+      "accepted_portfolio_ber": 0.016726144547325104,
+      "optimized_portfolio_ber": 0.013543274176954733,
+      "improvement_ratio": 1.2350148367952523,
+      "best_fixed_config": [
+        1.4400000000000002,
+        0.55,
+        5.4,
+        2.5
+      ],
+      "portfolio": [
+        "per_case_learned",
+        "grid1_2_0.5_6_2.5",
+        "grid4_2_0.5_8_2.5",
+        "fixed_4_0.5_6_2.5",
+        "fixed_4_0.4_6_2",
+        "grid3_2_0.3_6_1.5"
+      ]
+    },
+    {
+      "n": 1944,
+      "rate": 0.75,
+      "snr": 10.5,
+      "accepted_portfolio_ber": 0.026956161408321903,
+      "optimized_portfolio_ber": 0.025241483767718335,
+      "improvement_ratio": 1.0679309368808378,
+      "best_fixed_config": [
+        2.0,
+        0.5,
+        6.0,
+        2.475
+      ],
+      "portfolio": [
+        "per_case_learned",
+        "grid1_2_0.5_6_2.5",
+        "fixed_4_0.5_6_2.5",
+        "grid7_2_0.4_6_2.5"
+      ]
+    },
+    {
+      "n": 3888,
+      "rate": 0.5,
+      "snr": 6.0,
+      "accepted_portfolio_ber": 0.007276663237311386,
+      "optimized_portfolio_ber": 0.005551268861454047,
+      "improvement_ratio": 1.3108108108108107,
+      "best_fixed_config": [
+        1.5840000000000003,
+        0.5,
+        6.0,
+        2.5
+      ],
+      "portfolio": [
+        "per_case_learned",
+        "grid2_2_0.4_8_2.5",
+        "grid1_2_0.5_6_2.5",
+        "fixed_4_0.4_6_2"
+      ]
+    },
+    {
+      "n": 3888,
+      "rate": 0.6666666666666666,
+      "snr": 9.0,
+      "accepted_portfolio_ber": 0.01722849151234568,
+      "optimized_portfolio_ber": 0.013639724794238682,
+      "improvement_ratio": 1.2631113730111962,
+      "best_fixed_config": [
+        1.7600000000000002,
+        0.5,
+        6.0,
+        2.5
+      ],
+      "portfolio": [
+        "per_case_learned",
+        "grid5_2_0.4_6_2.5",
+        "grid4_2_0.5_8_2.5",
+        "grid6_4_0.4_8_2.5",
+        "grid2_2_0.4_8_2.5"
+      ]
+    },
+    {
+      "n": 3888,
+      "rate": 0.75,
+      "snr": 10.5,
+      "accepted_portfolio_ber": 0.02802069044352995,
+      "optimized_portfolio_ber": 0.025323645404663923,
+      "improvement_ratio": 1.1065030328678234,
+      "best_fixed_config": [
+        1.8,
+        0.5,
+        6.0,
+        2.5
+      ],
+      "portfolio": [
+        "per_case_learned",
+        "grid1_2_0.5_6_2.5"
+      ]
+    }
+  ],
+  "public_validation": {
+    "source_bytes": 63613,
+    "case_count": 12,
+    "max_guess_count": 6,
+    "public_ber": 0.025788751714677642,
+    "accepted_public_ber": 0.027281207133058986,
+    "accepted_bit_mismatches": 16748,
+    "public_syndrome_ones": 6257,
+    "gate": {
+      "source_under_512k": true,
+      "at_most_six_guesses": true,
+      "twelve_cases_dispatched": true,
+      "public_ber_not_worse": true,
+      "no_unreplaced_tokens": true,
+      "all_output_bits_binary": true
+    },
+    "all_passed": true
+  },
+  "all_passed": true
+}

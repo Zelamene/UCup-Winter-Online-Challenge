@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+*.exe
+artifacts/*.out
+artifacts/synthetic_*.in
+artifacts/sample.in

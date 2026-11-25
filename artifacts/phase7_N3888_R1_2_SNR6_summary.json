@@ -1,0 +1,76 @@
+{
+  "case": {
+    "n": 3888,
+    "rate": 0.5,
+    "snr": 6.0
+  },
+  "data": {
+    "train_codes": 1,
+    "train_samples_per_code": 32,
+    "val_codes": 1,
+    "val_samples_per_code": 32,
+    "seed": 711
+  },
+  "best_fixed_config": [
+    2.0,
+    0.5,
+    6.0,
+    2.5
+  ],
+  "global_learned_single": {
+    "ber": 0.00863233024691358,
+    "syndrome_ones": 566
+  },
+  "per_case_learned_single": {
+    "ber": 0.00575488683127572,
+    "syndrome_ones": 169
+  },
+  "accepted_portfolio_ber": 0.00750707304526749,
+  "optimized_portfolio": {
+    "indices": [
+      6,
+      4
+    ],
+    "names": [
+      "per_case_learned",
+      "fixed_4_0.4_6_2"
+    ],
+    "ber": 0.0056905864197530865,
+    "syndrome_ones": 180,
+    "history": [
+      {
+        "added": "per_case_learned",
+        "ber": 0.00575488683127572,
+        "subset": [
+          6
+        ]
+      },
+      {
+        "added": "fixed_4_0.4_6_2",
+        "ber": 0.0056905864197530865,
+        "subset": [
+          6,
+          4
+        ]
+      }
+    ]
+  },
+  "training_history": [
+    {
+      "epoch": 0,
+      "val_ber": 0.00575488683127572,
+      "best_ber": 0.00575488683127572
+    },
+    {
+      "epoch": 2,
+      "val_ber": 0.005883487654320988,
+      "best_ber": 0.00575488683127572,
+      "seconds": 3.9008622999535874
+    }
+  ],
+  "gate": {
+    "per_case_beats_global_single": true,
+    "portfolio_beats_accepted_portfolio": true,
+    "guess_count_at_most_six": true
+  }
+}

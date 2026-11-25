@@ -1,0 +1,146 @@
+{
+  "case": {
+    "n": 1296,
+    "rate": 0.5,
+    "snr": 6.0
+  },
+  "data": {
+    "train_codes": 2,
+    "train_samples_per_code": 64,
+    "val_codes": 2,
+    "val_samples_per_code": 48,
+    "seed": 711
+  },
+  "best_fixed_config": [
+    1.6,
+    0.55,
+    6.0,
+    2.5
+  ],
+  "local_search_history": [
+    {
+      "round": 0,
+      "config": [
+        2.0,
+        0.5,
+        6.0,
+        2.5
+      ],
+      "ber": 0.0062371399176954735
+    },
+    {
+      "round": 1,
+      "config": [
+        1.6,
+        0.55,
+        6.0,
+        2.5
+      ],
+      "ber": 0.006156764403292181
+    },
+    {
+      "round": 2,
+      "config": [
+        1.6,
+        0.55,
+        6.0,
+        2.5
+      ],
+      "ber": 0.006156764403292181
+    }
+  ],
+  "global_learned_single": {
+    "ber": 0.009018132716049383,
+    "syndrome_ones": 566
+  },
+  "per_case_learned_single": {
+    "ber": 0.006156764403292181,
+    "syndrome_ones": 134
+  },
+  "accepted_portfolio_ber": 0.007555298353909465,
+  "optimized_portfolio": {
+    "indices": [
+      6,
+      9,
+      8,
+      14,
+      1,
+      12
+    ],
+    "names": [
+      "per_case_learned",
+      "grid2_2_0.4_8_2.5",
+      "grid1_2_0.5_6_2.5",
+      "grid7_4_0.4_8_2.5",
+      "fixed_4_0.5_6_2.5",
+      "grid5_2_0.5_8_2.5"
+    ],
+    "ber": 0.005031507201646091,
+    "syndrome_ones": 68,
+    "history": [
+      {
+        "added": "per_case_learned",
+        "ber": 0.006156764403292181,
+        "subset": [
+          6
+        ]
+      },
+      {
+        "added": "grid2_2_0.4_8_2.5",
+        "ber": 0.00575488683127572,
+        "subset": [
+          6,
+          9
+        ]
+      },
+      {
+        "added": "grid1_2_0.5_6_2.5",
+        "ber": 0.005385159465020576,
+        "subset": [
+          6,
+          9,
+          8
+        ]
+      },
+      {
+        "added": "grid7_4_0.4_8_2.5",
+        "ber": 0.005224408436213992,
+        "subset": [
+          6,
+          9,
+          8,
+          14
+        ]
+      },
+      {
+        "added": "fixed_4_0.5_6_2.5",
+        "ber": 0.005127957818930041,
+        "subset": [
+          6,
+          9,
+          8,
+          14,
+          1
+        ]
+      },
+      {
+        "added": "grid5_2_0.5_8_2.5",
+        "ber": 0.005031507201646091,
+        "subset": [
+          6,
+          9,
+          8,
+          14,
+          1,
+          12
+        ]
+      }
+    ]
+  },
+  "training_history": [],
+  "gate": {
+    "per_case_beats_global_single": true,
+    "portfolio_beats_accepted_portfolio": true,
+    "guess_count_at_most_six": true
+  }
+}

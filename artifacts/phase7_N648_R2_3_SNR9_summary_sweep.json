@@ -1,0 +1,119 @@
+{
+  "case": {
+    "n": 648,
+    "rate": 0.6666666666666666,
+    "snr": 9.0
+  },
+  "data": {
+    "train_codes": 2,
+    "train_samples_per_code": 64,
+    "val_codes": 2,
+    "val_samples_per_code": 48,
+    "seed": 711
+  },
+  "best_fixed_config": [
+    1.5840000000000003,
+    0.55,
+    5.4,
+    2.5
+  ],
+  "local_search_history": [
+    {
+      "round": 0,
+      "config": [
+        2.0,
+        0.5,
+        6.0,
+        2.5
+      ],
+      "ber": 0.016565393518518517
+    },
+    {
+      "round": 1,
+      "config": [
+        1.7600000000000002,
+        0.5,
+        5.4,
+        2.5
+      ],
+      "ber": 0.015504436728395061
+    },
+    {
+      "round": 2,
+      "config": [
+        1.5840000000000003,
+        0.55,
+        5.4,
+        2.5
+      ],
+      "ber": 0.015118634259259259
+    }
+  ],
+  "global_learned_single": {
+    "ber": 0.020640432098765434,
+    "syndrome_ones": 521
+  },
+  "per_case_learned_single": {
+    "ber": 0.015118634259259259,
+    "syndrome_ones": 279
+  },
+  "accepted_portfolio_ber": 0.017288773148148147,
+  "optimized_portfolio": {
+    "indices": [
+      6,
+      9,
+      12,
+      10
+    ],
+    "names": [
+      "per_case_learned",
+      "grid2_2_0.5_8_2.5",
+      "grid5_8_0.4_8_2.5",
+      "grid3_2_0.4_8_2.5"
+    ],
+    "ber": 0.013454861111111112,
+    "syndrome_ones": 187,
+    "history": [
+      {
+        "added": "per_case_learned",
+        "ber": 0.015118634259259259,
+        "subset": [
+          6
+        ]
+      },
+      {
+        "added": "grid2_2_0.5_8_2.5",
+        "ber": 0.01439525462962963,
+        "subset": [
+          6,
+          9
+        ]
+      },
+      {
+        "added": "grid5_8_0.4_8_2.5",
+        "ber": 0.013840663580246914,
+        "subset": [
+          6,
+          9,
+          12
+        ]
+      },
+      {
+        "added": "grid3_2_0.4_8_2.5",
+        "ber": 0.013454861111111112,
+        "subset": [
+          6,
+          9,
+          12,
+          10
+        ]
+      }
+    ]
+  },
+  "training_history": [],
+  "gate": {
+    "per_case_beats_global_single": true,
+    "portfolio_beats_accepted_portfolio": true,
+    "guess_count_at_most_six": true
+  }
+}

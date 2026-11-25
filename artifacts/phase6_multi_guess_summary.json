@@ -1,0 +1,82 @@
+{
+  "fixed_candidates": [
+    [
+      4.0,
+      0.5,
+      6.0,
+      2.5
+    ],
+    [
+      4.0,
+      0.5,
+      5.0,
+      2.5
+    ],
+    [
+      4.0,
+      0.4,
+      5.0,
+      2.0
+    ],
+    [
+      4.0,
+      0.4,
+      6.0,
+      2.0
+    ],
+    [
+      8.0,
+      0.5,
+      6.0,
+      2.5
+    ]
+  ],
+  "framework": "multi_trajectory_dsb_energy_selection",
+  "full_public": {
+    "learned": {
+      "frame_error_rate": 1.0,
+      "info_ber": 0.02916872427983539,
+      "rows_with_failed_checks": 500,
+      "syndrome_ones": 9920
+    },
+    "selected": {
+      "frame_error_rate": 1.0,
+      "info_ber": 0.027281207133058986,
+      "rows_with_failed_checks": 500,
+      "syndrome_ones": 9487
+    }
+  },
+  "gate": {
+    "full_ber_below_learned_single": true,
+    "guess_count_at_most_six": true,
+    "pdf_sample_matches": true,
+    "runtime_under_120s_per_frame": true,
+    "validation_ber_below_learned_single": true
+  },
+  "guess_count": 6,
+  "learned_energy_lambda": 6.0,
+  "pdf_sample_matches": true,
+  "seconds_per_frame": 0.08378630380006508,
+  "selection_counts": [
+    18,
+    60,
+    195,
+    169,
+    26,
+    32
+  ],
+  "validation": {
+    "learned": {
+      "frame_error_rate": 1.0,
+      "info_ber": 0.0289437585733882,
+      "rows_with_failed_checks": 100,
+      "syndrome_ones": 1948
+    },
+    "selected": {
+      "frame_error_rate": 1.0,
+      "info_ber": 0.02722222222222222,
+      "rows_with_failed_checks": 100,
+      "syndrome_ones": 1932
+    }
+  }
+}
