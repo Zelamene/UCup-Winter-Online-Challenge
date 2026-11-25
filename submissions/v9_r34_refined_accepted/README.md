@@ -1,6 +1,6 @@
 # v9 — refined `R=3/4` cases candidate
 
-Status: ready for judge submission. Base v8 is accepted at `1,601,303`.
+Status: accepted. Judge score `1,606,841`.
 
 Base: accepted v8 (`submission_v8.cpp`). v9 changes only the three `R=3/4` cases that were not directly tuned on public data:
 
@@ -29,5 +29,7 @@ For each target case:
 - Max guesses: `6`
 - 50 dSB iterations only
 - Clean C++17 compile with `-Wall -Wextra -pedantic`
+
+Judge outcome: cases 3, 6, and 12 rose from `168,188 → 171,480`, `165,603 → 167,094`, and `166,455 → 167,210`. All other cases were unchanged. Total score rose from `1,601,303` to `1,606,841` (`+5,538`).
 
 Manifest diff confirms v9 differs from accepted v8 only on cases 3, 6, and 12.
