@@ -1,6 +1,6 @@
 # v8 — public-tuned `R=3/4` case candidate
 
-Status: candidate for judge submission; not yet accepted.
+Status: accepted. Judge score `1,601,303`.
 
 Base: accepted v7 (`1,600,231`). Only case 9 is changed:
 
@@ -35,3 +35,5 @@ Both halves improved:
 - Max guesses: `6`
 - 50 dSB iterations only
 - Clean C++17 compile with `-Wall -Wextra -pedantic`
+
+Judge outcome: case 9 rose from `166,013` to `167,085` (`+1,072`). All other cases were unchanged. Total score rose from `1,600,231` to `1,601,303`.

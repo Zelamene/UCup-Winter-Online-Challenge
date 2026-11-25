@@ -1,8 +1,8 @@
 # v9 — refined `R=3/4` cases candidate
 
-Status: candidate for judge submission; not yet accepted.
+Status: ready for judge submission. Base v8 is accepted at `1,601,303`.
 
-Base: v8 candidate (`submission_v8.cpp`). v9 changes only the three `R=3/4` cases that were not directly tuned on public data:
+Base: accepted v8 (`submission_v8.cpp`). v9 changes only the three `R=3/4` cases that were not directly tuned on public data:
 
 | Case | N | Synthetic ratio vs accepted |
 |---|---:|---:|
@@ -30,4 +30,4 @@ For each target case:
 - 50 dSB iterations only
 - Clean C++17 compile with `-Wall -Wextra -pedantic`
 
-If v8 is not accepted, v9 must be rebuilt on the previous accepted base rather than submitted as-is.
+Manifest diff confirms v9 differs from accepted v8 only on cases 3, 6, and 12.
