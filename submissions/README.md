@@ -8,6 +8,7 @@ Each version is self-contained in its own folder.
 | v2 | `v2_per_case_all` | `1,579,558` | Per-case tuning on all 12 cases; high rates improved, `R=1/2` regressed |
 | v3 | `v3_hybrid_fallback` | `1,588,472` | Restored old fallback for `R=1/2`, but used the wrong local baseline |
 | v4 | `v4_hybrid_probe` | `1,593,920` | Accepted hybrid: probe decoder for `R=1/2`, per-case tuning elsewhere |
+| v6 | `v6_case11_refine_candidate` | pending | v4 with refined `N=3888, R=2/3` case only |
 
 ## Rebuild
 
