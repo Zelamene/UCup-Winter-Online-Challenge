@@ -1,6 +1,6 @@
 # v7 — refined `R=2/3` cases candidate
 
-Status: candidate for judge submission; not yet accepted.
+Status: accepted. Judge score `1,600,231`.
 
 Base: accepted v6 (`1,597,233`). This candidate changes only the three remaining `R=2/3` cases:
 
@@ -35,3 +35,5 @@ Synthetic optimized/accepted BER ratios versus the current accepted decoder:
 - 50 dSB iterations only
 - Clean C++17 compile with `-Wall -Wextra -pedantic`
 - Python reference decoder matches C++ on synthetic inputs for all three changed cases (`0` bit mismatches)
+
+Judge outcome: cases 2, 5, and 8 improved by `+1,420`, `+1,313`, and `+265`. All other cases were unchanged. Total score rose from `1,597,233` to `1,600,231`.
