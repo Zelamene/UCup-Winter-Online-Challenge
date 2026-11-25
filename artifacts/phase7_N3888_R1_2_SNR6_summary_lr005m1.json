@@ -1,0 +1,153 @@
+{
+  "case": {
+    "n": 3888,
+    "rate": 0.5,
+    "snr": 6.0
+  },
+  "data": {
+    "train_codes": 2,
+    "train_samples_per_code": 64,
+    "val_codes": 2,
+    "val_samples_per_code": 48,
+    "seed": 711
+  },
+  "best_fixed_config": [
+    2.0,
+    0.5,
+    6.0,
+    2.5
+  ],
+  "global_learned_single": {
+    "ber": 0.008814514746227709,
+    "syndrome_ones": 1670
+  },
+  "per_case_learned_single": {
+    "ber": 0.0060174468449931415,
+    "syndrome_ones": 505
+  },
+  "accepted_portfolio_ber": 0.007276663237311386,
+  "optimized_portfolio": {
+    "indices": [
+      6,
+      8,
+      4,
+      0
+    ],
+    "names": [
+      "per_case_learned",
+      "grid1_2_0.4_8_2.5",
+      "fixed_4_0.4_6_2",
+      "global_learned"
+    ],
+    "ber": 0.005835262345679012,
+    "syndrome_ones": 439,
+    "history": [
+      {
+        "added": "per_case_learned",
+        "ber": 0.0060174468449931415,
+        "subset": [
+          6
+        ]
+      },
+      {
+        "added": "grid1_2_0.4_8_2.5",
+        "ber": 0.0059102794924554185,
+        "subset": [
+          6,
+          8
+        ]
+      },
+      {
+        "added": "fixed_4_0.4_6_2",
+        "ber": 0.005845979080932785,
+        "subset": [
+          6,
+          8,
+          4
+        ]
+      },
+      {
+        "added": "global_learned",
+        "ber": 0.005835262345679012,
+        "subset": [
+          6,
+          8,
+          4,
+          0
+        ]
+      }
+    ]
+  },
+  "training_history": [
+    {
+      "epoch": 0,
+      "val_ber": 0.0060174468449931415,
+      "best_ber": 0.0060174468449931415
+    },
+    {
+      "epoch": 2,
+      "val_ber": 0.0062371399176954735,
+      "best_ber": 0.0060174468449931415,
+      "seconds": 18.649093299987726
+    },
+    {
+      "epoch": 4,
+      "val_ber": 0.006403249314128944,
+      "best_ber": 0.0060174468449931415,
+      "seconds": 18.63606270001037
+    },
+    {
+      "epoch": 6,
+      "val_ber": 0.006397890946502058,
+      "best_ber": 0.0060174468449931415,
+      "seconds": 18.019256500003394
+    },
+    {
+      "epoch": 8,
+      "val_ber": 0.006424682784636489,
+      "best_ber": 0.0060174468449931415,
+      "seconds": 18.274769900017418
+    },
+    {
+      "epoch": 10,
+      "val_ber": 0.006537208504801098,
+      "best_ber": 0.0060174468449931415,
+      "seconds": 18.87114780000411
+    },
+    {
+      "epoch": 12,
+      "val_ber": 0.006510416666666667,
+      "best_ber": 0.0060174468449931415,
+      "seconds": 18.876393500017002
+    },
+    {
+      "epoch": 14,
+      "val_ber": 0.006462191358024691,
+      "best_ber": 0.0060174468449931415,
+      "seconds": 18.133927099988796
+    },
+    {
+      "epoch": 16,
+      "val_ber": 0.00640860768175583,
+      "best_ber": 0.0060174468449931415,
+      "seconds": 18.609085299947765
+    },
+    {
+      "epoch": 18,
+      "val_ber": 0.006531850137174211,
+      "best_ber": 0.0060174468449931415,
+      "seconds": 18.26289790001465
+    },
+    {
+      "epoch": 20,
+      "val_ber": 0.00650505829903978,
+      "best_ber": 0.0060174468449931415,
+      "seconds": 18.58777589997044
+    }
+  ],
+  "gate": {
+    "per_case_beats_global_single": true,
+    "portfolio_beats_accepted_portfolio": true,
+    "guess_count_at_most_six": true
+  }
+}
