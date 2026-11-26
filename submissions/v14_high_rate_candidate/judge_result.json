@@ -1,0 +1,22 @@
+{
+  "version": "v14",
+  "status": "Accepted",
+  "score": 1847842,
+  "delta_vs_previous_best": 147196,
+  "previous_best_version": "v13c",
+  "previous_best_score": 1700646,
+  "per_case": [
+    {"case": 1, "n": 648, "k": 324, "snr": 6.0, "score": 114010, "delta_vs_v13c": 0},
+    {"case": 2, "n": 648, "k": 432, "snr": 9.0, "score": 166115, "delta_vs_v13c": 21846},
+    {"case": 3, "n": 648, "k": 486, "snr": 10.5, "score": 182117, "delta_vs_v13c": 10637},
+    {"case": 4, "n": 1296, "k": 648, "snr": 6.0, "score": 115476, "delta_vs_v13c": 0},
+    {"case": 5, "n": 1296, "k": 864, "snr": 9.0, "score": 167136, "delta_vs_v13c": 23558},
+    {"case": 6, "n": 1296, "k": 972, "snr": 10.5, "score": 179315, "delta_vs_v13c": 12221},
+    {"case": 7, "n": 1944, "k": 972, "snr": 6.0, "score": 111452, "delta_vs_v13c": 0},
+    {"case": 8, "n": 1944, "k": 1296, "snr": 9.0, "score": 168890, "delta_vs_v13c": 26043},
+    {"case": 9, "n": 1944, "k": 1458, "snr": 10.5, "score": 180305, "delta_vs_v13c": 13220},
+    {"case": 10, "n": 3888, "k": 1944, "snr": 6.0, "score": 113293, "delta_vs_v13c": 0},
+    {"case": 11, "n": 3888, "k": 2592, "snr": 9.0, "score": 168445, "delta_vs_v13c": 25593},
+    {"case": 12, "n": 3888, "k": 2916, "snr": 10.5, "score": 181288, "delta_vs_v13c": 14078}
+  ]
+}

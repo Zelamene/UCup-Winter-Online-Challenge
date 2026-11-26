@@ -1,0 +1,53 @@
+{
+  "version": "v15",
+  "candidate_folder": "submissions/v15_onsager_bsb",
+  "base_version": "v14",
+  "base_score": 1847842,
+  "status": "accepted",
+  "submitted": true,
+  "judge_score": 2015823,
+  "judge_delta_vs_v14": 167981,
+  "gates": {
+    "strict_cpp17_compile": true,
+    "source_bytes": 19752,
+    "source_under_512k": true,
+    "steps": 50,
+    "max_trajectories": 6,
+    "actual_trajectories_per_case": 1,
+    "forbidden_tokens": [],
+    "validation_all_passed": true,
+    "python_tuner_cpp_bit_parity": true,
+    "patched_exporter_reproduces_v14_with_defaults": true,
+    "public_case9_errors": 12753,
+    "public_case9_ber": 0.017493827160493827,
+    "public_case9_ber_threshold": 0.01921673525377229,
+    "public_case9_ber_gate": true,
+    "fresh_seed": 6060,
+    "fresh_seed_frames_per_case": 300,
+    "fresh_seed_all_twelve_improve": true,
+    "fresh_seed_all_ci_low_above_zero": true,
+    "fresh_seed_gain_r12": [18900, 33700],
+    "fresh_seed_gain_r23_approx": 14000,
+    "fresh_seed_gain_r34": [3000, 4000],
+    "runtime_about_1_5x_v14": true,
+    "judge_runtime_ms_max": 4279,
+    "judge_memory_mib_max": 19.4,
+    "runtime_under_120s_per_case": true
+  },
+  "judge_per_case": [
+    129979, 177394, 185451, 140530, 179802, 183299,
+    137314, 184164, 184485, 145794, 182587, 185024
+  ],
+  "judge_per_case_delta_vs_v14": [
+    15969, 11279, 3334, 25054, 12666, 3984,
+    25862, 15274, 4180, 32501, 14142, 3736
+  ],
+  "artifacts": {
+    "manifest": "submissions/v15_onsager_bsb/manifest.json",
+    "submission": "submissions/v15_onsager_bsb/submission.cpp",
+    "validation": "submissions/v15_onsager_bsb/validation.json",
+    "judge_result": "submissions/v15_onsager_bsb/judge_result.json",
+    "public_output": "artifacts/v15_public.out"
+  },
+  "compliance_note": "The Onsager/TAP term is the gradient of an added polynomial that is constant on +/-1 spins, so the Ising problem and its solutions are unchanged. It uses only current soft spins and current check products; no per-edge message is stored between steps. Its statistical-physics lineage is BP-adjacent, so the QAIA classification is documented explicitly in the v15 README."
+}

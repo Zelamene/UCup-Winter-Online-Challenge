@@ -17,25 +17,30 @@ Objective: increase the judge score beyond the current accepted best while keepi
 
 | Item | Value |
 |---|---:|
-| Best accepted | v13c, `1,700,646` |
-| Last submitted | v13c, `1,700,646` (`+93,434` vs v12) |
-| Active decision | use v13c as the base for all future candidates |
+| Best accepted | v15, `2,015,823` |
+| Last submitted | v15, `2,015,823` (`+167,981` vs v14) |
+| Active decision | use v15 as the base for all future candidates |
 | Public input dispatch | `N=1944, R=3/4, SNR≈10.3` (nearest configured `10.5`) |
 | Public BER, v8–v13c | `0.024784636` |
-| v12 per-case scores | `[90167,144269,171480,90957,143578,167094,89867,142847,167085,89806,142852,167210]` |
-| v12 runtime | `26,341ms` total, `5,578ms` peak — well under the limit |
+| Public BER, v14 | `0.019216735` |
+| Public BER, v15 | `0.017493827` |
+| v15 per-case scores | `[129979,177394,185451,140530,179802,183299,137314,184164,184485,145794,182587,185024]` |
+| v15 judge runtime | `384–4279ms` per case — well under the 2-minute limit |
 
 The best accepted architecture is:
 
-- one scheduled bSB trajectory per `R=1/2` case, tuned by Stage A then Stage B;
-- per-case six-trajectory dSB/QAIA energy portfolios for `R=2/3` and `R=3/4`;
+- one v14-style scheduled bSB trajectory per case, with an added Onsager/TAP reaction term;
+- rate-specific `beta` and `parity_scale` fields, tuned at `N=1296`;
 - exact `(N, K)` dispatch with the nearest configured SNR;
 - decoder lambda and energy-selection lambda are separate parameters;
-- 50 steps, at most 6 trajectories, QAIA/dSB/bSB only.
+- 50 steps, one trajectory per case, QAIA/bSB only.
 
 bSB is compliant ballistic SB: the check gradient uses continuous `x_j` in Eq. (1)
 with `sigma -> x`. No per-edge messages carry over between steps, so it is not
-BP, min-sum, or bit-flip.
+BP, min-sum, or bit-flip. The v15 reaction term is the gradient of a polynomial
+that is constant on `±1` spins; it changes only the continuous landscape, not
+the Ising problem. Its BP-adjacent statistical-physics lineage is documented in
+`submissions/v15_onsager_bsb/README.md`.
 
 Judge status `Accepted` means the submission was valid. It does not mean the score improved; v10 and v11 were both accepted but scored below v9.
 
@@ -57,6 +62,8 @@ Judge status `Accepted` means the submission was valid. It does not mean the sco
 | v12 | `1,607,212` | `+371` vs v9 | accepted new best: v9 + case-5-only salvage |
 | v13 | not submitted | — | flat bSB `R=1/2` candidate; superseded by scheduled v13c |
 | v13c | `1,700,646` | `+93,434` vs v12 | accepted new best: scheduled bSB for all four `R=1/2` cases |
+| v14 | `1,847,842` | `+147,196` vs v13c | accepted new best: all eight high-rate cases moved from dSB portfolios to tuned bSB |
+| v15 | `2,015,823` | `+167,981` vs v14 | accepted new best: Onsager/TAP correction added to bSB on all 12 cases |
 
 Rate-level totals show where all durable progress came from:
 
@@ -72,8 +79,12 @@ Rate-level totals show where all durable progress came from:
 | v11 | `360,797` | `573,546` | `672,232` | `1,606,575` |
 | v12 | `360,797` | `573,546` | `672,869` | `1,607,212` |
 | v13c | `454,231` | `573,546` | `672,869` | `1,700,646` |
+| v14 | `454,231` | `670,586` | `723,025` | `1,847,842` |
+| v15 | `553,617` | `723,947` | `738,259` | `2,015,823` |
 
-Through v12, `R=1/2` had never improved over v1 and every durable gain came from high-rate per-case tuning. v13c changed that: scheduled bSB lifted `R=1/2` from `360,797` to `454,231` while leaving the eight high-rate cases bit-identical to v12.
+Through v12, `R=1/2` had never improved over v1 and every durable gain came from high-rate per-case tuning. v13c changed that: scheduled bSB lifted `R=1/2` from `360,797` to `454,231` while leaving the eight high-rate cases bit-identical to v12. v14 completed the transition by replacing all eight high-rate dSB portfolios with tuned bSB trajectories, adding `+97,040` at `R=2/3` and `+50,156` at `R=3/4` with no regression in any case.
+
+v15 changed the landscape rather than the schedules. The v14 trajectories were kept, and a reaction term plus parity-column scaling were added with rate-specific strengths. Every case improved: `+99,386` at `R=1/2`, `+53,361` at `R=2/3`, and `+15,234` at `R=3/4`. The largest single gain was `+32,501` at `N=3888, R=1/2`.
 
 ## Strategies that worked
 
@@ -86,6 +97,8 @@ Through v12, `R=1/2` had never improved over v1 and every durable gain came from
 7. **One-case-at-a-time changes.** Successful versions changed one or a tight group of cases, making judge deltas attributable.
 8. **Rebasing away a bad case works.** v11 rebuilt from v9 removed v10's `-1,739` case-11 regression exactly and preserved the `+371` case-5 gain.
 9. **Cross-seed robustness checks are useful only as a weak filter.** They rejected several apparent gains before submission, but they failed to predict both v10 case 11 and v11 case 6.
+10. **Stage A → gated Stage B generalizes to high rates.** Rate-specific anchors found large gains at `R=2/3` and `R=3/4`; schedules were kept only when they beat flat Stage A on both validation seeds. The v14 total was predicted at `1,847,584` and judged at `1,847,842`, an error of only `258` points.
+11. **Fixing the continuous landscape, not just the schedule.** v15 kept v14's schedules and added an Onsager/TAP reaction term that is the gradient of a polynomial constant on `±1` spins. It improved all 12 cases and added `+167,981`, showing that plain bSB behaves like mean-field SB and that the reaction correction is the dominant remaining QAIA-internal lever.
 
 ## Assumptions and directions that proved wrong
 
@@ -99,6 +112,7 @@ Through v12, `R=1/2` had never improved over v1 and every durable gain came from
 8. **Judge `Accepted` status as evidence of improvement.** v10 and v11 were both accepted as valid submissions but were below v9. The score table, not the status label, decides the best version.
 9. **Adding independently "supported" case changes.** v10 combined a genuine case-5 gain with a bad case-11 change. v11 removed the bad case-11 change but added a bad case-6 change. The case-5 gain is repeatable, but it was too small to absorb another regression.
 10. **Trajectory replacement being automatically safer than energy-only tuning.** v11 case 6 changed the portfolio/trajectory set and still regressed. The previous conclusion that trajectory changes were safer was too broad.
+11. **Treating plain soft-spin SB as the full QAIA search space.** Every naive alternative in the Tier 3 screen stalled near mean-field behavior. The Onsager correction produced the first large structural gain over v14. The remaining caveat is classification, not numerics: the term is BP-adjacent in origin, even though it is implemented as an SB landscape term with no stored per-edge messages.
 
 ## v10 post-mortem
 
@@ -202,7 +216,7 @@ Schedules beat the flat Stage A configuration on every case and every seed (`+81
 
 11. **v13c accepted.** `artifacts/phase9_case_manifest_v13c.json` applies the Stage B schedules to all four `R=1/2` cases. The judge scored it `1,700,646`, up `93,434` from v12. The eight high-rate cases remained bit-identical to v12, so the entire gain came from the four bSB trajectories. `submissions/v13c_scheduled_r12_candidate/` is the accepted, self-contained archive and is now the base for every candidate.
 
-Keep v13c as the best accepted source. Do not reuse v11 case 6, and do not treat v10/v11 synthetic evidence as proof of expected judge gains.
+At the time, v13c was the best accepted source; it has since been superseded by v14 and v15. Do not reuse v11 case 6, and do not treat v10/v11 synthetic evidence as proof of expected judge gains.
 
 ## Phase 10 tooling
 
@@ -229,18 +243,43 @@ Full Stage A results on seed `2024`:
 
 All clear the `+3,000` gate. The only boundary hit was `dt=0.35` at `N=648, R=2/3`; the required one-time `1.4×` rerun produced `+22,252` with no edge hit, so that wider result is the candidate for Stage B. Stage A at `N=1944` passed cleanly at `+23,740` (`R=2/3`) and `+13,295` (`R=3/4`). Stage B at `N=1944, R=3/4` failed the both-seed rule (`+13,162` vs flat `+13,295` on seed 2024, `+13,650` vs `+13,515` on seed 31337), so that case keeps flat Stage A. Stage B at `N=1944, R=2/3` passed (`+24,293` / `+25,812` vs flat `+23,740` / `+25,521`). All eight Stage A cases now have passing results. The `N=3888, R=2/3` widened rerun gained `+26,176` with no boundary hit; its original run gained `+25,529` but hit `dt=0.35`. `N=3888, R=3/4` gained `+14,227`. Stage B at `N=3888, R=3/4` failed the both-seed rule (`+14,214` vs flat `+14,227` on seed 2024, `+14,491` vs `+14,390` on seed 31337), so that case keeps flat Stage A. Stage B at `N=3888, R=2/3` passed (`+26,225` / `+26,105` vs flat `+26,176` / `+25,688`).
 
-The final v14 manifest replaces all eight high-rate cases: flat Stage A for `N=648` at both rates, `N=1944, R=3/4`, and `N=3888, R=3/4`; scheduled Stage B for `N=1296` at both rates and `N=1944/R=2/3` and `N=3888/R=2/3`. The four `R=1/2` cases remain bit-identical to accepted v13c. `submissions/v14_high_rate_candidate/` contains the exported source, manifest, and validation artifact; it has not been submitted.
+The final v14 manifest replaced all eight high-rate cases: flat Stage A for `N=648` at both rates, `N=1944, R=3/4`, and `N=3888, R=3/4`; scheduled Stage B for `N=1296` at both rates and `N=1944/R=2/3` and `N=3888/R=2/3`. The four `R=1/2` cases remained bit-identical to accepted v13c. `submissions/v14_high_rate_candidate/` is the self-contained accepted archive.
 
-The full submission checklist is complete and recorded in `artifacts/v14_submission_checklist.json`. It includes strict C++17 compile, `49,009` bytes, 50 steps, at most 6 trajectories, no forbidden tokens, Python/C++ bit parity on all 12 cases, public BER `0.019217` below `0.024785`, and a fresh seed `777` gain of `+8,896` on the weakest changed case with peak candidate runtime `15.7s`. Expected judge score is roughly `1.85M`, but that is only an estimate. Submission requires explicit user approval.
+The full submission checklist is recorded in `artifacts/v14_submission_checklist.json`: strict C++17 compile, `49,009` bytes, 50 steps, at most 6 trajectories, no forbidden tokens, Python/C++ bit parity on all 12 cases, public BER `0.019217` below `0.024785`, and a fresh seed `777` gain of `+8,896` on the weakest changed case with peak candidate runtime `15.7s`. The predicted judge score was `1,847,584`; the judge returned `1,847,842`, an error of `258` points.
 
 One tooling note: the coordinate-polish step clips `dt` to the configured range but multiplies the other parameters by a log-normal factor without clipping. The final widened `N=3888, R=2/3` config therefore has `tau=7.60`, slightly above its nominal `7.0` widened high bound. This is still a valid bSB parameter; the boundary gate checks exact range hits in random search, and no such hit occurred.
 
-A partial v14 manifest covering the six completed high-rate changes was exported and compiled cleanly under strict C++17 (`52,841` bytes, 50 steps, at most 6 trajectories, no forbidden tokens). Because case 9 is changed, the public `N=1944, R=3/4` input was decoded with that binary: `14,009` info-bit errors, BER `0.019217`, comfortably below the v13c/v12 value `0.024784636`. The final manifest will be rebuilt once N=3888 decisions are known.
+Stage B at `N=648, R=3/4` found only `+386` of train gain and did not beat flat Stage A on both seeds (`+9,126` vs `+9,181` on seed 2024). Stage B at `N=648, R=2/3` also failed the both-seed rule (`+22,852` vs flat `+22,252` on seed 2024, but `+23,725` vs `+24,034` on seed 31337). Both cases kept flat Stage A. Stage B at `N=1296` passed at both rates: `R=2/3` gained `+24,250` / `+25,172` vs flat `+24,240` / `+24,959`, and `R=3/4` gained `+13,217` / `+14,214` vs flat `+12,845` / `+13,637`.
 
-Stage B at `N=648, R=3/4` found only `+386` of train gain and did not beat flat Stage A on both seeds (`+9,126` vs `+9,181` on seed 2024). Stage B at `N=648, R=2/3` also failed the both-seed rule (`+22,852` vs flat `+22,252` on seed 2024, but `+23,725` vs `+24,034` on seed 31337). Both cases will keep their flat Stage A trajectories. Stage B at `N=1296` passed at both rates: `R=2/3` gained `+24,250` / `+25,172` vs flat `+24,240` / `+24,959`, and `R=3/4` gained `+13,217` / `+14,214` vs flat `+12,845` / `+13,637`.
+v14 was submitted with explicit authorization and accepted at `1,847,842`. It was the base for v15.
 
-No v14 candidate has been submitted. Any candidate must clear the gates in the next section and must not be submitted without explicit authorization.
+## Phase 11 — Onsager-corrected bSB
+
+Tier 3 screening compared four diagnostic dynamics at `N=1296, R=1/2` on the
+same 100 frames: noisy six-trajectory bSB with energy selection (`113.8k`),
+noisy SimCIM (`109.2k`), LQA (`106.0k`), and split checks with auxiliary spins
+(`96.5k`). The tuned bSB baseline scored `111.9k`. None cleared the promotion
+bar. A fifth formulation, bSB with an Onsager/TAP reaction term, scored `134.0k`
+and was promoted.
+
+The term is the gradient of a polynomial that is constant on `±1` spins, so the
+Ising problem is unchanged. It uses only current soft spins and current check
+products; no per-edge message is stored between steps. The BP-adjacent lineage
+is documented explicitly in `submissions/v15_onsager_bsb/README.md`.
+
+Fresh-seed confirmation used seed `6060`, 300 frames per case, paired against
+the v14 binary. All 12 cases improved and all 95% bootstrap intervals had lower
+bounds above zero: `+18.9k` to `+33.7k` at `R=1/2`, about `+14k` at `R=2/3`, and
+`+3k` to `+4k` at `R=3/4`. Public case 9 BER fell from `0.019216735` to
+`0.017493827`. Python, batched tuner, and C++ agreed bit for bit, and the
+patched exporter reproduced the submitted v14 binary with default fields.
+
+`submissions/v15_onsager_bsb/` is the self-contained accepted archive. The full
+checklist is in `artifacts/v15_submission_checklist.json`: `19,752` source bytes,
+50 steps, one trajectory per case, no forbidden tokens, public BER below the
+v14 value, and judge runtime peaking at `4,279 ms`. The judge returned
+`2,015,823`, up `167,981` from v14.
 
 ## Stop condition
 
-Do not submit a structural candidate until it clears the real-bench gate on the v13c base, including fresh-seed checks and, for a changed case 9, a public BER below `0.024784636`. Preserve accepted sources and archive each version separately. Submit only after explicit approval.
+Do not submit a structural candidate until it clears the real-bench gate on the v15 base, including fresh-seed checks and, for a changed case 9, a public BER below the accepted v15 value `0.017493827`. Preserve accepted sources and archive each version separately. Submit only after explicit approval.
