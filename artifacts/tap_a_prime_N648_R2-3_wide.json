@@ -1,0 +1,123 @@
+{
+  "phase": "A_prime",
+  "n": 648,
+  "k": 432,
+  "rate": 0.666666666666667,
+  "snr": 9.0,
+  "noise_scale": 1.00112,
+  "train_samples": 300,
+  "val_samples": 500,
+  "train_seed": 911,
+  "val_seeds": [
+    2024,
+    31337
+  ],
+  "start_config": {
+    "tau": 8.0,
+    "xi": 0.6,
+    "lambd": 9.375,
+    "delta": 2.7,
+    "dt": 0.4440000000000001,
+    "beta": 0.16000000000000003,
+    "parity_scale": 0.6375
+  },
+  "start_source": "artifacts\\tap_a_prime_N648_R2-3.json",
+  "best_config": {
+    "tau": 8.0,
+    "xi": 0.6,
+    "lambd": 9.375,
+    "delta": 2.7,
+    "dt": 0.49284000000000017,
+    "beta": 0.17760000000000006,
+    "parity_scale": 0.6375
+  },
+  "baseline_source": "v15_binary_cache",
+  "search_bounds": {
+    "tau": [
+      1.0,
+      12.0
+    ],
+    "xi": [
+      0.2,
+      3.0
+    ],
+    "lambd": [
+      2.0,
+      20.0
+    ],
+    "delta": [
+      1.5,
+      8.0
+    ],
+    "dt": [
+      0.12,
+      0.5
+    ],
+    "beta": [
+      0.05,
+      0.45
+    ],
+    "parity_scale": [
+      0.15,
+      1.2
+    ]
+  },
+  "bounds_scale": 1.0,
+  "bounds_overrides": {
+    "tau": [
+      1.0,
+      12.0
+    ]
+  },
+  "search_seed": 5150,
+  "workers": 2,
+  "min_move_gain": 80.0,
+  "evaluations": 43,
+  "accepted_moves": 2,
+  "search_seconds": 472.882,
+  "start_train_score": 182123.6151082992,
+  "train_score": 183385.14005817455,
+  "train_gain": 1261.5249498753692,
+  "val_score": 176007.51867378486,
+  "val_ber": 0.017375,
+  "gain": -1566.9993879916728,
+  "ci_95": [
+    -3110.8829103352195,
+    3215.650333245601
+  ],
+  "validation": {
+    "2024": {
+      "baseline_score": 177574.51806177653,
+      "candidate_score": 176007.51867378486,
+      "gain": -1566.9993879916728,
+      "gain_ci_95": [
+        -3110.8829103352195,
+        -11.810486074873218
+      ],
+      "baseline_errors": 3620,
+      "candidate_errors": 3753
+    },
+    "31337": {
+      "baseline_score": 179537.76523581543,
+      "candidate_score": 181044.73055935584,
+      "gain": 1506.9653235404112,
+      "gain_ci_95": [
+        -222.61904439744393,
+        3215.650333245601
+      ],
+      "baseline_errors": 3460,
+      "candidate_errors": 3342
+    }
+  },
+  "edge_params": [],
+  "needs_boundary_rerun": false,
+  "gate": {
+    "threshold": 1500.0,
+    "min_val_gain": -1566.9993879916728,
+    "all_seeds_ge_threshold": false,
+    "all_ci_lower_positive": false,
+    "no_boundary_hit": true,
+    "gate_passed": false
+  },
+  "gate_passed": false
+}

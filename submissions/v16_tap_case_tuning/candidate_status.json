@@ -1,0 +1,9 @@
+{
+  "version": "v16",
+  "status": "local_candidate_not_submitted",
+  "base": "v15",
+  "changed_cases": [7, 10],
+  "stage_b_prime": "dropped",
+  "judge_score": null,
+  "submission_authorized": false
+}

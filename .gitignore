@@ -6,3 +6,6 @@ artifacts/synthetic_*.in
 artifacts/sample.in
 # portable C++ toolchain and throwaway test inputs/binaries
 artifacts/build/
+# throwaway judge-format inputs/outputs from binary validators
+artifacts/phase12_v16_bin_work_*/
+artifacts/phase12_v16_fresh_work/

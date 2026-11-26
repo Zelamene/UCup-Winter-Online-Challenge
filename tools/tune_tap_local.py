@@ -109,6 +109,25 @@ def widen_bounds(
     return widened
 
 
+def parse_bounds_override(values: list[str] | None) -> dict[str, tuple[float, float]]:
+    """Parse repeated ``KEY=LOW:HIGH`` bound overrides from the CLI."""
+    overrides: dict[str, tuple[float, float]] = {}
+    for value in values or []:
+        key, sep, rest = value.partition("=")
+        if not sep or key not in TAP_BOUNDS:
+            raise ValueError(
+                f"invalid bounds override {value!r}; expected KEY=LOW:HIGH with KEY in {TAP_KEYS}"
+            )
+        low_text, colon, high_text = rest.partition(":")
+        if not colon:
+            raise ValueError(f"invalid bounds override {value!r}; expected KEY=LOW:HIGH")
+        low, high = float(low_text), float(high_text)
+        if not math.isfinite(low) or not math.isfinite(high) or low >= high:
+            raise ValueError(f"invalid bounds override {value!r}; require finite LOW < HIGH")
+        overrides[key] = (low, high)
+    return overrides
+
+
 def edge_params(
     cfg: dict[str, float], bounds: dict[str, tuple[float, float]], tol: float = 1e-6
 ) -> list[str]:
@@ -241,6 +260,7 @@ def run(
     seed: int,
     cache_dir: Path,
     bounds_scale: float,
+    bounds_overrides: dict[str, tuple[float, float]] | None,
     min_move_gain: float,
     max_cycles: int,
     min_gain: float | None,
@@ -249,6 +269,11 @@ def run(
     k = int(round(n * rate))
     threshold = min_gain_for_rate(rate) if min_gain is None else float(min_gain)
     bounds = widen_bounds(TAP_BOUNDS, bounds_scale)
+    if bounds_overrides:
+        bounds.update(bounds_overrides)
+        print("Widened bounds: " + " ".join(
+            f"{key}=[{low:g}, {high:g}]" for key, (low, high) in sorted(bounds_overrides.items())
+        ))
     print(f"Stage A': N={n} K={k} R={rate:.4f} SNR={snr:.1f} dB")
     print(f"Start: {start_source}")
     print("  " + " ".join(f"{key}={start_config[key]:.5f}" for key in TAP_KEYS))
@@ -330,6 +355,9 @@ def run(
         "baseline_source": "v15_binary_cache",
         "search_bounds": {key: list(value) for key, value in bounds.items()},
         "bounds_scale": float(bounds_scale),
+        "bounds_overrides": {
+            key: [float(low), float(high)] for key, (low, high) in sorted((bounds_overrides or {}).items())
+        },
         "search_seed": seed,
         "workers": int(workers),
         "min_move_gain": float(min_move_gain),
@@ -373,6 +401,13 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=5150)
     parser.add_argument("--cache-dir", type=Path, default=DEFAULT_CACHE_DIR_V15)
     parser.add_argument("--bounds-scale", type=float, default=1.0)
+    parser.add_argument(
+        "--bounds-override",
+        action="append",
+        default=[],
+        metavar="KEY=LOW:HIGH",
+        help="widen one bound, e.g. --bounds-override tau=1:12",
+    )
     parser.add_argument("--min-move-gain", type=float, default=80.0)
     parser.add_argument("--max-cycles", type=int, default=2)
     parser.add_argument("--workers", type=int, default=6)
@@ -382,6 +417,11 @@ def main() -> None:
         help="default is artifacts/tap_a_prime_N<N>_R<rate>.json",
     )
     args = parser.parse_args()
+
+    try:
+        bounds_overrides = parse_bounds_override(args.bounds_override)
+    except (TypeError, ValueError) as exc:
+        raise SystemExit(str(exc))
 
     snr = args.snr if args.snr is not None else configured_snr(args.rate)
     k = int(round(args.n * args.rate))
@@ -410,6 +450,7 @@ def main() -> None:
         seed=args.seed,
         cache_dir=args.cache_dir,
         bounds_scale=args.bounds_scale,
+        bounds_overrides=bounds_overrides,
         min_move_gain=args.min_move_gain,
         max_cycles=args.max_cycles,
         min_gain=args.min_gain,

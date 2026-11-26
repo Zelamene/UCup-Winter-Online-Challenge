@@ -29,7 +29,9 @@ from real_bench import build_case  # noqa: E402
 from tune_bsb_stage_a import rate_tag  # noqa: E402
 from tune_tap_local import min_gain_for_rate  # noqa: E402
 
+ROOT = TOOLS_DIR.parent
 SCORE_SCALE = 100_000.0
+DEFAULT_CACHE_DIR_V15 = ROOT / "artifacts" / "baseline_cache_v15"
 STEPS = 50
 KNOT_STEPS = (0, 12, 25, 37, 49)
 KNOTS = len(KNOT_STEPS)
@@ -227,7 +229,7 @@ def run(
     seed: int,
     max_passes: int,
     quick: bool,
-    baseline_cache_dir: Path = DEFAULT_CACHE_DIR,
+    baseline_cache_dir: Path | None = None,
     tap_from_path: Path | None = None,
     beta_knots: bool = False,
     min_gain: float | None = None,
@@ -274,6 +276,10 @@ def run(
     baseline_source = "v15_binary_cache" if tap_from_path is not None else (
         "v13c_binary_cache" if rate > 0.5 else "v12_python"
     )
+    if baseline_cache_dir is None:
+        baseline_cache_dir = (
+            DEFAULT_CACHE_DIR_V15 if tap_from_path is not None else DEFAULT_CACHE_DIR
+        )
     phase = "B_prime" if tap_from_path is not None else "B"
     print(f"Stage {phase}: N={n} K={k} R={rate:.3f} SNR={snr:.1f}")
     print("  " + " ".join(f"{key}={base_cfg[key]:.5f}" for key in base_cfg))
@@ -363,6 +369,7 @@ def run(
         "val_samples": val_samples,
         "noise_scale": noise_scale,
         "baseline_source": baseline_source,
+        "baseline_cache_dir": str(baseline_cache_dir),
         "knot_steps": list(KNOT_STEPS),
         "parameters": list(parameter_names(groups)),
         "flat_train_score": flat_train_score,
@@ -416,7 +423,10 @@ def main() -> None:
     parser.add_argument("--max-passes", type=int, default=3)
     parser.add_argument("--workers", type=int, default=6)
     parser.add_argument("--quick", action="store_true", help="two coarse passes only")
-    parser.add_argument("--cache-dir", type=Path, default=DEFAULT_CACHE_DIR)
+    parser.add_argument(
+        "--cache-dir", type=Path, default=None,
+        help="baseline cache; defaults to v15 cache for --tap-from, v12/v13c otherwise",
+    )
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
 

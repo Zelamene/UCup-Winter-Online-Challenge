@@ -1,0 +1,67 @@
+{
+  "manifest": "artifacts\\phase12_case_manifest_v16_prelim.json",
+  "candidate": "artifacts\\build\\v16_prelim.exe",
+  "baseline": "artifacts\\build\\v15_ref.exe",
+  "seed": 6060,
+  "frames": 300,
+  "required_gain": 1500.0,
+  "changed_cases": [
+    7,
+    10
+  ],
+  "unchanged_cases": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    8,
+    9,
+    11,
+    12
+  ],
+  "results": [
+    {
+      "case": 7,
+      "n": 1944,
+      "k": 972,
+      "snr": 6.0,
+      "frames": 300,
+      "baseline_score": 137874.8188377898,
+      "candidate_score": 141201.66501710555,
+      "gain": 3326.846179315762,
+      "gain_ci_95": [
+        1026.6753523424347,
+        5779.719823265959
+      ],
+      "baseline_errors": 12191,
+      "candidate_errors": 11292,
+      "baseline_seconds": 2.12,
+      "candidate_seconds": 2.16,
+      "passed": true
+    },
+    {
+      "case": 10,
+      "n": 3888,
+      "k": 1944,
+      "snr": 6.0,
+      "frames": 300,
+      "baseline_score": 140981.0790453718,
+      "candidate_score": 144637.83122638686,
+      "gain": 3656.7521810150647,
+      "gain_ci_95": [
+        1873.2619064696823,
+        5740.130097218383
+      ],
+      "baseline_errors": 22699,
+      "candidate_errors": 20866,
+      "baseline_seconds": 17.38,
+      "candidate_seconds": 18.64,
+      "passed": true
+    }
+  ],
+  "all_passed": true,
+  "min_observed_gain": 3326.846179315762,
+  "min_ci_lower": 1026.6753523424347
+}

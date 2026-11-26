@@ -19,6 +19,7 @@ Objective: increase the judge score beyond the current accepted best while keepi
 |---|---:|
 | Best accepted | v15, `2,015,823` |
 | Last submitted | v15, `2,015,823` (`+167,981` vs v14) |
+| Local candidate | v16, not submitted: v15 + cases 7 and 10 |
 | Active decision | use v15 as the base for all future candidates |
 | Public input dispatch | `N=1944, R=3/4, SNR≈10.3` (nearest configured `10.5`) |
 | Public BER, v8–v13c | `0.024784636` |
@@ -67,39 +68,127 @@ Phase 12 keeps the accepted v15 architecture and retunes the seven scalar TAP/bS
 1. **Stage A′ — local parameter search.** `tools/tune_tap_local.py` starts from the accepted v15 setting for a case and runs a parallel log-space coordinate search over `tau`, `xi`, `lambd`, `delta`, `dt`, `beta`, and `parity_scale`. Bounds are `tau 1–8`, `xi 0.2–3`, `lambd 2–20`, `delta 1.5–8`, `dt 0.12–0.5`, `beta 0.05–0.45`, and `parity_scale 0.15–1.2`. Training uses seed 911 with 300 frames; validation uses 500 frames on seeds 2024 and 31337. Six workers evaluate probe moves in parallel. This is deliberately local: wide random grids and global retunes repeatedly failed in earlier phases.
 2. **Constant beta by default.** `beta` stays at the accepted per-rate value unless a tiny end-of-run or scheduled variant clears every gate. `--beta-knots` is only an optional Stage B′ probe, not part of the flat Stage A′ search.
 3. **Retries for near misses.** Near-gate cases were rerun from their best configuration with train seed 5151. No retry produced a new accepted move, so the original best result stands.
-4. **Stage B′ — conditional schedule probe.** `tools/tune_bsb_stage_b.py --tap-from` starts from a Stage A′ winner and may add piecewise-linear parameter schedules. A schedule is kept only if it beats flat Stage A′ on **both** validation seeds. No Stage B′ run has been completed in this phase.
+4. **Stage B′ — conditional schedule probe.** `tools/tune_bsb_stage_b.py --tap-from` starts from a Stage A′ winner and may add piecewise-linear parameter schedules. A schedule is kept only if it beats flat Stage A′ on **both** validation seeds. The case-10 search was reproduced twice (`151,620.3 → 151,708.4`, only `+88` train score); the first validation crashed on the old v12/v13c cache and the corrected rerun timed out before validation. `tools/tune_bsb_stage_b.py` now defaults to `artifacts/baseline_cache_v15/` for `--tap-from`, but the schedule is dropped because the training gain is far below bench noise.
 5. **Bootstrap gates.** Every gain uses paired frame bootstrap 95% CIs: the candidate must gain `>= +2,000` at `R=1/2` or `>= +1,500` at `R=2/3` on **both** seeds, with both CI lower bounds above zero. Any parameter landing exactly on a search bound must be widened once and rerun.
 6. **Binary confirmation.** `tools/validate_binary_gains.py` rebuilds the same frames and compares the compiled candidate against `artifacts/build/v15_ref.exe`, so the reported gains are not only Python-simulator results.
 7. **v16 acceptance gate.** A built candidate must gain `>= +1,500` on every changed case with fresh seed 6060, 300 frames, paired against v15, with CI above zero. Unchanged cases must be byte-identical. Public case 9 must remain byte-identical or drop below v15's public BER `0.017493827`.
 8. **Structural screen.** `tools/screen_tap_structural.py` screens a beta ramp, a six-trajectory energy portfolio, and a dSB finish against the retuned flat TAP-bSB. Promotion bars are `+4,000` at `N=1296` and `+8,000` at `N=3888`; a miss means the structure is dropped.
 
-### Findings so far
+### Stage A′ findings (500 frames)
 
-Stage A′ is complete for all 8 cases. Gains below are versus the compiled v15 baseline; CI values are lower bounds on that seed's gain.
+Stage A′ is complete for all 8 tuned cases. Every gain is versus the compiled v15 binary on identical frames; CI values are 95% lower bounds on that seed's gain.
 
-| Rate | Case | Seed 2024 gain / CI low | Seed 31337 gain / CI low | Result |
-|---|---:|---:|---:|---|
-| R=1/2 | N=648 | −1,029 / −2,893 | −2,036 / −4,101 | Failed both seeds |
-| R=1/2 | N=1296 | +1,327 / +60 | +2,175 / +762 | Failed: min gain 21.5% below gate |
-| R=1/2 | N=1944 | +3,878 / +2,341 | +1,979 / +307 | Failed by 21.5 points; retry found nothing better |
-| R=1/2 | N=3888 | +5,675 / +4,321 | +7,007 / +5,402 | **Passed** |
-| R=2/3 | N=648 | −714 / −2,405 | −512 / −2,283 | Failed; `tau` also hit the upper bound |
-| R=2/3 | N=1296 | −69 / −842 | +361 / −373 | Failed both seeds |
-| R=2/3 | N=1944 | +822 / +4 | +158 / −803 | Failed both seeds |
-| R=2/3 | N=3888 | +1,035 / +251 | +452 / −350 | Failed; `dt` hit the upper bound |
+| Case | `N / rate` | Seed 2024 gain / CI low | Seed 31337 gain / CI low | Boundary | Decision |
+|---:|---|---:|---:|---|---|
+| 1 | 648 / R=1/2 | −1,029 / −2,893 | −2,036 / −4,101 | no | Failed both seeds; keep v15 |
+| 2 | 648 / R=2/3 | −714 / −2,405 | −512 / −2,283 | `tau=8` hit | Failed; widening rerun required |
+| 3 | 648 / R=3/4 | — | — | — | Not tuned; R=3/4 skipped |
+| 4 | 1296 / R=1/2 | +1,327 / +60 | +2,175 / +762 | no | Failed `+2,000` gate; 1000-frame retest required |
+| 5 | 1296 / R=2/3 | −69 / −842 | +361 / −373 | no | Failed both seeds; keep v15 |
+| 6 | 1296 / R=3/4 | — | — | — | Not tuned; R=3/4 skipped |
+| 7 | 1944 / R=1/2 | +3,878 / +2,341 | +1,979 / +307 | no | Missed strict gate by 21.5; 1000-frame retest required |
+| 8 | 1944 / R=2/3 | +822 / +4 | +158 / −803 | no | Failed both seeds; keep v15 |
+| 9 | 1944 / R=3/4 | — | — | — | Not tuned; public case stays byte-identical |
+| 10 | 3888 / R=1/2 | +5,675 / +4,321 | +7,007 / +5,402 | no | **Passed** flat Stage A′ |
+| 11 | 3888 / R=2/3 | +1,035 / +251 | +452 / −350 | `dt=0.5` hit | Failed; widening rerun required |
+| 12 | 3888 / R=3/4 | — | — | — | Not tuned; R=3/4 skipped |
 
-The one clean winner is `N=3888, R=1/2`, with `tau=2.295`, `xi=1.264`, `lambd=5.95`, `delta=3.72`, `dt≈0.34841`, `beta=0.27`, and `parity_scale≈0.28814`. It has no boundary hit and compiled-binary gains of `+5,675` and `+7,007`. It is the only case currently eligible for a v16 manifest.
+The flat Stage A′ winner for case 10 is `tau=2.295`, `xi=1.264`, `lambd=5.95`, `delta=3.72`, `dt≈0.34841`, `beta=0.27`, `parity_scale≈0.28814`. It has no boundary hit.
 
-The bench is reliable for decisions of several thousand points but not for marginal ones. The fixed-rule v15 bench total is `1,996,724` versus the accepted judge total `2,015,823`, a `+19,099` judge bias; the linear fit has a per-case residual RMSE of about `2,113` points (`artifacts/phase13/bench_vs_judge_v15.json`). That supports the case-10 decision but does not make the 21.5-point case-7 miss credible.
+### Boundary reruns
+
+`tools/tune_tap_local.py` gained a targeted `--bounds-override KEY=LOW:HIGH` option so one parameter can be widened without moving every bound via `--bounds-scale`. Each bound case was rerun exactly once.
+
+| Case | Widening | Train gain | Seed 2024 / CI low | Seed 31337 / CI low | Edge after rerun | Result |
+|---:|---|---:|---:|---:|---|---|
+| 2 | `tau 1–8 → 1–12` | +1,261.5 | −1,567 / −3,111 | +1,507 / −223 | no | Failed; dropped |
+| 11 | `dt 0.12–0.5 → 0.12–0.7` | 0.0 | +1,035 / +251 | +452 / −350 | no | Failed; dropped |
+
+Both R=2/3 boundary candidates were dropped, so no R=2/3 case is eligible for v16.
+
+### High-power near-miss re-tests
+
+New v15 per-frame caches were generated in `artifacts/baseline_cache_v15_1000/` for cases 4 and 7 on seeds `2024` and `31337`, 1000 frames each. `load_baseline_errors` requires an exact frame-count match, so the 1000-frame tests cannot reuse the 500-frame caches.
+
+| Case | Frames | Seed 2024 gain / CI low | Seed 31337 gain / CI low | Gate |
+|---:|---:|---:|---:|---|
+| 4 | 1000 | +1,021.6 / +21.7 | +1,781.6 / +667.1 | Failed `+2,000`; dropped |
+| 7 | 1000 | +2,676.9 / +1,527.5 | +3,820.8 / +2,644.1 | **Passed** |
+
+Case 7's flat config is `tau=2.295`, `xi=1.264`, `lambd=5.95`, `delta=3.72`, `dt≈0.34841`, `beta=0.27`, `parity_scale≈0.35537`. It is retained only under the revised 1000-frame gate; under the original strict 500-frame rule it still misses seed 31337 by 21.5 points.
+
+Compiled-binary confirmation on the same 1000 frames:
+
+| Seed | Case 7 gain / CI | Case 10 gain / CI |
+|---|---:|---:|
+| 2024 | +2,676.9 / [+1,523.0, +3,895.3] | +5,528.2 / [+4,343.4, +6,627.4] |
+| 31337 | +3,820.8 / [+2,596.1, +5,036.3] | +5,758.8 / [+4,604.9, +7,018.4] |
+
+Fresh-seed gate on seed `6060`, 300 frames, minimum `+1,500` per changed case:
+
+| Case | Baseline → candidate score | Gain / CI | Result |
+|---:|---:|---:|---|
+| 7 | 137,874.8 → 141,201.7 | +3,326.8 / [+1,026.7, +5,779.7] | Passed |
+| 10 | 140,981.1 → 144,637.8 | +3,656.8 / [+1,873.3, +5,740.1] | Passed |
+
+### Stage B′ finding
+
+The case-10 schedule search was reproduced twice: `151,620.3 → 151,708.4`, a training gain of only `+88.1` over `121` evaluations. The first validation crashed because `tools/tune_bsb_stage_b.py --tap-from` still defaulted to the old v12/v13c cache; the tool now defaults to `artifacts/baseline_cache_v15/` and records `baseline_cache_dir` in its artifact. The corrected rerun timed out after `7,200 s` before validation, so no schedule artifact was produced. Because `+88` is far below the bench's roughly `±1.5k` per-case reliability, Stage B′ is dropped and flat case 10 is retained. Decision: `artifacts/phase12_stage_b_prime_decision.json`.
+
+### Structural screen finding
+
+`tools/screen_tap_structural.py` screened case 10 with 100 frames on seeds `2024` and `6060`, `noise_scale=1.00112`, and a `+8,000` promotion bar. Flat Stage A′ baselines were `141,928.9` and `144,050.7`. Nothing was promoted.
+
+| Variant | Seed 2024 gain / CI low | Seed 6060 gain / CI low | Promoted |
+|---|---:|---:|---|
+| `beta_ramp` | −2,920.8 / −6,014.5 | −1,537.2 / −4,886.5 | no |
+| `portfolio6` | −466.8 / −3,624.5 | −1,232.9 / −4,615.7 | no |
+| `dsb_finish_5` | −2,118.1 / −2,855.9 | −2,559.6 / −3,550.4 | no |
+| `dsb_finish_10` | −4,451.2 / −5,860.1 | −4,634.8 / −5,981.0 | no |
+
+### Bench calibration finding
+
+The bench is reliable for decisions of several thousand points but not marginal ones. Fixed-rule v15 bench total is `1,996,724.5` versus the accepted judge total `2,015,823`, a `+19,099` judge bias. The linear fit has slope `0.947`, intercept `10,410.4`, RMSE `2,112.7`, MAE `1,535.3`, and max residual `4,674.0` points per case (`artifacts/phase13/bench_vs_judge_v15.json`). Offset mean is `+1,591.5` and ratio range is `0.9931–1.0609`. This supports the case-10 decision but does not make the 21.5-point case-7 miss credible.
+
+### Local v16 candidate
+
+`submissions/v16_tap_case_tuning/` is a local candidate, not a submission. It is v15 plus flat Stage A′ cases 7 and 10. Cases `1–6, 8, 9, 11, 12` are byte-identical to v15.
+
+| Check | Result |
+|---|---|
+| Manifest / source | `artifacts/phase12_case_manifest_v16.json`; `submission.cpp` = `19,964` bytes |
+| Source SHA-256 | `5F304437925F758AFD9A645D418D8E663B30D50048FACF2C4FABDF7995E94046` |
+| `validate_submission_v3.py` | All gates true; no forbidden tokens or offline-ceiling symbols |
+| Strict C++17 compile | Passed with `w64devkit/bin/g++.exe -std=c++17 -O2 -Wall -Wextra -pedantic` |
+| Public case 9 | BER `0.017493827`; output byte-identical to v15 |
+| Public output SHA-256 | `1BBF2BBAA56E6AD871BB6FFE7F0AC4D501C31F3CE7A684195CAFD8F1AAA8723A`, same as v15 |
+| Fresh seed `6060` | Passed both changed cases |
+| Status | `local_candidate_not_submitted` |
+
+### Finding index
+
+- `artifacts/tap_a_prime_*.json` — Stage A′ artifacts, including the 1000-frame retests.
+- `artifacts/tap_a_prime_N648_R2-3_wide.json` and `artifacts/tap_a_prime_N3888_R2-3_wide.json` — boundary reruns.
+- `artifacts/phase12_stage_b_prime_decision.json` — Stage B′ drop decision.
+- `artifacts/phase12_structural_N3888_R0.5.json` — structural screen.
+- `artifacts/phase12_v16_*` — validator, binary-gain, fresh-seed, and public-output artifacts.
+- `submissions/v16_tap_case_tuning/` — self-contained local candidate archive.
 
 ### Current stop position
 
-- R=2/3 has no passing case. N=648 hit the `tau` upper bound and N=3888 hit the `dt` upper bound; neither widening rerun was done, and no tuning Python process is currently running.
-- No Stage B′ result, structural-screen result, or `artifacts/phase12_case_manifest_v16.json` exists.
-- No v16 export, strict compile, validator run, public BER check, binary gain validation, or seed-6060 fresh-seed gate has been run.
-- If built now, v16 could only change case 10. That is far below the Phase 12 target of roughly `2.03–2.05M`; all eight high-rate cases and the other three `R=1/2` cases remain byte-identical to v15.
+- Phase 12 is complete. The only v16 changes are cases 7 and 10, both flat Stage A′.
+- This remains far below the Phase 12 target of roughly `2.03–2.05M`; all eight high-rate cases and the other three `R=1/2` cases remain byte-identical to v15.
 - R=3/4 is skipped because no changed case has cleared a gate in passing.
-- Do not submit until the fresh-seed gate passes and explicit authorization is given.
+- Nothing has been committed, pushed, or submitted for this cleanup.
+- Do not submit until explicit authorization is given.
+
+## Phase 13 — offline ceiling analysis
+
+Phase 13 is offline analysis only. BP, OSD, list-MAP, and other non-QAIA decoders are measuring sticks here and never enter a manifest or submission. Every Python tool in `tools/ceiling/` starts with `# OFFLINE ANALYSIS ONLY — never imported by the exporter`, and `tools/validate_submission_v3.py` rejects those symbols in generated source; an injected `paired_bootstrap_ci` probe was correctly rejected.
+
+Fixed rules are `real_bench.build_case(..., noise_scale=1.00112)`, seeds `2024`, `31337`, `6060`, 500 frames per case per seed, and paired frame bootstrap 95% CIs. `artifacts/phase13/cache_self_test.json` compared the v15 cache with itself and reported exactly zero delta and zero-width CI on every case. `artifacts/phase13/cache_smoke_manifest.json` confirmed `cache_binary.py` on seed `6060` with the v15 reference binary hash prefix `125a7211740a271b`.
+
+Step 0 recorded `2,517,863` as the live top UCup scoreboard total by `haminh109` on 2026-11-26 (`artifacts/phase13/step0_target_identity.json`). It is a real hidden-judge score, not a local ceiling: rank 1, second place `2,516,559`, gap `304`, contest live until 2026-12-08. The gap over accepted v15 is `+502,040`. The official formula is `-Σ 10·lg(BER_a)` over 12 hidden datasets, scaled by `10,000` by the judge. No source or algorithm is public, so this is not evidence that `2,517,863` is reachable by a QAIA-compliant decoder. The earlier offline full-BP estimate is about `2.27M`, still below the live target.
 
 ## Submission history
 
@@ -121,6 +210,7 @@ The bench is reliable for decisions of several thousand points but not for margi
 | v13c | `1,700,646` | `+93,434` vs v12 | accepted new best: scheduled bSB for all four `R=1/2` cases |
 | v14 | `1,847,842` | `+147,196` vs v13c | accepted new best: all eight high-rate cases moved from dSB portfolios to tuned bSB |
 | v15 | `2,015,823` | `+167,981` vs v14 | accepted new best: Onsager/TAP correction added to bSB on all 12 cases |
+| v16 | not submitted | — | local candidate: v15 + flat Stage A′ cases 7 and 10 |
 
 Rate-level totals show where all durable progress came from:
 

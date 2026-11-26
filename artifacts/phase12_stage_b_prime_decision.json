@@ -1,0 +1,14 @@
+{
+  "case": "N3888_R0.5",
+  "stage": "B_prime",
+  "start": "artifacts/tap_a_prime_N3888_R0.5.json",
+  "search_seed": 5150,
+  "flat_train_score": 151620.3,
+  "best_train_score": 151708.4,
+  "train_gain": 88.1,
+  "evaluations": 121,
+  "outcome": "dropped",
+  "reason": "The full search was reproduced twice with the correct v15 cache path, but validation did not finish before the 7200 s timeout. The train gain is only +88, far below the ~1.5k per-case bench reliability, so the schedule is not promoted over flat Stage A'.",
+  "validation_artifact": null,
+  "flat_stage_a_retained": true
+}
