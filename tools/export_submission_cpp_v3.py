@@ -55,6 +55,9 @@ struct TrajectoryConfig {
     const double* delta_values;
     const double* dt_values;
     Mode mode;
+    double beta;          // Onsager/TAP reaction strength (bSB only); 0 disables
+    double parity_scale;  // check-force scale on parity columns (last m); 1 disables
+    const double* beta_values;
 };
 
 struct CaseConfig {
@@ -88,6 +91,12 @@ static std::vector<int> run_trajectory(
     }
     std::vector<double> pref(max_deg + 1, 1.0);
     std::vector<double> suff(max_deg + 1, 1.0);
+    const bool use_reaction = (cfg.beta != 0.0 || cfg.beta_values != nullptr);
+    const bool use_scale = (cfg.parity_scale != 1.0);
+    const int parity_start = n - m;  // H=[A|I]
+    std::vector<double> reaction(use_reaction ? n : 0, 0.0);
+    std::vector<double> qq(max_deg + 1), uu(max_deg + 1);
+    std::vector<double> pp(max_deg + 1), qp(max_deg + 1), ps(max_deg + 1), qs(max_deg + 1);
 
     const double tau = cfg.tau_values ? cfg.tau_values[0] : cfg.tau;
     for (int col = 0; col < n; ++col) {
@@ -100,6 +109,7 @@ static std::vector<int> run_trajectory(
         const double lambd = cfg.lambd_values ? cfg.lambd_values[step] : cfg.lambd;
         const double delta = cfg.delta_values ? cfg.delta_values[step] : cfg.delta;
         const double dt = cfg.dt_values ? cfg.dt_values[step] : cfg.dt;
+        const double beta = cfg.beta_values ? cfg.beta_values[step] : cfg.beta;
         for (int col = 0; col < n; ++col) {
             if (cfg.mode == Mode::Dsb) {
                 spins[col] = (x[col] >= 0.0) ? 1.0 : -1.0;
@@ -128,9 +138,47 @@ static std::vector<int> run_trajectory(
                 weighted[cols[start + i]] += pref[i] * suff[i + 1];
             }
         }
+        if (use_reaction) {
+            // sum_c sum_{j in c\i} (1-x_j^2) prod_{l in c\{i,j}} x_l^2 ; gradient of a term constant on +-1 spins
+            std::fill(reaction.begin(), reaction.end(), 0.0);
+            for (int row = 0; row < m; ++row) {
+                const int start = starts[row];
+                const int deg = starts[row + 1] - start;
+                if (deg <= 0) continue;
+                for (int t = 0; t < deg; ++t) {
+                    const double s = spins[cols[start + t]];
+                    qq[t] = s * s;
+                    uu[t] = 1.0 - qq[t];
+                }
+                pp[0] = 1.0; qp[0] = 0.0;
+                for (int t = 0; t < deg; ++t) {
+                    pp[t + 1] = pp[t] * qq[t];
+                    qp[t + 1] = qp[t] * qq[t] + pp[t] * uu[t];
+                }
+                ps[deg] = 1.0; qs[deg] = 0.0;
+                for (int t = deg - 1; t >= 0; --t) {
+                    ps[t] = ps[t + 1] * qq[t];
+                    qs[t] = qs[t + 1] * qq[t] + ps[t + 1] * uu[t];
+                }
+                for (int t = 0; t < deg; ++t) {
+                    reaction[cols[start + t]] += qp[t] * ps[t + 1] + pp[t] * qs[t + 1];
+                }
+            }
+        }
         const double schedule = static_cast<double>(step) / (STEPS - 1);
+        const double coupling = 0.5 * lambd;
         for (int col = 0; col < n; ++col) {
-            force[col] = llr[col] + (0.5 * lambd) * weighted[col];
+            const double scale = (use_scale && col >= parity_start) ? cfg.parity_scale : 1.0;
+            if (use_scale) {
+                force[col] = llr[col] + (coupling * scale) * weighted[col];
+            } else {
+                force[col] = llr[col] + coupling * weighted[col];
+            }
+            if (beta != 0.0) {
+                double r = ((beta * (coupling * coupling)) * spins[col]) * reaction[col];
+                if (use_scale) r = r * scale;
+                force[col] = force[col] - r;
+            }
             const double pump = -(delta - schedule) * x[col];
             const double y_new = y[col] + dt * (pump + xi * force[col]);
             const double x_new = x[col] + dt * y_new;
@@ -329,6 +377,19 @@ def _schedule_values(value: object, label: str) -> list[float]:
     return result
 
 
+def _beta_values(value: object, label: str) -> list[float]:
+    """Validate and return per-step beta values; zero is allowed."""
+    if isinstance(value, (list, tuple)):
+        if len(value) != STEPS:
+            raise ValueError(f"{label} must have {STEPS} values, got {len(value)}")
+        result = [_finite(item, f"{label}[{index}]") for index, item in enumerate(value)]
+    else:
+        result = [_finite(value, label)] * STEPS
+    if any(not math.isfinite(item) for item in result):
+        raise ValueError(f"{label} must contain finite values")
+    return result
+
+
 def validate_case(case: object, label: str) -> dict:
     if not isinstance(case, dict):
         raise ValueError(f"{label}: case must be an object")
@@ -353,6 +414,7 @@ def validate_case(case: object, label: str) -> dict:
     _schedule_values(dt, f"{label}: dt")
 
     schedules: list[dict[str, list[float]]] = []
+    beta_schedules: list[list[float]] = []
     for index, traj in enumerate(trajectories):
         if not isinstance(traj, dict):
             raise ValueError(f"{label}: trajectory {index} must be an object")
@@ -365,6 +427,10 @@ def validate_case(case: object, label: str) -> dict:
             traj.get("dt", dt), f"{label}: trajectory {index} dt"
         )
         schedules.append(entry)
+        beta_values = _beta_values(traj.get("beta", 0.0), f"{label}: trajectory {index} beta")
+        beta_schedules.append(beta_values)
+        if mode != "bsb" and (any(value != 0.0 for value in beta_values) or float(traj.get("parity_scale", 1.0)) != 1.0):
+            raise ValueError(f"{label}: beta/parity_scale require bsb mode (trajectory {index})")
         if combine == "energy" and "energy_lambda" not in traj:
             raise ValueError(
                 f"{label}: energy combine requires energy_lambda on trajectory {index}"
@@ -393,6 +459,7 @@ def validate_case(case: object, label: str) -> dict:
         "trajectories": trajectories,
         "dt": dt,
         "schedules": schedules,
+        "beta_schedules": beta_schedules,
     }
 
 
@@ -411,8 +478,8 @@ def make_case_block(index: int, case: dict) -> tuple[str, str]:
         case_dt_ptr = "nullptr"
 
     rows = []
-    for traj_index, (traj, schedule) in enumerate(
-        zip(case["trajectories"], case["schedules"])
+    for traj_index, (traj, schedule, beta_schedule) in enumerate(
+        zip(case["trajectories"], case["schedules"], case["beta_schedules"])
     ):
         names: dict[str, str] = {}
         for key in PARAM_KEYS:
@@ -439,6 +506,17 @@ def make_case_block(index: int, case: dict) -> tuple[str, str]:
         else:
             dt_ptr = case_dt_ptr
 
+        beta_raw = traj.get("beta", 0.0)
+        if isinstance(beta_raw, (list, tuple)):
+            beta_name = f"{prefix}_{traj_index}_BETA"
+            schedule_blocks.append(
+                f"static const double {beta_name}[STEPS] = "
+                f"{{{', '.join(_fmt(v) for v in beta_schedule)}}};"
+            )
+            beta_ptr = beta_name
+        else:
+            beta_ptr = "nullptr"
+
         defaults = [_fmt(schedule[key][0]) for key in PARAM_KEYS]
         pointers = [names[key] for key in PARAM_KEYS]
         energy_lambda = _finite(
@@ -452,6 +530,9 @@ def make_case_block(index: int, case: dict) -> tuple[str, str]:
                 + [_fmt(energy_lambda), _fmt(schedule["dt"][0])]
                 + pointers
                 + [dt_ptr, MODES[case["mode"]]]
+                + [_fmt(beta_schedule[0]),
+                   _fmt(_finite(traj.get("parity_scale", 1.0), f"{prefix} parity_scale")),
+                   beta_ptr]
             )
             + "}"
         )

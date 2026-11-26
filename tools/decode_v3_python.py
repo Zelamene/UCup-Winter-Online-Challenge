@@ -56,6 +56,24 @@ def _schedule_values(value: object, label: str, steps: int) -> np.ndarray:
     return out
 
 
+def _beta_values(value: object, label: str, steps: int) -> np.ndarray:
+    """Return a per-step beta array from a finite scalar or ``steps``-value list.
+
+    Beta is an added-energy coefficient rather than a bSB schedule scale, so zero
+    and negative values are arithmetically valid; the tuner only searches positive
+    values.
+    """
+    if isinstance(value, (list, tuple)):
+        if len(value) != steps:
+            raise ValueError(f"{label} must have {steps} values, got {len(value)}")
+        out = np.asarray([_finite(item, f"{label}[{i}]") for i, item in enumerate(value)], dtype=np.float64)
+    else:
+        out = np.full(steps, _finite(value, label), dtype=np.float64)
+    if not np.all(np.isfinite(out)):
+        raise ValueError(f"{label} must contain finite values")
+    return out
+
+
 def _build_sparse(h: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, int, int]:
     """Padded check-neighbor lists in ascending column order."""
     matrix = np.asarray(h)
@@ -103,6 +121,40 @@ def _check_contribution(
     return products, weighted_sum
 
 
+def _onsager_contribution(
+    spins: np.ndarray,
+    sparse: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, int, int],
+) -> np.ndarray:
+    """Per-variable sum over checks of sum_{j in c\\i} (1-x_j^2) prod_{l in c\\{i,j}} x_l^2.
+
+    x_i times this sum is half the gradient of the polynomial
+    G(x) = sum_c [sum_j prod_{l!=j} x_l^2 - (d_c-1) prod_l x_l^2], which equals 1 for every
+    check on +-1 spins. Adding beta*J^2/2*G to the energy reshapes the continuous bSB
+    landscape (an Onsager/TAP-style reaction term) without changing the Ising problem.
+    No per-edge state is kept between steps.
+    """
+    safe, mask, flat_cols, counts, m, n = sparse
+    total = np.zeros(n, dtype=np.float64)
+    if m == 0 or not flat_cols.size:
+        return total
+    q = np.where(mask, spins[safe] * spins[safe], 1.0)
+    u = np.where(mask, 1.0 - q, 0.0)
+    deg = q.shape[1]
+    pp = np.ones((m, deg + 1), dtype=np.float64)
+    qp = np.zeros((m, deg + 1), dtype=np.float64)
+    for t in range(deg):
+        pp[:, t + 1] = pp[:, t] * q[:, t]
+        qp[:, t + 1] = qp[:, t] * q[:, t] + pp[:, t] * u[:, t]
+    ps = np.ones((m, deg + 1), dtype=np.float64)
+    qs = np.zeros((m, deg + 1), dtype=np.float64)
+    for t in range(deg - 1, -1, -1):
+        ps[:, t] = ps[:, t + 1] * q[:, t]
+        qs[:, t] = qs[:, t + 1] * q[:, t] + ps[:, t + 1] * u[:, t]
+    per_edge = qp[:, :deg] * ps[:, 1:] + pp[:, :deg] * qs[:, 1:]
+    np.add.at(total, flat_cols, per_edge[mask])
+    return total
+
+
 def _decode_trajectory_sparse(
     llr: np.ndarray,
     sparse: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, int, int],
@@ -129,6 +181,16 @@ def _decode_trajectory_sparse(
     if rates.size != sparse[5]:
         raise ValueError(f"llr has {rates.size} entries, expected {sparse[5]}")
 
+    beta_values = _beta_values(traj.get("beta", 0.0), "trajectory beta", steps)
+    use_reaction = bool(np.any(beta_values != 0.0))
+    parity_scale = _finite(traj.get("parity_scale", 1.0), "trajectory parity_scale")
+    if (use_reaction or parity_scale != 1.0) and mode != "bsb":
+        raise ValueError("beta/parity_scale require bsb mode")
+    check_scale = None
+    if parity_scale != 1.0:
+        check_scale = np.ones(sparse[5], dtype=np.float64)
+        check_scale[sparse[5] - sparse[4]:] = parity_scale  # H=[A|I]: last m columns are parity bits
+
     x = np.tanh(rates / tau).astype(np.float64, copy=True)
     y = np.zeros_like(x)
     for step in range(steps):
@@ -147,7 +209,17 @@ def _decode_trajectory_sparse(
         xi = float(schedules["xi"][step])
         delta = float(schedules["delta"][step])
         dt_step = float(dt_values[step])
-        force = rates + (0.5 * lambd) * weighted_sum
+        coupling = 0.5 * lambd
+        if check_scale is None:
+            force = rates + coupling * weighted_sum
+        else:
+            force = rates + (coupling * check_scale) * weighted_sum
+        beta = float(beta_values[step])
+        if beta != 0.0:
+            reaction = (beta * (coupling * coupling)) * spins * _onsager_contribution(spins, sparse)
+            if check_scale is not None:
+                reaction = reaction * check_scale
+            force = force - reaction
         schedule = step / (steps - 1) if steps > 1 else 0.0
         pump = -(delta - schedule) * x
         y = y + dt_step * (pump + xi * force)

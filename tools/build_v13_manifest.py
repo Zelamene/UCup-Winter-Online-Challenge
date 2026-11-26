@@ -49,6 +49,8 @@ def bsb_trajectory(cfg: dict) -> dict:
         "delta":        float(cfg["delta"]),
         "dt":           float(cfg["dt"]),
         "energy_lambda": lambd,  # for energy selection; identical to lambd for single traj
+        "beta":         float(cfg.get("beta", 0.0)),
+        "parity_scale": float(cfg.get("parity_scale", 1.0)),
     }
 
 
@@ -60,8 +62,9 @@ def bsb_scheduled_trajectory(result: dict) -> dict:
         if len(schedules[name]) != steps:
             raise ValueError(f"schedule {name} has {len(schedules[name])} steps, expected {steps}")
     lambd = [float(v) for v in schedules["lambd"]]
-    return {
-        "tau":           float(result["stage_a_config"]["tau"]),
+    base_cfg = result.get("stage_a_config", {})
+    traj = {
+        "tau":           float(base_cfg.get("tau", result["stage_a_config"]["tau"])),
         "xi":            [float(v) for v in schedules["xi"]],
         "lambd":         lambd,
         "delta":         [float(v) for v in schedules["delta"]],
@@ -69,7 +72,15 @@ def bsb_scheduled_trajectory(result: dict) -> dict:
         # Energy selection needs one scale per trajectory; the schedule average keeps it
         # consistent with the lambda the dynamics actually ran at.
         "energy_lambda": sum(lambd) / len(lambd),
+        "beta":          float(base_cfg.get("beta", 0.0)),
+        "parity_scale":  float(base_cfg.get("parity_scale", 1.0)),
     }
+    if "beta" in schedules:
+        beta_values = [float(v) for v in schedules["beta"]]
+        if len(beta_values) != len(lambd):
+            raise ValueError(f"beta schedule has {len(beta_values)} steps, expected {len(lambd)}")
+        traj["beta"] = beta_values
+    return traj
 
 
 def main() -> None:

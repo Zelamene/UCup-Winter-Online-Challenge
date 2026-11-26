@@ -1,0 +1,18 @@
+{
+  "array": "N648_K324_seed6060.npy",
+  "binary": "C:\\Users\\shazi\\.local\\share\\opencode\\worktree\\bd12e4\\phase12-tap-tuning\\artifacts\\build\\v15_ref.exe",
+  "binary_sha256": "125a7211740a271b0ae154456a603e68e164a00904503cf0095912f030f71b16",
+  "frames": 500,
+  "k": 324,
+  "n": 648,
+  "noise_scale": 1.00112,
+  "offline_header": "# OFFLINE ANALYSIS ONLY \u2014 never imported by the exporter",
+  "samples": 500,
+  "score": 125633.54134769969,
+  "seconds": 1.617,
+  "seed": 6060,
+  "snr": 6.0,
+  "tool": "tools/ceiling/cache_binary.py",
+  "total_info_errors": 8978,
+  "total_wall_seconds": 1.878
+}

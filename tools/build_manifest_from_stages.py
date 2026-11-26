@@ -41,10 +41,15 @@ def validate_identity(artifact: dict, kind: str) -> tuple[int, int, float]:
 
 def case_from_stage_a(artifact: dict) -> dict:
     if not artifact.get("gate_passed", False):
-        raise ValueError("Stage A gate did not pass")
+        raise ValueError("Stage A/A' gate did not pass")
     if artifact.get("needs_boundary_rerun", False):
-        raise ValueError("Stage A best config is on a search bound; rerun with extended ranges")
-    traj = bsb_trajectory(artifact["best_config"])
+        raise ValueError("Stage A/A' best config is on a search bound; rerun with extended ranges")
+    cfg = dict(artifact["best_config"])
+    if artifact.get("phase") == "A_prime":
+        missing = [key for key in ("beta", "parity_scale") if key not in cfg]
+        if missing:
+            raise ValueError(f"Stage A' artifact is missing TAP fields {missing}")
+    traj = bsb_trajectory(cfg)
     return {
         "n": int(artifact["n"]),
         "k": int(artifact["k"]),
@@ -54,15 +59,26 @@ def case_from_stage_a(artifact: dict) -> dict:
         "trajectories": [traj],
         "dt": float(traj["dt"]),
         "steps": 50,
+        "note": artifact.get("note", "phase12 Stage A' per-case TAP tuning from v15"),
     }
 
 
 def case_from_stage_b(artifact: dict) -> dict:
     gate = artifact.get("gate", {})
-    if not gate.get("all_seeds_ge_3000", False):
+    if "threshold" in gate:
+        if not gate.get("all_seeds_ge_threshold", False):
+            raise ValueError("Stage B' gain gate did not pass on both validation seeds")
+        if not gate.get("all_ci_lower_positive", False):
+            raise ValueError("Stage B' has a validation CI lower bound at or below zero")
+    elif not gate.get("all_seeds_ge_3000", False):
         raise ValueError("Stage B gate did not pass on both validation seeds")
     if not gate.get("schedules_beat_flat", True):
-        raise ValueError("Stage B schedules did not beat flat Stage A; use the Stage A file")
+        raise ValueError("Stage B/B' schedules did not beat flat Stage A/A'; use the flat file")
+    if artifact.get("phase") == "B_prime":
+        cfg = artifact.get("stage_a_config", {})
+        missing = [key for key in ("beta", "parity_scale") if key not in cfg]
+        if missing:
+            raise ValueError(f"Stage B' artifact is missing TAP fields {missing}")
     traj = bsb_scheduled_trajectory(artifact)
     dt = traj["dt"]
     if isinstance(dt, list):
@@ -76,6 +92,7 @@ def case_from_stage_b(artifact: dict) -> dict:
         "trajectories": [traj],
         "dt": float(dt),
         "steps": 50,
+        "note": artifact.get("note", "phase12 Stage B' per-case TAP tuning from v15"),
     }
 
 
@@ -96,7 +113,8 @@ def build(base: dict, targets: dict[tuple[int, int, float], dict]) -> tuple[dict
             raise ValueError(f"case {index} has no (n, k, snr) identity")
         key = case_key(old_case["n"], old_case["k"], old_case["snr"])
         if key in targets:
-            new_case = copy.deepcopy(targets[key])
+            new_case = copy.deepcopy(old_case)
+            new_case.update(copy.deepcopy(targets[key]))
             fields = changed_fields(old_case, new_case)
             if not fields:
                 raise ValueError(f"case {index} {key}: target is identical to the base case")

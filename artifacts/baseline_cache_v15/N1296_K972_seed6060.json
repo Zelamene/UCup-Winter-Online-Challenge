@@ -1,0 +1,15 @@
+{
+  "array": "N1296_K972_seed6060.npy",
+  "binary": "artifacts\\build\\v15_ref.exe",
+  "binary_sha256": "125a7211740a271b0ae154456a603e68e164a00904503cf0095912f030f71b16",
+  "k": 972,
+  "n": 1296,
+  "noise_scale": 1.00112,
+  "samples": 500,
+  "score": 182046.71216285226,
+  "seconds": 4.729,
+  "seed": 6060,
+  "snr": 10.5,
+  "total_info_errors": 7348,
+  "total_wall_seconds": 6.745
+}
