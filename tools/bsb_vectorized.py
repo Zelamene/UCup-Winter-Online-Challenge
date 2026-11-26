@@ -41,6 +41,8 @@ class BatchedBSB:
         delta: Union[float, Sequence[float], np.ndarray],
         dt: Union[float, Sequence[float], np.ndarray] = 0.2,
         steps: int = 50,
+        beta: float = 0.0,
+        parity_scale: float = 1.0,
     ) -> np.ndarray:
         """Run batched bSB on B frames of LLRs and return hard bits of shape (B, N)."""
         llr = np.asarray(llr, dtype=np.float64)
@@ -66,6 +68,11 @@ class BatchedBSB:
 
         pref = np.ones((b, self.m, self.deg + 1), dtype=np.float64)
         suff = np.ones((b, self.m, self.deg + 1), dtype=np.float64)
+        check_scale = np.ones(self.n, dtype=np.float64)
+        check_scale[self.n - self.m:] = parity_scale  # H=[A|I]: last m columns are parity bits
+        if beta != 0.0:
+            pp = np.ones((b, self.m, self.deg + 1)); qp = np.zeros((b, self.m, self.deg + 1))
+            ps = np.ones((b, self.m, self.deg + 1)); qs = np.zeros((b, self.m, self.deg + 1))
 
         for step in range(steps):
             # Soft spin clipping [-1, 1] with near-zero guard
@@ -86,7 +93,26 @@ class BatchedBSB:
             d_val = float(delta[step]) if delta_is_seq else float(delta)
             dt_val = float(dt[step]) if dt_is_seq else float(dt)
 
-            force = llr + (0.5 * l_val) * weighted_sum
+            coupling = 0.5 * l_val
+            if parity_scale != 1.0:
+                force = llr + (coupling * check_scale) * weighted_sum
+            else:
+                force = llr + coupling * weighted_sum
+            if beta != 0.0:
+                # Onsager/TAP reaction: gradient of a polynomial that is constant on +-1 spins
+                q = gathered * gathered
+                u = 1.0 - q
+                for t in range(self.deg):
+                    pp[:, :, t + 1] = pp[:, :, t] * q[:, :, t]
+                    qp[:, :, t + 1] = qp[:, :, t] * q[:, :, t] + pp[:, :, t] * u[:, :, t]
+                for t in range(self.deg - 1, -1, -1):
+                    ps[:, :, t] = ps[:, :, t + 1] * q[:, :, t]
+                    qs[:, :, t] = qs[:, :, t + 1] * q[:, :, t] + ps[:, :, t + 1] * u[:, :, t]
+                per_edge = qp[:, :, : self.deg] * ps[:, :, 1:] + pp[:, :, : self.deg] * qs[:, :, 1:]
+                reaction = (beta * (coupling * coupling)) * spins * (per_edge.reshape(b, -1) @ self.scatter_matrix)
+                if parity_scale != 1.0:
+                    reaction = reaction * check_scale
+                force = force - reaction
             schedule = step / (steps - 1) if steps > 1 else 0.0
             pump = -(d_val - schedule) * x
             y = y + dt_val * (pump + xi_val * force)
@@ -111,9 +137,11 @@ class BatchedBSB:
         delta: Union[float, Sequence[float], np.ndarray],
         dt: Union[float, Sequence[float], np.ndarray] = 0.2,
         steps: int = 50,
+        beta: float = 0.0,
+        parity_scale: float = 1.0,
     ) -> tuple[float, float, int]:
         """Compute score, BER, and bit error count on systematic information bits."""
-        hard = self.decode_batch(llr, tau, xi, lambd, delta, dt=dt, steps=steps)
+        hard = self.decode_batch(llr, tau, xi, lambd, delta, dt=dt, steps=steps, beta=beta, parity_scale=parity_scale)
         b = llr.shape[0]
         total_info_bits = b * k
         errors = int(np.count_nonzero(hard[:, :k] != answers[:, :k]))

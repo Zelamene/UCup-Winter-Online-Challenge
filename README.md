@@ -44,6 +44,20 @@ the Ising problem. Its BP-adjacent statistical-physics lineage is documented in
 
 Judge status `Accepted` means the submission was valid. It does not mean the score improved; v10 and v11 were both accepted but scored below v9.
 
+## Phase 11 — TAP-corrected bSB (v15 candidate)
+
+Tier 3 screened alternative QAIA formulations at `N=1296, R=1/2` (100 frames). The tuned bSB baseline was `111,943`.
+
+| Formulation | Best |
+|---|---:|
+| noisy bSB, 6 seeds + energy selection | 113,782 |
+| SimCIM with noise (300 configs) | 109,175 |
+| LQA (300 configs) | 105,991 |
+| split checks with auxiliary spins (300 configs) | 96,505 |
+| **bSB + Onsager/TAP reaction term** | **134,014** |
+
+The reaction term is the gradient of a polynomial that is constant on ±1 spins, so the Ising problem is unchanged (see `submissions/v15_tap_bsb_candidate/README.md`). With one setting per rate, tuned only at N=1296, v15 gains `+174,193` over the v14 binary on fresh seed 6060, with every case's CI above zero. The public BER drops to `0.017494`. New trajectory fields: `beta` (default 0) and `parity_scale` (default 1), supported by `decode_v3_python.py`, `bsb_vectorized.py` and `export_submission_cpp_v3.py`. With the defaults, output is bit-identical to v14.
+
 ## Submission history
 
 | Version | Score | Delta | Outcome |

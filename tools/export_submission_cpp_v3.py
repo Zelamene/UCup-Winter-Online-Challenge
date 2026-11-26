@@ -55,6 +55,8 @@ struct TrajectoryConfig {
     const double* delta_values;
     const double* dt_values;
     Mode mode;
+    double beta;          // Onsager/TAP reaction strength (bSB only); 0 disables
+    double parity_scale;  // check-force scale on parity columns (last m); 1 disables
 };
 
 struct CaseConfig {
@@ -88,6 +90,12 @@ static std::vector<int> run_trajectory(
     }
     std::vector<double> pref(max_deg + 1, 1.0);
     std::vector<double> suff(max_deg + 1, 1.0);
+    const bool use_reaction = (cfg.beta != 0.0);
+    const bool use_scale = (cfg.parity_scale != 1.0);
+    const int parity_start = n - m;  // H=[A|I]
+    std::vector<double> reaction(use_reaction ? n : 0, 0.0);
+    std::vector<double> qq(max_deg + 1), uu(max_deg + 1);
+    std::vector<double> pp(max_deg + 1), qp(max_deg + 1), ps(max_deg + 1), qs(max_deg + 1);
 
     const double tau = cfg.tau_values ? cfg.tau_values[0] : cfg.tau;
     for (int col = 0; col < n; ++col) {
@@ -128,9 +136,47 @@ static std::vector<int> run_trajectory(
                 weighted[cols[start + i]] += pref[i] * suff[i + 1];
             }
         }
+        if (use_reaction) {
+            // sum_c sum_{j in c\i} (1-x_j^2) prod_{l in c\{i,j}} x_l^2 ; gradient of a term constant on +-1 spins
+            std::fill(reaction.begin(), reaction.end(), 0.0);
+            for (int row = 0; row < m; ++row) {
+                const int start = starts[row];
+                const int deg = starts[row + 1] - start;
+                if (deg <= 0) continue;
+                for (int t = 0; t < deg; ++t) {
+                    const double s = spins[cols[start + t]];
+                    qq[t] = s * s;
+                    uu[t] = 1.0 - qq[t];
+                }
+                pp[0] = 1.0; qp[0] = 0.0;
+                for (int t = 0; t < deg; ++t) {
+                    pp[t + 1] = pp[t] * qq[t];
+                    qp[t + 1] = qp[t] * qq[t] + pp[t] * uu[t];
+                }
+                ps[deg] = 1.0; qs[deg] = 0.0;
+                for (int t = deg - 1; t >= 0; --t) {
+                    ps[t] = ps[t + 1] * qq[t];
+                    qs[t] = qs[t + 1] * qq[t] + ps[t + 1] * uu[t];
+                }
+                for (int t = 0; t < deg; ++t) {
+                    reaction[cols[start + t]] += qp[t] * ps[t + 1] + pp[t] * qs[t + 1];
+                }
+            }
+        }
         const double schedule = static_cast<double>(step) / (STEPS - 1);
+        const double coupling = 0.5 * lambd;
         for (int col = 0; col < n; ++col) {
-            force[col] = llr[col] + (0.5 * lambd) * weighted[col];
+            const double scale = (use_scale && col >= parity_start) ? cfg.parity_scale : 1.0;
+            if (use_scale) {
+                force[col] = llr[col] + (coupling * scale) * weighted[col];
+            } else {
+                force[col] = llr[col] + coupling * weighted[col];
+            }
+            if (use_reaction) {
+                double r = ((cfg.beta * (coupling * coupling)) * spins[col]) * reaction[col];
+                if (use_scale) r = r * scale;
+                force[col] = force[col] - r;
+            }
             const double pump = -(delta - schedule) * x[col];
             const double y_new = y[col] + dt * (pump + xi * force[col]);
             const double x_new = x[col] + dt * y_new;
@@ -365,6 +411,8 @@ def validate_case(case: object, label: str) -> dict:
             traj.get("dt", dt), f"{label}: trajectory {index} dt"
         )
         schedules.append(entry)
+        if mode != "bsb" and (float(traj.get("beta", 0.0)) != 0.0 or float(traj.get("parity_scale", 1.0)) != 1.0):
+            raise ValueError(f"{label}: beta/parity_scale require bsb mode (trajectory {index})")
         if combine == "energy" and "energy_lambda" not in traj:
             raise ValueError(
                 f"{label}: energy combine requires energy_lambda on trajectory {index}"
@@ -452,6 +500,8 @@ def make_case_block(index: int, case: dict) -> tuple[str, str]:
                 + [_fmt(energy_lambda), _fmt(schedule["dt"][0])]
                 + pointers
                 + [dt_ptr, MODES[case["mode"]]]
+                + [_fmt(_finite(traj.get("beta", 0.0), f"{prefix} beta")),
+                   _fmt(_finite(traj.get("parity_scale", 1.0), f"{prefix} parity_scale"))]
             )
             + "}"
         )
