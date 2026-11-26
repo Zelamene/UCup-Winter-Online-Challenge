@@ -1,0 +1,51 @@
+{
+  "version": "v14",
+  "candidate_folder": "submissions/v14_high_rate_candidate",
+  "base_version": "v13c",
+  "base_score": 1700646,
+  "status": "ready_for_authorization",
+  "submitted": false,
+  "gates": {
+    "manifest_changes_only_named_cases": true,
+    "changed_cases": 8,
+    "unchanged_r12_cases": 4,
+    "strict_cpp17_compile": true,
+    "source_bytes": 49009,
+    "source_under_512k": true,
+    "steps": 50,
+    "max_trajectories": 6,
+    "forbidden_tokens": [],
+    "python_cpp_bit_parity": true,
+    "parity_cases": 12,
+    "parity_frames_per_case": 2,
+    "public_case9_errors": 14009,
+    "public_case9_ber": 0.01921673525377229,
+    "public_case9_ber_threshold": 0.024784636,
+    "public_case9_ber_gate": true,
+    "fresh_seed": 777,
+    "fresh_seed_min_gain": 8895.711991089833,
+    "fresh_seed_all_positive": true,
+    "fresh_seed_max_candidate_seconds": 15.739,
+    "runtime_under_120s_per_case": true
+  },
+  "validation_gain_seed_2024": [
+    {"n": 648, "k": 432, "gain": 22251.516835123708, "kind": "flat_stage_a_wide"},
+    {"n": 648, "k": 486, "gain": 9180.69748037227, "kind": "flat_stage_a"},
+    {"n": 1296, "k": 864, "gain": 24249.617204980284, "kind": "stage_b"},
+    {"n": 1296, "k": 972, "gain": 13216.75849494728, "kind": "stage_b"},
+    {"n": 1944, "k": 1296, "gain": 24293.04952099864, "kind": "stage_b"},
+    {"n": 1944, "k": 1458, "gain": 13294.659802583628, "kind": "flat_stage_a"},
+    {"n": 3888, "k": 2592, "gain": 26225.0, "kind": "stage_b"},
+    {"n": 3888, "k": 2916, "gain": 14227.12236255323, "kind": "flat_stage_a"}
+  ],
+  "estimated_judge_gain": 146938.4,
+  "estimated_judge_score": 1847584,
+  "artifacts": {
+    "manifest": "artifacts/phase10_case_manifest_v14.json",
+    "submission": "submissions/v14_high_rate_candidate/submission.cpp",
+    "validation": "submissions/v14_high_rate_candidate/validation.json",
+    "parity": "artifacts/v14_binary_parity.json",
+    "fresh_seed": "artifacts/v14_fresh_seed_777.json",
+    "public_output": "artifacts/v14_public.out"
+  }
+}

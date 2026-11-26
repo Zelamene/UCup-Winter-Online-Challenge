@@ -15,6 +15,8 @@ Each version is self-contained in its own folder.
 | v10 | `v10_pass2_r23_regressed` | `1,605,473` | accepted but below best: case 11 regressed despite positive synthetic cross-seed checks |
 | v11 | `v11_rebased_accepted_no_gain` | `1,606,575` | accepted but no improvement: case 5 gained 371, case 6 lost 637 |
 | v12 | `v12_safe_case5_candidate` | `1,607,212` | accepted new best: v9 + case-5-only salvage, gain reproduced a third time |
+| v13c | `v13c_scheduled_r12_candidate` | `1,700,646` | accepted new best: scheduled bSB for all four `R=1/2` cases |
+| v14 | `v14_high_rate_candidate` | not submitted | prepared candidate: all eight high-rate cases tuned with bSB; awaiting authorization |
 
 ## Rebuild
 
@@ -24,4 +26,4 @@ The v2/v3/v4 manifests reference parameter files under `artifacts/` relative to 
 python tools/export_submission_cpp_v2.py --manifest artifacts/phase7_case_manifest_v4.json --output submissions/v4_hybrid_probe/submission.cpp
 ```
 
-All versions use QAIA/dSB only, at most 50 iterations and at most six initial guesses.
+All versions use QAIA dSB/bSB only, at most 50 iterations and at most six initial guesses. bSB is ballistic SB with continuous spin values in the check gradient; no message passing or post-processing is used.

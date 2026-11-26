@@ -235,7 +235,7 @@ int main() {
             continue;
         }
         const double diff = std::fabs(candidate.snr - snr);
-        if (diff < 0.25 && diff < best_diff) {
+        if (diff < best_diff) {
             best_diff = diff;
             active = &candidate;
         }

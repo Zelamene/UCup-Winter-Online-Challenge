@@ -1,0 +1,106 @@
+{
+  "manifest": "artifacts\\phase10_case_manifest_v14.json",
+  "binary": "artifacts\\build\\v14.exe",
+  "samples_per_case": 2,
+  "seed": 4242,
+  "noise_scale": 1.00112,
+  "cases": [
+    {
+      "n": 648,
+      "k": 324,
+      "snr": 6.0,
+      "frames": 2,
+      "mismatched_bits": 0,
+      "match": true
+    },
+    {
+      "n": 648,
+      "k": 432,
+      "snr": 9.0,
+      "frames": 2,
+      "mismatched_bits": 0,
+      "match": true
+    },
+    {
+      "n": 648,
+      "k": 486,
+      "snr": 10.5,
+      "frames": 2,
+      "mismatched_bits": 0,
+      "match": true
+    },
+    {
+      "n": 1296,
+      "k": 648,
+      "snr": 6.0,
+      "frames": 2,
+      "mismatched_bits": 0,
+      "match": true
+    },
+    {
+      "n": 1296,
+      "k": 864,
+      "snr": 9.0,
+      "frames": 2,
+      "mismatched_bits": 0,
+      "match": true
+    },
+    {
+      "n": 1296,
+      "k": 972,
+      "snr": 10.5,
+      "frames": 2,
+      "mismatched_bits": 0,
+      "match": true
+    },
+    {
+      "n": 1944,
+      "k": 972,
+      "snr": 6.0,
+      "frames": 2,
+      "mismatched_bits": 0,
+      "match": true
+    },
+    {
+      "n": 1944,
+      "k": 1296,
+      "snr": 9.0,
+      "frames": 2,
+      "mismatched_bits": 0,
+      "match": true
+    },
+    {
+      "n": 1944,
+      "k": 1458,
+      "snr": 10.5,
+      "frames": 2,
+      "mismatched_bits": 0,
+      "match": true
+    },
+    {
+      "n": 3888,
+      "k": 1944,
+      "snr": 6.0,
+      "frames": 2,
+      "mismatched_bits": 0,
+      "match": true
+    },
+    {
+      "n": 3888,
+      "k": 2592,
+      "snr": 9.0,
+      "frames": 2,
+      "mismatched_bits": 0,
+      "match": true
+    },
+    {
+      "n": 3888,
+      "k": 2916,
+      "snr": 10.5,
+      "frames": 2,
+      "mismatched_bits": 0,
+      "match": true
+    }
+  ],
+  "all_match": true
+}

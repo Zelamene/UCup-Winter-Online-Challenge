@@ -1,0 +1,15 @@
+{
+  "array": "N648_K486_seed2024.npy",
+  "binary": "C:\\Users\\shazi\\Downloads\\UCup-Winter-Online-Challenge\\artifacts\\build\\v13c.exe",
+  "binary_sha256": "6732c41518854844a0609d2965584c0d9c1633de9d2963bd3f856dfc6dcb3b0e",
+  "k": 486,
+  "n": 648,
+  "noise_scale": 1.00112,
+  "samples": 500,
+  "score": 169665.28109608943,
+  "seconds": 1.927,
+  "seed": 2024,
+  "snr": 10.5,
+  "total_info_errors": 4886,
+  "total_wall_seconds": 2.824
+}

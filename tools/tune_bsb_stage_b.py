@@ -23,9 +23,10 @@ import numpy as np
 TOOLS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(TOOLS_DIR))
 
+from baseline_cache import DEFAULT_CACHE_DIR, load_baseline_errors  # noqa: E402
 from bsb_vectorized import BatchedBSB  # noqa: E402
 from real_bench import build_case  # noqa: E402
-from tune_bsb_stage_a import eval_v12_baseline  # noqa: E402
+from tune_bsb_stage_a import rate_tag  # noqa: E402
 
 SCORE_SCALE = 100_000.0
 STEPS = 50
@@ -109,8 +110,17 @@ def evaluate_case(
     return score_of(int(errs.sum()), total), errs, int(errs.sum())
 
 
-def baseline_per_frame(case: dict, v12_manifest: dict) -> np.ndarray:
-    """v12 baseline error count per frame on the same frames."""
+def baseline_per_frame(
+    case: dict,
+    v12_manifest: dict,
+    cache_dir: Path = DEFAULT_CACHE_DIR,
+) -> np.ndarray:
+    """v12/v13c baseline error count per frame on the same frames."""
+    if case["k"] / case["n"] > 0.5:
+        return load_baseline_errors(
+            cache_dir, case["n"], case["k"], int(case["seed"]),
+            expected_frames=case["b"],
+        )
     from decode_v2_python import decode_frame as decode_v2_frame, select_case as select_v2_case
     from phase3_fixed_dsb import CheckTable
 
@@ -165,7 +175,7 @@ def pattern_search(
 def run(
     n: int,
     rate: float,
-    snr: float,
+    snr: float | None,
     stage_a_path: Path,
     train_samples: int,
     val_samples: int,
@@ -174,9 +184,24 @@ def run(
     seed: int,
     max_passes: int,
     quick: bool,
+    baseline_cache_dir: Path = DEFAULT_CACHE_DIR,
 ) -> dict:
     k = int(round(n * rate))
     stage_a = json.loads(stage_a_path.read_text(encoding="utf-8"))
+    for key, expected in (("n", n), ("k", k), ("rate", rate)):
+        if key in stage_a and abs(float(stage_a[key]) - float(expected)) > 1e-4:
+            raise ValueError(
+                f"{stage_a_path}: {key}={stage_a[key]} does not match requested {expected}"
+            )
+    if snr is None:
+        if "snr" not in stage_a:
+            raise ValueError(f"{stage_a_path}: no snr field; pass --snr explicitly")
+        snr = float(stage_a["snr"])
+    elif abs(float(stage_a.get("snr", snr)) - float(snr)) > 1e-4:
+        raise ValueError(
+            f"{stage_a_path}: snr={stage_a['snr']} does not match requested {snr}"
+        )
+    noise_scale = float(stage_a.get("noise_scale", 1.001120))
     base_cfg = stage_a["best_config"]
     tau = float(base_cfg["tau"])
     print(f"Stage B: N={n} K={k} R={rate:.3f} SNR={snr:.1f}")
@@ -186,9 +211,9 @@ def run(
     )
 
     t0 = time.perf_counter()
-    train_case = build_case(n, k, train_samples, snr, train_seed, noise_scale=1.001120)
+    train_case = build_case(n, k, train_samples, snr, train_seed, noise_scale=noise_scale)
     val_cases = {
-        seed_value: build_case(n, k, val_samples, snr, seed_value, noise_scale=1.001120)
+        seed_value: build_case(n, k, val_samples, snr, seed_value, noise_scale=noise_scale)
         for seed_value in val_seeds
     }
     sim_train = BatchedBSB(train_case["h"])
@@ -213,7 +238,7 @@ def run(
     rng = np.random.default_rng(seed + 1)
     per_seed = {}
     for seed_value, case in val_cases.items():
-        base_errs = baseline_per_frame(case, v12_manifest)
+        base_errs = baseline_per_frame(case, v12_manifest, baseline_cache_dir)
         base_score = score_of(int(base_errs.sum()), case["llr"].shape[0] * k)
         cand_score, cand_errs, cand_errors = evaluate_case(case, sims[seed_value], best, tau, k)
         low, high = paired_bootstrap(base_errs, cand_errs, k, 2000, rng)
@@ -245,7 +270,9 @@ def run(
         "stage_a_config": base_cfg,
         "train_seed": train_seed,
         "val_seeds": val_seeds,
-        "noise_scale": 1.001120,
+        "val_samples": val_samples,
+        "noise_scale": noise_scale,
+        "baseline_source": "v13c_binary_cache" if rate > 0.5 else "v12_python",
         "knot_steps": list(KNOT_STEPS),
         "parameters": list(PARAM_NAMES),
         "flat_train_score": flat_train_score,
@@ -260,6 +287,9 @@ def run(
             "train_gain": best_train_score - flat_train_score,
             "min_val_gain": min(item["gain"] for item in per_seed.values()),
             "all_seeds_ge_3000": all(item["gain"] >= 3000 for item in per_seed.values()),
+            "schedules_beat_flat": all(
+                per_seed[str(seed)]["gain"] > flat_gain[str(seed)] for seed in val_seeds
+            ),
         },
     }
     return result
@@ -269,8 +299,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--n", type=int, default=648)
     parser.add_argument("--rate", type=float, default=0.5)
-    parser.add_argument("--snr", type=float, default=6.0)
-    parser.add_argument("--stage-a", type=Path, default=TOOLS_DIR.parent / "artifacts" / "stage_a_N648_R0.5.json")
+    parser.add_argument(
+        "--snr", type=float, default=None,
+        help="defaults to the snr recorded in the Stage A artifact",
+    )
+    parser.add_argument("--stage-a", type=Path, default=None)
     parser.add_argument("--train-samples", type=int, default=300)
     parser.add_argument("--val-samples", type=int, default=500)
     parser.add_argument("--train-seed", type=int, default=911)
@@ -278,8 +311,18 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=5150)
     parser.add_argument("--max-passes", type=int, default=3)
     parser.add_argument("--quick", action="store_true", help="two coarse passes only")
-    parser.add_argument("--out", type=Path)
+    parser.add_argument("--cache-dir", type=Path, default=DEFAULT_CACHE_DIR)
+    parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
+
+    if args.stage_a is None:
+        args.stage_a = (
+            TOOLS_DIR.parent / "artifacts" / f"stage_a_N{args.n}_R{rate_tag(args.rate)}.json"
+        )
+    if args.out is None:
+        args.out = (
+            TOOLS_DIR.parent / "artifacts" / f"stage_b_N{args.n}_R{rate_tag(args.rate)}.json"
+        )
 
     result = run(
         n=args.n,
@@ -293,6 +336,7 @@ def main() -> None:
         seed=args.seed,
         max_passes=args.max_passes,
         quick=args.quick,
+        baseline_cache_dir=args.cache_dir,
     )
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)

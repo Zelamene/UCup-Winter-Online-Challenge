@@ -1,0 +1,50 @@
+{
+  "candidate": "C:\\Users\\shazi\\Downloads\\UCup-Winter-Online-Challenge\\artifacts\\build\\v13c.exe",
+  "baseline": "C:\\Users\\shazi\\Downloads\\UCup-Winter-Online-Challenge\\artifacts\\build\\v12_ref.exe",
+  "cases": [
+    {
+      "n": 648,
+      "k": 324,
+      "rate": 0.5,
+      "snr": 6.0,
+      "artifact": "stage_b_N648_R0.5.json",
+      "seeds": {
+        "2024": {
+          "seed": 2024,
+          "frames": 500,
+          "baseline_source": "v12_binary",
+          "baseline_errors": 20619,
+          "baseline_score": 89524.74159139085,
+          "candidate_errors": 12524,
+          "candidate_score": 111177.19555977534,
+          "gain": 21652.453968384492,
+          "recorded_base_errors": 20619,
+          "recorded_candidate_errors": 12524,
+          "recorded_gain": 21652.453968384492,
+          "gain_delta_vs_python": 0.0,
+          "baseline_seconds": 10.69,
+          "candidate_seconds": 1.86
+        },
+        "31337": {
+          "seed": 31337,
+          "frames": 500,
+          "baseline_source": "v12_binary",
+          "baseline_errors": 20214,
+          "baseline_score": 90386.27531778671,
+          "candidate_errors": 11865,
+          "candidate_score": 113524.72719892733,
+          "gain": 23138.451881140616,
+          "recorded_base_errors": 20214,
+          "recorded_candidate_errors": 11865,
+          "recorded_gain": 23138.451881140616,
+          "gain_delta_vs_python": 0.0,
+          "baseline_seconds": 10.59,
+          "candidate_seconds": 1.75
+        }
+      },
+      "min_gain": 21652.453968384492
+    }
+  ],
+  "min_gain": 21652.453968384492,
+  "max_abs_delta_vs_python": 0.0
+}

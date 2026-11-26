@@ -269,21 +269,15 @@ def decode_frame(llr: np.ndarray, h: np.ndarray, case: dict) -> list[int]:
     return (total < 0.0).astype(np.int64).tolist()
 
 
-def select_case(
-    manifest: dict,
-    n: int,
-    k: int,
-    snr: float,
-    tolerance: float = 0.25,
-) -> dict:
-    """Return the nearest matching case by SNR, or the fallback entry."""
+def select_case(manifest: dict, n: int, k: int, snr: float) -> dict:
+    """Return the nearest SNR case with an exact (n, k) match, or fallback."""
     nearest: dict | None = None
     best_diff = math.inf
     for case in manifest.get("cases", []):
         if case.get("n") != n or case.get("k") != k:
             continue
         diff = abs(_finite(case.get("snr"), "case snr") - _finite(snr, "snr"))
-        if diff < float(tolerance) and diff < best_diff:
+        if diff < best_diff:
             nearest = case
             best_diff = diff
     return nearest if nearest is not None else manifest["fallback"]

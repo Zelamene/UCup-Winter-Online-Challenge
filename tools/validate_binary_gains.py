@@ -19,9 +19,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
-import subprocess
 import sys
-import time
 from pathlib import Path
 
 import numpy as np
@@ -29,6 +27,8 @@ import numpy as np
 TOOLS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(TOOLS_DIR))
 
+from baseline_cache import DEFAULT_CACHE_DIR, load_baseline_errors  # noqa: E402
+from binary_io import read_hard, run_binary, write_input  # noqa: E402
 from real_bench import build_case  # noqa: E402
 
 ROOT = TOOLS_DIR.parent
@@ -38,40 +38,6 @@ SCORE_SCALE = 100_000.0
 def score_of(errors: int, total: int) -> float:
     ber = max(errors / total, 1.0 / total)
     return -SCORE_SCALE * math.log10(ber)
-
-
-def write_input(case: dict, path: Path) -> None:
-    """Write a case in judge format: header, H, LLR rows, G."""
-    path.parent.mkdir(parents=True, exist_ok=True)
-    lines = [f"{case['n']} {case['k']} {case['b']} {case['snr_db']:g}"]
-    lines.extend(" ".join(map(str, row.tolist())) for row in case["h"])
-    lines.extend(" ".join(f"{value:.17g}" for value in row) for row in case["llr"])
-    lines.extend(" ".join(map(str, row.tolist())) for row in case["g"])
-    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-
-
-def run_binary(binary: Path, input_path: Path, output_path: Path) -> float:
-    start = time.perf_counter()
-    with input_path.open("rb") as fin, output_path.open("wb") as fout:
-        proc = subprocess.run([str(binary)], stdin=fin, stdout=fout)
-    elapsed = time.perf_counter() - start
-    if proc.returncode != 0:
-        raise RuntimeError(f"{binary.name} exited with {proc.returncode} on {input_path.name}")
-    return elapsed
-
-
-def read_hard(output_path: Path, frames: int, n: int) -> np.ndarray:
-    """Read one frame per line; bits may be space separated or contiguous."""
-    lines = [line for line in output_path.read_text(encoding="utf-8").splitlines() if line.strip()]
-    if len(lines) != frames:
-        raise ValueError(f"{output_path.name}: expected {frames} frames, found {len(lines)}")
-    hard = np.empty((frames, n), dtype=np.int8)
-    for index, line in enumerate(lines):
-        digits = line.split() if len(line.split()) == n else list(line.strip())
-        if len(digits) != n:
-            raise ValueError(f"{output_path.name}: frame {index} has {len(digits)} bits, expected {n}")
-        hard[index] = np.asarray([int(d) for d in digits], dtype=np.int8)
-    return hard
 
 
 def evaluate(binary: Path, case: dict, workdir: Path, tag: str) -> tuple[int, float, float]:
@@ -90,6 +56,8 @@ def main() -> None:
     parser.add_argument("--candidate", type=Path, default=ROOT / "artifacts" / "build" / "v13c.exe")
     parser.add_argument("--baseline", type=Path, default=ROOT / "artifacts" / "build" / "v12_ref.exe")
     parser.add_argument("--stage-b", type=Path, nargs="+", default=None)
+    parser.add_argument("--val-samples", type=int, default=500)
+    parser.add_argument("--cache-dir", type=Path, default=DEFAULT_CACHE_DIR)
     parser.add_argument("--workdir", type=Path, default=ROOT / "artifacts" / "build" / "valbin")
     parser.add_argument("--output", type=Path, default=ROOT / "artifacts" / "binary_validation.json")
     args = parser.parse_args()
@@ -106,20 +74,32 @@ def main() -> None:
         artifact = json.loads(path.read_text(encoding="utf-8"))
         n, k, snr = artifact["n"], artifact["k"], artifact["snr"]
         noise_scale = artifact.get("noise_scale", 1.001120)
+        frames = int(artifact.get("val_samples", args.val_samples))
+        use_cache = k / n > 0.5
+        baseline_source = "v13c_binary_cache" if use_cache else "v12_binary"
         print(f"=== N={n} K={k} R={artifact['rate']:.3f} SNR={snr:.1f} ===", flush=True)
         per_seed = {}
         for seed_value in artifact["val_seeds"]:
-            case = build_case(n, k, 500, snr, seed_value, noise_scale=noise_scale)
-            base_errors, base_score, base_time = evaluate(
-                args.baseline, case, args.workdir, f"n{n}_s{seed_value}_v12"
-            )
+            case = build_case(n, k, frames, snr, seed_value, noise_scale=noise_scale)
+            if use_cache:
+                cached = load_baseline_errors(
+                    args.cache_dir, n, k, seed_value, expected_frames=frames
+                )
+                base_errors = int(cached.sum())
+                base_score = score_of(base_errors, frames * k)
+                base_time = 0.0
+            else:
+                base_errors, base_score, base_time = evaluate(
+                    args.baseline, case, args.workdir, f"n{n}_s{seed_value}_v12"
+                )
             cand_errors, cand_score, cand_time = evaluate(
-                args.candidate, case, args.workdir, f"n{n}_s{seed_value}_v13c"
+                args.candidate, case, args.workdir, f"n{n}_s{seed_value}_candidate"
             )
             recorded = artifact["validation"][str(seed_value)]
             entry = {
                 "seed": seed_value,
                 "frames": case["b"],
+                "baseline_source": baseline_source,
                 "baseline_errors": base_errors,
                 "baseline_score": base_score,
                 "candidate_errors": cand_errors,
@@ -134,8 +114,8 @@ def main() -> None:
             }
             per_seed[str(seed_value)] = entry
             print(
-                f"  seed {seed_value}: v12 {base_score:.1f} ({base_errors} bit errors) -> "
-                f"v13c {cand_score:.1f} ({cand_errors} bit errors), gain {cand_score - base_score:+.1f}  "
+                f"  seed {seed_value}: {baseline_source} {base_score:.1f} ({base_errors} bit errors) -> "
+                f"candidate {cand_score:.1f} ({cand_errors} bit errors), gain {cand_score - base_score:+.1f}  "
                 f"[python said {recorded['gain']:+.1f}, recorded errors {recorded['base_errors']}/"
                 f"{recorded['candidate_errors']}]  "
                 f"{base_time:.1f}s / {cand_time:.1f}s",
