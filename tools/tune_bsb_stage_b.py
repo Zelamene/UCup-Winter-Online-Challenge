@@ -27,13 +27,22 @@ from baseline_cache import DEFAULT_CACHE_DIR, load_baseline_errors  # noqa: E402
 from bsb_vectorized import BatchedBSB  # noqa: E402
 from real_bench import build_case  # noqa: E402
 from tune_bsb_stage_a import rate_tag  # noqa: E402
+from tune_tap_local import min_gain_for_rate  # noqa: E402
 
 SCORE_SCALE = 100_000.0
 STEPS = 50
 KNOT_STEPS = (0, 12, 25, 37, 49)
 KNOTS = len(KNOT_STEPS)
-GROUPS = ("xi", "lambd", "delta", "dt")
-PARAM_NAMES = tuple(f"{g}[{i}]" for g in GROUPS for i in range(KNOTS))
+BASE_GROUPS = ("xi", "lambd", "delta", "dt")
+
+
+def groups_for(beta_knots: bool) -> tuple[str, ...]:
+    """Stage B' can add a beta schedule; Stage B keeps the four v14 groups."""
+    return BASE_GROUPS + ("beta",) if beta_knots else BASE_GROUPS
+
+
+def parameter_names(groups: tuple[str, ...]) -> tuple[str, ...]:
+    return tuple(f"{group}[{index}]" for group in groups for index in range(KNOTS))
 
 
 def interp_schedule(knots: list[float]) -> np.ndarray:
@@ -41,20 +50,21 @@ def interp_schedule(knots: list[float]) -> np.ndarray:
     return np.interp(np.arange(STEPS), np.asarray(KNOT_STEPS, dtype=float), np.asarray(knots, dtype=float))
 
 
-def expand(params: np.ndarray) -> dict[str, np.ndarray]:
-    """Turn a 20-vector of knot values into per-key schedules."""
+def expand(params: np.ndarray, groups: tuple[str, ...]) -> dict[str, np.ndarray]:
+    """Turn a knot vector into per-key per-step schedules."""
     out: dict[str, np.ndarray] = {}
-    for index, group in enumerate(GROUPS):
+    for index, group in enumerate(groups):
         block = params[index * KNOTS:(index + 1) * KNOTS]
         out[group] = interp_schedule(block.tolist())
     return out
 
 
-def flat_from_config(config: dict) -> np.ndarray:
+def flat_from_config(config: dict, groups: tuple[str, ...]) -> np.ndarray:
     """Replicate a Stage A scalar configuration across every knot."""
     params = []
-    for group in GROUPS:
-        value = float(config.get(group, 0.2 if group == "dt" else 1.0))
+    for group in groups:
+        default = 0.2 if group == "dt" else (0.0 if group == "beta" else 1.0)
+        value = float(config.get(group, default))
         params.extend([value] * KNOTS)
     return np.asarray(params, dtype=float)
 
@@ -94,8 +104,11 @@ def evaluate_case(
     params: np.ndarray,
     tau: float,
     k: int,
+    groups: tuple[str, ...],
+    beta: float = 0.0,
+    parity_scale: float = 1.0,
 ) -> tuple[float, np.ndarray, int]:
-    schedules = expand(params)
+    schedules = expand(params, groups)
     hard = sim.decode_batch(
         case["llr"],
         tau=tau,
@@ -104,6 +117,8 @@ def evaluate_case(
         delta=schedules["delta"],
         dt=schedules["dt"],
         steps=STEPS,
+        beta=schedules.get("beta", beta),
+        parity_scale=parity_scale,
     )
     errs = per_frame_errors(hard, case["answers"], k)
     total = case["llr"].shape[0] * k
@@ -114,9 +129,10 @@ def baseline_per_frame(
     case: dict,
     v12_manifest: dict,
     cache_dir: Path = DEFAULT_CACHE_DIR,
+    baseline_source: str = "v13c_binary_cache",
 ) -> np.ndarray:
-    """v12/v13c baseline error count per frame on the same frames."""
-    if case["k"] / case["n"] > 0.5:
+    """Baseline error count per frame on the same frames."""
+    if baseline_source == "v15_binary_cache" or case["k"] / case["n"] > 0.5:
         return load_baseline_errors(
             cache_dir, case["n"], case["k"], int(case["seed"]),
             expected_frames=case["b"],
@@ -143,25 +159,52 @@ def pattern_search(
     passes: int,
     steps: tuple[float, ...],
     seed: int,
+    groups: tuple[str, ...],
+    beta: float = 0.0,
+    parity_scale: float = 1.0,
+    workers: int = 6,
 ) -> tuple[np.ndarray, float, int]:
-    """Coordinate pattern search in log space on the 20 knot values."""
+    """Coordinate pattern search in log space on the knot values.
+
+    Both directions for every knot are evaluated in parallel per pass. Moves are
+    accepted against the pass-start score, so simultaneous moves do not
+    double-count the same gain.
+    """
+    import concurrent.futures
+
     rng = np.random.default_rng(seed)
     best = start.copy()
-    best_score, _, _ = evaluate_case(case, sim, best, tau, k)
+    best_score, _, _ = evaluate_case(case, sim, best, tau, k, groups, beta, parity_scale)
     evals = 1
     for pass_index, step in enumerate(steps):
-        improved = 0
         order = rng.permutation(len(best))
+        probes: list[tuple[int, np.ndarray]] = []
         for index in order:
             for direction in (1.0, -1.0):
                 cand = best.copy()
                 cand[index] = max(cand[index] * math.exp(direction * step), 1e-6)
-                score, _, _ = evaluate_case(case, sim, cand, tau, k)
-                evals += 1
-                if score > best_score + 1e-9:
-                    best, best_score = cand, score
-                    improved += 1
-                    break
+                probes.append((int(index), cand))
+        with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
+            futures = [
+                executor.submit(
+                    evaluate_case, case, sim, cand, tau, k, groups, beta, parity_scale
+                )
+                for _, cand in probes
+            ]
+            scores = [future.result()[0] for future in futures]
+        evals += len(probes)
+
+        pass_reference = best_score
+        by_index: dict[int, list[tuple[float, np.ndarray]]] = {}
+        for (index, cand), score in zip(probes, scores):
+            by_index.setdefault(index, []).append((score, cand))
+        improved = 0
+        for index in order:
+            index = int(index)
+            score, cand = max(by_index[index], key=lambda item: item[0])
+            if score > pass_reference + 1e-9:
+                best, best_score = cand, score
+                improved += 1
         print(
             f"  pass {pass_index + 1}/{len(steps)} (step {step:.3f}): "
             f"train {best_score:.1f}, {improved} params moved, {evals} evals",
@@ -185,6 +228,10 @@ def run(
     max_passes: int,
     quick: bool,
     baseline_cache_dir: Path = DEFAULT_CACHE_DIR,
+    tap_from_path: Path | None = None,
+    beta_knots: bool = False,
+    min_gain: float | None = None,
+    workers: int = 6,
 ) -> dict:
     k = int(round(n * rate))
     stage_a = json.loads(stage_a_path.read_text(encoding="utf-8"))
@@ -202,13 +249,34 @@ def run(
             f"{stage_a_path}: snr={stage_a['snr']} does not match requested {snr}"
         )
     noise_scale = float(stage_a.get("noise_scale", 1.001120))
-    base_cfg = stage_a["best_config"]
+    base_cfg = dict(stage_a["best_config"])
+
+    if tap_from_path is not None:
+        tap_artifact = json.loads(tap_from_path.read_text(encoding="utf-8"))
+        for key, expected in (("n", n), ("k", k), ("rate", rate)):
+            if key in tap_artifact and abs(float(tap_artifact[key]) - float(expected)) > 1e-4:
+                raise ValueError(
+                    f"{tap_from_path}: {key}={tap_artifact[key]} does not match requested {expected}"
+                )
+        tap_cfg = dict(tap_artifact.get("best_config", tap_artifact))
+        required = ("tau", "xi", "lambd", "delta", "dt", "beta", "parity_scale")
+        missing = [key for key in required if key not in tap_cfg]
+        if missing:
+            raise ValueError(f"{tap_from_path}: missing TAP fields {missing}")
+        base_cfg = {key: float(tap_cfg[key]) for key in required}
+
     tau = float(base_cfg["tau"])
-    print(f"Stage B: N={n} K={k} R={rate:.3f} SNR={snr:.1f}")
-    print(
-        f"Stage A start: tau={tau:.4f} xi={base_cfg['xi']:.4f} lambd={base_cfg['lambd']:.4f} "
-        f"delta={base_cfg['delta']:.4f} dt={base_cfg['dt']:.4f}"
+    beta = float(base_cfg.get("beta", 0.0))
+    parity_scale = float(base_cfg.get("parity_scale", 1.0))
+    groups = groups_for(beta_knots)
+    if beta_knots and "beta" not in base_cfg:
+        raise ValueError("--beta-knots requires --tap-from with an explicit beta field")
+    baseline_source = "v15_binary_cache" if tap_from_path is not None else (
+        "v13c_binary_cache" if rate > 0.5 else "v12_python"
     )
+    phase = "B_prime" if tap_from_path is not None else "B"
+    print(f"Stage {phase}: N={n} K={k} R={rate:.3f} SNR={snr:.1f}")
+    print("  " + " ".join(f"{key}={base_cfg[key]:.5f}" for key in base_cfg))
 
     t0 = time.perf_counter()
     train_case = build_case(n, k, train_samples, snr, train_seed, noise_scale=noise_scale)
@@ -220,14 +288,17 @@ def run(
     sims = {seed_value: BatchedBSB(case["h"]) for seed_value, case in val_cases.items()}
     print(f"cases built in {time.perf_counter() - t0:.1f} s")
 
-    start = flat_from_config(base_cfg)
-    flat_train_score, _, _ = evaluate_case(train_case, sim_train, start, tau, k)
+    start = flat_from_config(base_cfg, groups)
+    flat_train_score, _, _ = evaluate_case(
+        train_case, sim_train, start, tau, k, groups, beta, parity_scale
+    )
     print(f"flat Stage A config, train score: {flat_train_score:.1f}")
 
     steps = (0.10, 0.05) if quick else (0.12, 0.06, 0.03)
     t1 = time.perf_counter()
     best, best_train_score, evals = pattern_search(
-        sim_train, train_case, k, tau, start, max_passes, steps, seed
+        sim_train, train_case, k, tau, start, max_passes, steps, seed,
+        groups, beta, parity_scale, workers,
     )
     elapsed = time.perf_counter() - t1
     print(f"search: {evals} evals in {elapsed:.1f} s, train {flat_train_score:.1f} -> {best_train_score:.1f}")
@@ -238,9 +309,13 @@ def run(
     rng = np.random.default_rng(seed + 1)
     per_seed = {}
     for seed_value, case in val_cases.items():
-        base_errs = baseline_per_frame(case, v12_manifest, baseline_cache_dir)
+        base_errs = baseline_per_frame(
+            case, v12_manifest, baseline_cache_dir, baseline_source
+        )
         base_score = score_of(int(base_errs.sum()), case["llr"].shape[0] * k)
-        cand_score, cand_errs, cand_errors = evaluate_case(case, sims[seed_value], best, tau, k)
+        cand_score, cand_errs, cand_errors = evaluate_case(
+            case, sims[seed_value], best, tau, k, groups, beta, parity_scale
+        )
         low, high = paired_bootstrap(base_errs, cand_errs, k, 2000, rng)
         per_seed[str(seed_value)] = {
             "base_score": base_score,
@@ -251,46 +326,66 @@ def run(
             "base_errors": int(base_errs.sum()),
         }
         print(
-            f"val seed {seed_value}: base {base_score:.1f} -> {cand_score:.1f} "
+            f"val seed {seed_value}: {baseline_source} {base_score:.1f} -> {cand_score:.1f} "
             f"(gain {cand_score - base_score:+.1f}, 95% CI [{low:+.1f}, {high:+.1f}])"
         )
 
-    schedules = expand(best)
-    # Stage A flat-schedule gain on the same validation frames, for comparison.
+    schedules = expand(best, groups)
+    # Flat Stage A'/A gain on the same validation frames, for comparison.
     flat_gain = {}
     for seed_value, case in val_cases.items():
-        flat_score, _, _ = evaluate_case(case, sims[seed_value], start, tau, k)
+        flat_score, _, _ = evaluate_case(
+            case, sims[seed_value], start, tau, k, groups, beta, parity_scale
+        )
         flat_gain[str(seed_value)] = flat_score - per_seed[str(seed_value)]["base_score"]
 
+    threshold = min_gain_for_rate(rate) if min_gain is None else float(min_gain)
+    min_val_gain = min(item["gain"] for item in per_seed.values())
+    all_ge = all(item["gain"] >= threshold for item in per_seed.values())
+    all_ci_positive = all(item["gain_ci_95"][0] > 0.0 for item in per_seed.values())
+    beats_flat = all(
+        per_seed[str(seed_value)]["gain"] > flat_gain[str(seed_value)]
+        for seed_value in val_seeds
+    )
+    gate_passed = all_ge and all_ci_positive and beats_flat
+
     result = {
+        "phase": phase,
         "n": n,
         "k": k,
         "rate": rate,
         "snr": snr,
         "stage_a_config": base_cfg,
+        "tap_from": str(tap_from_path) if tap_from_path is not None else None,
+        "beta_knots": bool(beta_knots),
         "train_seed": train_seed,
         "val_seeds": val_seeds,
         "val_samples": val_samples,
         "noise_scale": noise_scale,
-        "baseline_source": "v13c_binary_cache" if rate > 0.5 else "v12_python",
+        "baseline_source": baseline_source,
         "knot_steps": list(KNOT_STEPS),
-        "parameters": list(PARAM_NAMES),
+        "parameters": list(parameter_names(groups)),
         "flat_train_score": flat_train_score,
         "train_score": best_train_score,
         "evaluations": evals,
         "search_seconds": elapsed,
+        "workers": int(workers),
         "param_vector": best.tolist(),
         "schedules": {key: value.tolist() for key, value in schedules.items()},
         "validation": per_seed,
         "flat_stage_a_gain": flat_gain,
         "gate": {
+            "threshold": threshold,
             "train_gain": best_train_score - flat_train_score,
-            "min_val_gain": min(item["gain"] for item in per_seed.values()),
+            "min_val_gain": min_val_gain,
+            "all_seeds_ge_threshold": all_ge,
+            "all_ci_lower_positive": all_ci_positive,
+            "schedules_beat_flat": beats_flat,
+            "gate_passed": gate_passed,
+            # Kept for older validation tooling.
             "all_seeds_ge_3000": all(item["gain"] >= 3000 for item in per_seed.values()),
-            "schedules_beat_flat": all(
-                per_seed[str(seed)]["gain"] > flat_gain[str(seed)] for seed in val_seeds
-            ),
         },
+        "gate_passed": gate_passed,
     }
     return result
 
@@ -304,12 +399,22 @@ def main() -> None:
         help="defaults to the snr recorded in the Stage A artifact",
     )
     parser.add_argument("--stage-a", type=Path, default=None)
+    parser.add_argument(
+        "--tap-from", type=Path, default=None,
+        help="Stage A' TAP artifact (or raw config); enables Stage B' with v15 baseline",
+    )
+    parser.add_argument(
+        "--beta-knots", action="store_true",
+        help="also schedule beta over the five Stage B knots (requires --tap-from)",
+    )
+    parser.add_argument("--min-gain", type=float, default=None)
     parser.add_argument("--train-samples", type=int, default=300)
     parser.add_argument("--val-samples", type=int, default=500)
     parser.add_argument("--train-seed", type=int, default=911)
     parser.add_argument("--val-seeds", type=int, nargs="+", default=[2024, 31337])
     parser.add_argument("--seed", type=int, default=5150)
     parser.add_argument("--max-passes", type=int, default=3)
+    parser.add_argument("--workers", type=int, default=6)
     parser.add_argument("--quick", action="store_true", help="two coarse passes only")
     parser.add_argument("--cache-dir", type=Path, default=DEFAULT_CACHE_DIR)
     parser.add_argument("--out", type=Path, default=None)
@@ -320,8 +425,9 @@ def main() -> None:
             TOOLS_DIR.parent / "artifacts" / f"stage_a_N{args.n}_R{rate_tag(args.rate)}.json"
         )
     if args.out is None:
+        stem = "tap_b_prime" if args.tap_from is not None else "stage_b"
         args.out = (
-            TOOLS_DIR.parent / "artifacts" / f"stage_b_N{args.n}_R{rate_tag(args.rate)}.json"
+            TOOLS_DIR.parent / "artifacts" / f"{stem}_N{args.n}_R{rate_tag(args.rate)}.json"
         )
 
     result = run(
@@ -337,6 +443,10 @@ def main() -> None:
         max_passes=args.max_passes,
         quick=args.quick,
         baseline_cache_dir=args.cache_dir,
+        tap_from_path=args.tap_from,
+        beta_knots=args.beta_knots,
+        min_gain=args.min_gain,
+        workers=args.workers,
     )
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)

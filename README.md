@@ -40,11 +40,11 @@ with `sigma -> x`. No per-edge messages carry over between steps, so it is not
 BP, min-sum, or bit-flip. The v15 reaction term is the gradient of a polynomial
 that is constant on `±1` spins; it changes only the continuous landscape, not
 the Ising problem. Its BP-adjacent statistical-physics lineage is documented in
-`submissions/v15_onsager_bsb/README.md`.
+`submissions/v15_tap_bsb_candidate/README.md`.
 
 Judge status `Accepted` means the submission was valid. It does not mean the score improved; v10 and v11 were both accepted but scored below v9.
 
-## Phase 11 — TAP-corrected bSB (v15 candidate)
+## Phase 11 — TAP-corrected bSB (v15 accepted)
 
 Tier 3 screened alternative QAIA formulations at `N=1296, R=1/2` (100 frames). The tuned bSB baseline was `111,943`.
 
@@ -56,7 +56,50 @@ Tier 3 screened alternative QAIA formulations at `N=1296, R=1/2` (100 frames). T
 | split checks with auxiliary spins (300 configs) | 96,505 |
 | **bSB + Onsager/TAP reaction term** | **134,014** |
 
-The reaction term is the gradient of a polynomial that is constant on ±1 spins, so the Ising problem is unchanged (see `submissions/v15_tap_bsb_candidate/README.md`). With one setting per rate, tuned only at N=1296, v15 gains `+174,193` over the v14 binary on fresh seed 6060, with every case's CI above zero. The public BER drops to `0.017494`. New trajectory fields: `beta` (default 0) and `parity_scale` (default 1), supported by `decode_v3_python.py`, `bsb_vectorized.py` and `export_submission_cpp_v3.py`. With the defaults, output is bit-identical to v14.
+The reaction term is the gradient of a polynomial that is constant on ±1 spins, so the Ising problem is unchanged (see `submissions/v15_tap_bsb_candidate/README.md`). With one setting per rate, tuned only at N=1296, v15 gains `+174,193` over the v14 binary on fresh seed 6060, with every case's CI above zero. The public BER drops to `0.017494`. New trajectory fields: `beta` (default 0) and `parity_scale` (default 1), supported by `decode_v3_python.py`, `bsb_vectorized.py` and `export_submission_cpp_v3.py`. With the defaults, output is bit-identical to v14. The judge returned `2,015,823`, up `167,981` from v14, and `submissions/v15_tap_bsb_candidate/` is the accepted archive.
+
+## Phase 12 — per-case TAP tuning
+
+Phase 12 keeps the accepted v15 architecture and retunes the seven scalar TAP/bSB fields per case. The comparator is the compiled v15 binary, cached per frame in `artifacts/baseline_cache_v15/` for seeds 911, 2024, 31337 and 6060. These caches use `real_bench.build_case(..., noise_scale=1.00112)` with 500 frames per case and seed, so both the tuner and the validator compare the same realization frame-for-frame.
+
+### Method
+
+1. **Stage A′ — local parameter search.** `tools/tune_tap_local.py` starts from the accepted v15 setting for a case and runs a parallel log-space coordinate search over `tau`, `xi`, `lambd`, `delta`, `dt`, `beta`, and `parity_scale`. Bounds are `tau 1–8`, `xi 0.2–3`, `lambd 2–20`, `delta 1.5–8`, `dt 0.12–0.5`, `beta 0.05–0.45`, and `parity_scale 0.15–1.2`. Training uses seed 911 with 300 frames; validation uses 500 frames on seeds 2024 and 31337. Six workers evaluate probe moves in parallel. This is deliberately local: wide random grids and global retunes repeatedly failed in earlier phases.
+2. **Constant beta by default.** `beta` stays at the accepted per-rate value unless a tiny end-of-run or scheduled variant clears every gate. `--beta-knots` is only an optional Stage B′ probe, not part of the flat Stage A′ search.
+3. **Retries for near misses.** Near-gate cases were rerun from their best configuration with train seed 5151. No retry produced a new accepted move, so the original best result stands.
+4. **Stage B′ — conditional schedule probe.** `tools/tune_bsb_stage_b.py --tap-from` starts from a Stage A′ winner and may add piecewise-linear parameter schedules. A schedule is kept only if it beats flat Stage A′ on **both** validation seeds. No Stage B′ run has been completed in this phase.
+5. **Bootstrap gates.** Every gain uses paired frame bootstrap 95% CIs: the candidate must gain `>= +2,000` at `R=1/2` or `>= +1,500` at `R=2/3` on **both** seeds, with both CI lower bounds above zero. Any parameter landing exactly on a search bound must be widened once and rerun.
+6. **Binary confirmation.** `tools/validate_binary_gains.py` rebuilds the same frames and compares the compiled candidate against `artifacts/build/v15_ref.exe`, so the reported gains are not only Python-simulator results.
+7. **v16 acceptance gate.** A built candidate must gain `>= +1,500` on every changed case with fresh seed 6060, 300 frames, paired against v15, with CI above zero. Unchanged cases must be byte-identical. Public case 9 must remain byte-identical or drop below v15's public BER `0.017493827`.
+8. **Structural screen.** `tools/screen_tap_structural.py` screens a beta ramp, a six-trajectory energy portfolio, and a dSB finish against the retuned flat TAP-bSB. Promotion bars are `+4,000` at `N=1296` and `+8,000` at `N=3888`; a miss means the structure is dropped.
+
+### Findings so far
+
+Stage A′ is complete for all 8 cases. Gains below are versus the compiled v15 baseline; CI values are lower bounds on that seed's gain.
+
+| Rate | Case | Seed 2024 gain / CI low | Seed 31337 gain / CI low | Result |
+|---|---:|---:|---:|---|
+| R=1/2 | N=648 | −1,029 / −2,893 | −2,036 / −4,101 | Failed both seeds |
+| R=1/2 | N=1296 | +1,327 / +60 | +2,175 / +762 | Failed: min gain 21.5% below gate |
+| R=1/2 | N=1944 | +3,878 / +2,341 | +1,979 / +307 | Failed by 21.5 points; retry found nothing better |
+| R=1/2 | N=3888 | +5,675 / +4,321 | +7,007 / +5,402 | **Passed** |
+| R=2/3 | N=648 | −714 / −2,405 | −512 / −2,283 | Failed; `tau` also hit the upper bound |
+| R=2/3 | N=1296 | −69 / −842 | +361 / −373 | Failed both seeds |
+| R=2/3 | N=1944 | +822 / +4 | +158 / −803 | Failed both seeds |
+| R=2/3 | N=3888 | +1,035 / +251 | +452 / −350 | Failed; `dt` hit the upper bound |
+
+The one clean winner is `N=3888, R=1/2`, with `tau=2.295`, `xi=1.264`, `lambd=5.95`, `delta=3.72`, `dt≈0.34841`, `beta=0.27`, and `parity_scale≈0.28814`. It has no boundary hit and compiled-binary gains of `+5,675` and `+7,007`. It is the only case currently eligible for a v16 manifest.
+
+The bench is reliable for decisions of several thousand points but not for marginal ones. The fixed-rule v15 bench total is `1,996,724` versus the accepted judge total `2,015,823`, a `+19,099` judge bias; the linear fit has a per-case residual RMSE of about `2,113` points (`artifacts/phase13/bench_vs_judge_v15.json`). That supports the case-10 decision but does not make the 21.5-point case-7 miss credible.
+
+### Current stop position
+
+- R=2/3 has no passing case. N=648 hit the `tau` upper bound and N=3888 hit the `dt` upper bound; neither widening rerun was done, and no tuning Python process is currently running.
+- No Stage B′ result, structural-screen result, or `artifacts/phase12_case_manifest_v16.json` exists.
+- No v16 export, strict compile, validator run, public BER check, binary gain validation, or seed-6060 fresh-seed gate has been run.
+- If built now, v16 could only change case 10. That is far below the Phase 12 target of roughly `2.03–2.05M`; all eight high-rate cases and the other three `R=1/2` cases remain byte-identical to v15.
+- R=3/4 is skipped because no changed case has cleared a gate in passing.
+- Do not submit until the fresh-seed gate passes and explicit authorization is given.
 
 ## Submission history
 
@@ -266,33 +309,6 @@ One tooling note: the coordinate-polish step clips `dt` to the configured range 
 Stage B at `N=648, R=3/4` found only `+386` of train gain and did not beat flat Stage A on both seeds (`+9,126` vs `+9,181` on seed 2024). Stage B at `N=648, R=2/3` also failed the both-seed rule (`+22,852` vs flat `+22,252` on seed 2024, but `+23,725` vs `+24,034` on seed 31337). Both cases kept flat Stage A. Stage B at `N=1296` passed at both rates: `R=2/3` gained `+24,250` / `+25,172` vs flat `+24,240` / `+24,959`, and `R=3/4` gained `+13,217` / `+14,214` vs flat `+12,845` / `+13,637`.
 
 v14 was submitted with explicit authorization and accepted at `1,847,842`. It was the base for v15.
-
-## Phase 11 — Onsager-corrected bSB
-
-Tier 3 screening compared four diagnostic dynamics at `N=1296, R=1/2` on the
-same 100 frames: noisy six-trajectory bSB with energy selection (`113.8k`),
-noisy SimCIM (`109.2k`), LQA (`106.0k`), and split checks with auxiliary spins
-(`96.5k`). The tuned bSB baseline scored `111.9k`. None cleared the promotion
-bar. A fifth formulation, bSB with an Onsager/TAP reaction term, scored `134.0k`
-and was promoted.
-
-The term is the gradient of a polynomial that is constant on `±1` spins, so the
-Ising problem is unchanged. It uses only current soft spins and current check
-products; no per-edge message is stored between steps. The BP-adjacent lineage
-is documented explicitly in `submissions/v15_onsager_bsb/README.md`.
-
-Fresh-seed confirmation used seed `6060`, 300 frames per case, paired against
-the v14 binary. All 12 cases improved and all 95% bootstrap intervals had lower
-bounds above zero: `+18.9k` to `+33.7k` at `R=1/2`, about `+14k` at `R=2/3`, and
-`+3k` to `+4k` at `R=3/4`. Public case 9 BER fell from `0.019216735` to
-`0.017493827`. Python, batched tuner, and C++ agreed bit for bit, and the
-patched exporter reproduced the submitted v14 binary with default fields.
-
-`submissions/v15_onsager_bsb/` is the self-contained accepted archive. The full
-checklist is in `artifacts/v15_submission_checklist.json`: `19,752` source bytes,
-50 steps, one trajectory per case, no forbidden tokens, public BER below the
-v14 value, and judge runtime peaking at `4,279 ms`. The judge returned
-`2,015,823`, up `167,981` from v14.
 
 ## Stop condition
 

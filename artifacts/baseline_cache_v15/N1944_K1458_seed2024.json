@@ -1,0 +1,15 @@
+{
+  "array": "N1944_K1458_seed2024.npy",
+  "binary": "artifacts\\build\\v15_ref.exe",
+  "binary_sha256": "125a7211740a271b0ae154456a603e68e164a00904503cf0095912f030f71b16",
+  "k": 1458,
+  "n": 1944,
+  "noise_scale": 1.00112,
+  "samples": 500,
+  "score": 184573.59501117695,
+  "seconds": 9.049,
+  "seed": 2024,
+  "snr": 10.5,
+  "total_info_errors": 10399,
+  "total_wall_seconds": 12.341
+}

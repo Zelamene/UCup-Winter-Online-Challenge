@@ -41,10 +41,15 @@ class BatchedBSB:
         delta: Union[float, Sequence[float], np.ndarray],
         dt: Union[float, Sequence[float], np.ndarray] = 0.2,
         steps: int = 50,
-        beta: float = 0.0,
+        beta: Union[float, Sequence[float], np.ndarray] = 0.0,
         parity_scale: float = 1.0,
+        dsb_finish: int = 0,
     ) -> np.ndarray:
-        """Run batched bSB on B frames of LLRs and return hard bits of shape (B, N)."""
+        """Run batched bSB on B frames of LLRs and return hard bits of shape (B, N).
+
+        ``dsb_finish`` switches the last N steps to hard dSB check products; it
+        is still QAIA-only and is used solely by the structural screen.
+        """
         llr = np.asarray(llr, dtype=np.float64)
         b = llr.shape[0]
 
@@ -53,6 +58,7 @@ class BatchedBSB:
         lambd_is_seq = isinstance(lambd, (list, tuple, np.ndarray))
         delta_is_seq = isinstance(delta, (list, tuple, np.ndarray))
         dt_is_seq = isinstance(dt, (list, tuple, np.ndarray))
+        beta_is_seq = isinstance(beta, (list, tuple, np.ndarray))
 
         if xi_is_seq:
             xi = np.asarray(xi, dtype=np.float64)
@@ -62,6 +68,14 @@ class BatchedBSB:
             delta = np.asarray(delta, dtype=np.float64)
         if dt_is_seq:
             dt = np.asarray(dt, dtype=np.float64)
+        if beta_is_seq:
+            beta = np.asarray(beta, dtype=np.float64)
+            if beta.ndim != 1 or len(beta) != steps:
+                raise ValueError(f"beta schedule has {beta.size} values, expected {steps}")
+
+        if dsb_finish < 0 or dsb_finish > steps:
+            raise ValueError(f"dsb_finish must be in 0..{steps}, got {dsb_finish}")
+        dsb_start = steps - int(dsb_finish) if dsb_finish else steps + 1
 
         x = np.tanh(llr / float(tau)).astype(np.float64, copy=True)
         y = np.zeros_like(x)
@@ -70,7 +84,7 @@ class BatchedBSB:
         suff = np.ones((b, self.m, self.deg + 1), dtype=np.float64)
         check_scale = np.ones(self.n, dtype=np.float64)
         check_scale[self.n - self.m:] = parity_scale  # H=[A|I]: last m columns are parity bits
-        if beta != 0.0:
+        if beta_is_seq or beta != 0.0:
             pp = np.ones((b, self.m, self.deg + 1)); qp = np.zeros((b, self.m, self.deg + 1))
             ps = np.ones((b, self.m, self.deg + 1)); qs = np.zeros((b, self.m, self.deg + 1))
 
@@ -78,6 +92,8 @@ class BatchedBSB:
             # Soft spin clipping [-1, 1] with near-zero guard
             soft = np.clip(x, -1.0, 1.0)
             spins = np.where(np.abs(soft) < EPS, np.where(soft >= 0.0, EPS, -EPS), soft)
+            if step >= dsb_start:
+                spins = np.where(x >= 0.0, 1.0, -1.0)
 
             # Gather along check edges
             gathered = spins[:, self.cols]  # (B, M, deg)
@@ -98,7 +114,8 @@ class BatchedBSB:
                 force = llr + (coupling * check_scale) * weighted_sum
             else:
                 force = llr + coupling * weighted_sum
-            if beta != 0.0:
+            beta_val = float(beta[step]) if beta_is_seq else float(beta)
+            if beta_val != 0.0:
                 # Onsager/TAP reaction: gradient of a polynomial that is constant on +-1 spins
                 q = gathered * gathered
                 u = 1.0 - q
@@ -109,7 +126,7 @@ class BatchedBSB:
                     ps[:, :, t] = ps[:, :, t + 1] * q[:, :, t]
                     qs[:, :, t] = qs[:, :, t + 1] * q[:, :, t] + ps[:, :, t + 1] * u[:, :, t]
                 per_edge = qp[:, :, : self.deg] * ps[:, :, 1:] + pp[:, :, : self.deg] * qs[:, :, 1:]
-                reaction = (beta * (coupling * coupling)) * spins * (per_edge.reshape(b, -1) @ self.scatter_matrix)
+                reaction = (beta_val * (coupling * coupling)) * spins * (per_edge.reshape(b, -1) @ self.scatter_matrix)
                 if parity_scale != 1.0:
                     reaction = reaction * check_scale
                 force = force - reaction
@@ -137,7 +154,7 @@ class BatchedBSB:
         delta: Union[float, Sequence[float], np.ndarray],
         dt: Union[float, Sequence[float], np.ndarray] = 0.2,
         steps: int = 50,
-        beta: float = 0.0,
+        beta: Union[float, Sequence[float], np.ndarray] = 0.0,
         parity_scale: float = 1.0,
     ) -> tuple[float, float, int]:
         """Compute score, BER, and bit error count on systematic information bits."""

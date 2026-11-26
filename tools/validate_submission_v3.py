@@ -12,6 +12,25 @@ ROOT = Path(__file__).resolve().parent.parent
 MODES = {"dsb", "bsb"}
 COMBINES = {"energy", "vote", "soft_vote"}
 
+# Phase 13 ceiling analysis is offline-only.  Reject generated sources that
+# mention any of the isolation markers or helper symbols from tools/ceiling.
+OFFLINE_CEILING_SYMBOLS = (
+    "OFFLINE ANALYSIS ONLY",
+    "tools.ceiling",
+    "tools/ceiling",
+    "ceiling.common",
+    "ceiling.cache_binary",
+    "ceiling.calibrate_bench_vs_judge",
+    "ceiling.compare_ceiling_caches",
+    "phase13_ceiling",
+    "paired_bootstrap_ci",
+    "paired_bootstrap_total_ci",
+    "build_ceiling_case",
+    "load_ceiling_cache",
+    "calibrate_bench_vs_judge",
+    "compare_ceiling_caches",
+)
+
 
 def validate_case(case: dict, label: str) -> tuple[dict, list[str]]:
     errors: list[str] = []
@@ -53,6 +72,18 @@ def validate_case(case: dict, label: str) -> tuple[dict, list[str]]:
                     errors.append(f"{label}: trajectory {index} {key} has non-positive values")
             elif not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
                 errors.append(f"{label}: trajectory {index} has invalid {key}={value!r}")
+        if "beta" in traj:
+            value = traj["beta"]
+            if isinstance(value, (list, tuple)):
+                if len(value) != 50:
+                    errors.append(f"{label}: trajectory {index} beta must have 50 values")
+                elif any(
+                    not isinstance(item, (int, float)) or not math.isfinite(item)
+                    for item in value
+                ):
+                    errors.append(f"{label}: trajectory {index} beta has non-finite values")
+            elif not isinstance(value, (int, float)) or not math.isfinite(value):
+                errors.append(f"{label}: trajectory {index} invalid beta={value!r}")
         if "dt" in traj:
             value = traj["dt"]
             if isinstance(value, (list, tuple)):
@@ -111,6 +142,9 @@ def main() -> None:
     forbidden = ("belief propagation", "min-sum", "minsum", "bit-flip", "bitflip")
     lowered = source.decode("utf-8", errors="ignore").lower()
     found_forbidden = [token for token in forbidden if token in lowered]
+    found_offline = [
+        token for token in OFFLINE_CEILING_SYMBOLS if token.lower() in lowered
+    ]
 
     public_summary = None
     if args.public_output is not None:
@@ -132,6 +166,7 @@ def main() -> None:
         "valid_modes": all(case.get("mode") in MODES for case in [fallback] + cases if case),
         "valid_combines": all(case.get("combine") in COMBINES for case in [fallback] + cases if case),
         "no_forbidden_tokens": not found_forbidden,
+        "no_offline_ceiling_symbols": not found_offline,
     }
     if not all(gate.values()):
         errors.append("one or more gates failed")
@@ -143,6 +178,7 @@ def main() -> None:
         "cases": case_summaries,
         "public_output": public_summary,
         "forbidden_tokens": found_forbidden,
+        "offline_ceiling_symbols": found_offline,
         "gate": gate,
         "all_passed": not errors,
         "errors": errors,

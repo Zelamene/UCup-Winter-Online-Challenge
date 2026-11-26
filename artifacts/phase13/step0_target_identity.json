@@ -1,0 +1,35 @@
+{
+  "checked_on": "2026-11-26",
+  "target_score": 2517863,
+  "identity": "Current publicly displayed top total score on the live 2026 UCup Winter Online Challenge scoreboard, problem A, user haminh109.",
+  "scoreboard_url": "https://challenge.ucup.ac/contest/6aed6de5dca641760998e9d7/scoreboard",
+  "contest_url": "https://challenge.ucup.ac/contest/6aed6de5dca641760998e9d7",
+  "scoreboard_context": {
+    "rank": 1,
+    "user": "haminh109",
+    "second_place_score": 2516559,
+    "gap_to_second": 304,
+    "problem_count": 1,
+    "status": "Live; ends 2026-12-08 20:00"
+  },
+  "scoring": {
+    "official_formula": "Score = -sum_a 10*lg(BER_a) over A=12 datasets",
+    "judge_scaling": "10000",
+    "effective_local_formula": "-100000*log10(BER)",
+    "ber_definition": "incorrectly recovered information bits / information bits",
+    "hidden_dataset": true,
+    "public_sample_available": true,
+    "case_grid": "4 lengths (648, 1296, 1944, 3888) x 3 rates (1/2, 2/3, 3/4)"
+  },
+  "relation_to_project": {
+    "accepted_v15_score": 2015823,
+    "gap_to_target": 502040,
+    "interpretation": "A real hidden-judge leaderboard score, not a locally computable theoretical ceiling. It is not evidence that 2,517,863 is achievable by a QAIA-compliant submission, and no source or algorithm is public."
+  },
+  "sources": [
+    "https://challenge.ucup.ac/contest/6aed6de5dca641760998e9d7/scoreboard",
+    "https://challenge.ucup.ac/contest/6aed6de5dca641760998e9d7",
+    "Problem statements/Low-Density Parity-Check Problem Statement.pdf",
+    "artifacts/phase13/problem_statement_extract.txt"
+  ]
+}

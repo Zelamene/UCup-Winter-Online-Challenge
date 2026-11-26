@@ -56,6 +56,24 @@ def _schedule_values(value: object, label: str, steps: int) -> np.ndarray:
     return out
 
 
+def _beta_values(value: object, label: str, steps: int) -> np.ndarray:
+    """Return a per-step beta array from a finite scalar or ``steps``-value list.
+
+    Beta is an added-energy coefficient rather than a bSB schedule scale, so zero
+    and negative values are arithmetically valid; the tuner only searches positive
+    values.
+    """
+    if isinstance(value, (list, tuple)):
+        if len(value) != steps:
+            raise ValueError(f"{label} must have {steps} values, got {len(value)}")
+        out = np.asarray([_finite(item, f"{label}[{i}]") for i, item in enumerate(value)], dtype=np.float64)
+    else:
+        out = np.full(steps, _finite(value, label), dtype=np.float64)
+    if not np.all(np.isfinite(out)):
+        raise ValueError(f"{label} must contain finite values")
+    return out
+
+
 def _build_sparse(h: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, int, int]:
     """Padded check-neighbor lists in ascending column order."""
     matrix = np.asarray(h)
@@ -163,9 +181,10 @@ def _decode_trajectory_sparse(
     if rates.size != sparse[5]:
         raise ValueError(f"llr has {rates.size} entries, expected {sparse[5]}")
 
-    beta = _finite(traj.get("beta", 0.0), "trajectory beta")
+    beta_values = _beta_values(traj.get("beta", 0.0), "trajectory beta", steps)
+    use_reaction = bool(np.any(beta_values != 0.0))
     parity_scale = _finite(traj.get("parity_scale", 1.0), "trajectory parity_scale")
-    if (beta != 0.0 or parity_scale != 1.0) and mode != "bsb":
+    if (use_reaction or parity_scale != 1.0) and mode != "bsb":
         raise ValueError("beta/parity_scale require bsb mode")
     check_scale = None
     if parity_scale != 1.0:
@@ -195,6 +214,7 @@ def _decode_trajectory_sparse(
             force = rates + coupling * weighted_sum
         else:
             force = rates + (coupling * check_scale) * weighted_sum
+        beta = float(beta_values[step])
         if beta != 0.0:
             reaction = (beta * (coupling * coupling)) * spins * _onsager_contribution(spins, sparse)
             if check_scale is not None:

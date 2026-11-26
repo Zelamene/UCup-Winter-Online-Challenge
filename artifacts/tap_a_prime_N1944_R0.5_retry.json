@@ -1,0 +1,117 @@
+{
+  "phase": "A_prime",
+  "n": 1944,
+  "k": 972,
+  "rate": 0.5,
+  "snr": 6.0,
+  "noise_scale": 1.00112,
+  "train_samples": 300,
+  "val_samples": 500,
+  "train_seed": 911,
+  "val_seeds": [
+    2024,
+    31337
+  ],
+  "start_config": {
+    "tau": 2.295,
+    "xi": 1.2640000000000002,
+    "lambd": 5.95,
+    "delta": 3.72,
+    "dt": 0.3484068,
+    "beta": 0.27,
+    "parity_scale": 0.35536927500000004
+  },
+  "start_source": "artifacts\\tap_a_prime_N1944_R0.5_config.json",
+  "best_config": {
+    "tau": 2.295,
+    "xi": 1.2640000000000002,
+    "lambd": 5.95,
+    "delta": 3.72,
+    "dt": 0.3484068,
+    "beta": 0.27,
+    "parity_scale": 0.35536927500000004
+  },
+  "baseline_source": "v15_binary_cache",
+  "search_bounds": {
+    "tau": [
+      1.0,
+      8.0
+    ],
+    "xi": [
+      0.2,
+      3.0
+    ],
+    "lambd": [
+      2.0,
+      20.0
+    ],
+    "delta": [
+      1.5,
+      8.0
+    ],
+    "dt": [
+      0.12,
+      0.5
+    ],
+    "beta": [
+      0.05,
+      0.45
+    ],
+    "parity_scale": [
+      0.15,
+      1.2
+    ]
+  },
+  "bounds_scale": 1.0,
+  "search_seed": 5151,
+  "workers": 6,
+  "min_move_gain": 80.0,
+  "evaluations": 29,
+  "accepted_moves": 0,
+  "search_seconds": 316.843,
+  "start_train_score": 141946.45408592795,
+  "train_score": 141946.45408592795,
+  "train_gain": 0.0,
+  "val_score": 139620.0955596796,
+  "val_ber": 0.04016049382716049,
+  "gain": 1978.5415417412878,
+  "ci_95": [
+    2252.0899335439635,
+    5419.997574748164
+  ],
+  "validation": {
+    "2024": {
+      "baseline_score": 135742.15034565685,
+      "candidate_score": 139620.0955596796,
+      "gain": 3877.945214022766,
+      "gain_ci_95": [
+        2252.0899335439635,
+        5419.997574748164
+      ],
+      "baseline_errors": 21341,
+      "candidate_errors": 19518
+    },
+    "31337": {
+      "baseline_score": 139036.60717354968,
+      "candidate_score": 141015.14871529097,
+      "gain": 1978.5415417412878,
+      "gain_ci_95": [
+        346.8587782816838,
+        3783.5628250908244
+      ],
+      "baseline_errors": 19782,
+      "candidate_errors": 18901
+    }
+  },
+  "edge_params": [],
+  "needs_boundary_rerun": false,
+  "gate": {
+    "threshold": 2000.0,
+    "min_val_gain": 1978.5415417412878,
+    "all_seeds_ge_threshold": false,
+    "all_ci_lower_positive": true,
+    "no_boundary_hit": true,
+    "gate_passed": false
+  },
+  "gate_passed": false
+}

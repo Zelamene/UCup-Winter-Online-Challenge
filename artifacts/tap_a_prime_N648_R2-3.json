@@ -1,0 +1,119 @@
+{
+  "phase": "A_prime",
+  "n": 648,
+  "k": 432,
+  "rate": 0.666666666666667,
+  "snr": 9.0,
+  "noise_scale": 1.00112,
+  "train_samples": 300,
+  "val_samples": 500,
+  "train_seed": 911,
+  "val_seeds": [
+    2024,
+    31337
+  ],
+  "start_config": {
+    "tau": 5.184000000000001,
+    "xi": 0.6,
+    "lambd": 9.375,
+    "delta": 3.0,
+    "dt": 0.4000000000000001,
+    "beta": 0.16000000000000003,
+    "parity_scale": 0.6375
+  },
+  "start_source": "C:\\Users\\shazi\\.local\\share\\opencode\\worktree\\bd12e4\\phase12-tap-tuning\\submissions\\v15_tap_bsb_candidate\\manifest.json",
+  "best_config": {
+    "tau": 8.0,
+    "xi": 0.6,
+    "lambd": 9.375,
+    "delta": 2.7,
+    "dt": 0.4440000000000001,
+    "beta": 0.16000000000000003,
+    "parity_scale": 0.6375
+  },
+  "baseline_source": "v15_binary_cache",
+  "search_bounds": {
+    "tau": [
+      1.0,
+      8.0
+    ],
+    "xi": [
+      0.2,
+      3.0
+    ],
+    "lambd": [
+      2.0,
+      20.0
+    ],
+    "delta": [
+      1.5,
+      8.0
+    ],
+    "dt": [
+      0.12,
+      0.5
+    ],
+    "beta": [
+      0.05,
+      0.45
+    ],
+    "parity_scale": [
+      0.15,
+      1.2
+    ]
+  },
+  "bounds_scale": 1.0,
+  "search_seed": 5150,
+  "workers": 6,
+  "min_move_gain": 80.0,
+  "evaluations": 55,
+  "accepted_moves": 9,
+  "search_seconds": 120.861,
+  "start_train_score": 179789.53085794006,
+  "train_score": 182123.6151082992,
+  "train_gain": 2334.0842503591266,
+  "val_score": 176860.59324774132,
+  "val_ber": 0.017037037037037038,
+  "gain": -713.9248140352138,
+  "ci_95": [
+    -2404.604228899444,
+    1359.0534935834978
+  ],
+  "validation": {
+    "2024": {
+      "baseline_score": 177574.51806177653,
+      "candidate_score": 176860.59324774132,
+      "gain": -713.9248140352138,
+      "gain_ci_95": [
+        -2404.604228899444,
+        884.9730124910853
+      ],
+      "baseline_errors": 3620,
+      "candidate_errors": 3680
+    },
+    "31337": {
+      "baseline_score": 179537.76523581543,
+      "candidate_score": 179026.1640385898,
+      "gain": -511.60119722562376,
+      "gain_ci_95": [
+        -2283.320218757936,
+        1359.0534935834978
+      ],
+      "baseline_errors": 3460,
+      "candidate_errors": 3501
+    }
+  },
+  "edge_params": [
+    "tau"
+  ],
+  "needs_boundary_rerun": true,
+  "gate": {
+    "threshold": 1500.0,
+    "min_val_gain": -713.9248140352138,
+    "all_seeds_ge_threshold": false,
+    "all_ci_lower_positive": false,
+    "no_boundary_hit": false,
+    "gate_passed": false
+  },
+  "gate_passed": false
+}
