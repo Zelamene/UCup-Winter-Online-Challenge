@@ -1,0 +1,199 @@
+{
+  "candidate_count": 21,
+  "case": 10,
+  "energy_lambda_multiplier": 1.0,
+  "frames": 200,
+  "history": [
+    {
+      "candidate_errors": 10167,
+      "gain": 1333.4188717522193,
+      "selected": [
+        5
+      ],
+      "step": 0
+    },
+    {
+      "gain": 4976.185249379516,
+      "oracle_gain": 8220.746893240721,
+      "selected": [
+        5,
+        1
+      ],
+      "selection_accuracy": 0.695,
+      "step": 1
+    },
+    {
+      "gain": 7191.846239812643,
+      "oracle_gain": 10814.551335576252,
+      "selected": [
+        5,
+        1,
+        20
+      ],
+      "selection_accuracy": 0.5,
+      "step": 2
+    },
+    {
+      "gain": 8401.326979566977,
+      "oracle_gain": 13516.579224305082,
+      "selected": [
+        5,
+        1,
+        20,
+        3
+      ],
+      "selection_accuracy": 0.43,
+      "step": 3
+    },
+    {
+      "gain": 9336.203797519323,
+      "oracle_gain": 14691.581527809554,
+      "selected": [
+        5,
+        1,
+        20,
+        3,
+        2
+      ],
+      "selection_accuracy": 0.43,
+      "step": 4
+    },
+    {
+      "gain": 9490.555748373386,
+      "oracle_gain": 15317.73950857704,
+      "selected": [
+        5,
+        1,
+        20,
+        3,
+        2,
+        6
+      ],
+      "selection_accuracy": 0.43,
+      "step": 5
+    }
+  ],
+  "k": 1944,
+  "n": 3888,
+  "rate": 0.5,
+  "seed": 911,
+  "selected_indices": [
+    5,
+    1,
+    20,
+    3,
+    2,
+    6
+  ],
+  "training_gain": 9490.555748373386,
+  "trajectories": [
+    {
+      "beta": 0.27,
+      "combine": "energy",
+      "delta": 3.9060000000000006,
+      "dt": 0.3484068,
+      "energy_lambda": 5.95,
+      "joint_pairs": 1,
+      "k": 1944,
+      "lambd": 5.50375,
+      "mode": "bsb",
+      "n": 3888,
+      "pair_gamma": 0.18620000000000003,
+      "pair_scale": 1.0,
+      "parity_scale": 0.31983234750000006,
+      "snr": 6.0,
+      "tau": 2.295,
+      "xi": 1.2640000000000002
+    },
+    {
+      "beta": 0.27,
+      "combine": "energy",
+      "delta": 3.72,
+      "dt": 0.3484068,
+      "energy_lambda": 5.95,
+      "joint_pairs": 1,
+      "k": 1944,
+      "lambd": 5.95,
+      "mode": "bsb",
+      "n": 3888,
+      "pair_gamma": 0.18620000000000003,
+      "pair_scale": 1.0,
+      "parity_scale": 0.31983234750000006,
+      "snr": 6.0,
+      "tau": 2.122875,
+      "xi": 1.3272000000000004
+    },
+    {
+      "beta": 0.27,
+      "combine": "energy",
+      "delta": 3.72,
+      "dt": 0.3484068,
+      "energy_lambda": 5.95,
+      "joint_pairs": 1,
+      "k": 1944,
+      "lambd": 5.95,
+      "mode": "bsb",
+      "n": 3888,
+      "pair_gamma": 0.18620000000000003,
+      "pair_scale": 1.0,
+      "parity_scale": 0.31983234750000006,
+      "snr": 6.0,
+      "tau": 2.295,
+      "xi": 1.2640000000000002
+    },
+    {
+      "beta": 0.27,
+      "combine": "energy",
+      "delta": 3.72,
+      "dt": 0.3484068,
+      "energy_lambda": 5.95,
+      "joint_pairs": 1,
+      "k": 1944,
+      "lambd": 5.95,
+      "mode": "bsb",
+      "n": 3888,
+      "pair_gamma": 0.18620000000000003,
+      "pair_scale": 1.0,
+      "parity_scale": 0.31983234750000006,
+      "snr": 6.0,
+      "tau": 2.6392499999999997,
+      "xi": 1.3904000000000003
+    },
+    {
+      "beta": 0.27,
+      "combine": "energy",
+      "delta": 3.72,
+      "dt": 0.3484068,
+      "energy_lambda": 5.95,
+      "joint_pairs": 1,
+      "k": 1944,
+      "lambd": 5.95,
+      "mode": "bsb",
+      "n": 3888,
+      "pair_gamma": 0.18620000000000003,
+      "pair_scale": 1.0,
+      "parity_scale": 0.31983234750000006,
+      "snr": 6.0,
+      "tau": 2.467125,
+      "xi": 1.2008
+    },
+    {
+      "beta": 0.27,
+      "combine": "energy",
+      "delta": 3.534,
+      "dt": 0.3484068,
+      "energy_lambda": 5.95,
+      "joint_pairs": 1,
+      "k": 1944,
+      "lambd": 6.39625,
+      "mode": "bsb",
+      "n": 3888,
+      "pair_gamma": 0.18620000000000003,
+      "pair_scale": 1.0,
+      "parity_scale": 0.31983234750000006,
+      "snr": 6.0,
+      "tau": 2.295,
+      "xi": 1.2640000000000002
+    }
+  ]
+}

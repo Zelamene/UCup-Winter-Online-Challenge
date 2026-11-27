@@ -1,0 +1,16 @@
+{
+  "array": "N3888_K1944_seed6060.npy",
+  "binary": "artifacts\\build\\v17_ref.exe",
+  "binary_sha256": "ac4ceda82ab10e6910c7d47462552ccfeb6788ff41fd112116a1e752804e05a3",
+  "k": 1944,
+  "llr_sigma": "nominal",
+  "n": 3888,
+  "noise_scale": 1.00112,
+  "samples": 500,
+  "score": 155839.85984931063,
+  "seconds": 32.97,
+  "seed": 6060,
+  "snr": 6.0,
+  "total_info_errors": 26870,
+  "total_wall_seconds": 40.881
+}

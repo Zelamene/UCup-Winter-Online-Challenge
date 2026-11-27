@@ -1,0 +1,136 @@
+{
+  "all_passed": true,
+  "bootstrap_resamples": 1000,
+  "candidate_binary": "C:\\Users\\shazi\\.local\\share\\opencode\\worktree\\bd12e4\\phase12-tap-tuning\\artifacts\\build\\v18_greedy_both3_threaded.exe",
+  "frames": 100,
+  "max_regression": 3000.0,
+  "schedule_extremes": [
+    {
+      "case_index": 7,
+      "hard_bits_valid": true,
+      "log_multiplier": "low",
+      "max_abs_config_value": 2.975,
+      "pass": true
+    },
+    {
+      "case_index": 7,
+      "hard_bits_valid": true,
+      "log_multiplier": "high",
+      "max_abs_config_value": 11.9,
+      "pass": true
+    },
+    {
+      "case_index": 10,
+      "hard_bits_valid": true,
+      "log_multiplier": "low",
+      "max_abs_config_value": 2.975,
+      "pass": true
+    },
+    {
+      "case_index": 10,
+      "hard_bits_valid": true,
+      "log_multiplier": "high",
+      "max_abs_config_value": 11.9,
+      "pass": true
+    }
+  ],
+  "seed": 6060,
+  "snr_cases": [
+    {
+      "candidate_errors": 7915,
+      "case_index": 7,
+      "gain": 1435.547346291758,
+      "gain_ci_95": [
+        243.05874921388897,
+        2849.699670821604
+      ],
+      "k": 972,
+      "n": 1944,
+      "offset_db": -0.3,
+      "pass": true,
+      "snr": 5.7,
+      "v17_errors": 8181
+    },
+    {
+      "candidate_errors": 3325,
+      "case_index": 7,
+      "gain": 7149.441738133406,
+      "gain_ci_95": [
+        4262.397141125658,
+        10878.25873436546
+      ],
+      "k": 972,
+      "n": 1944,
+      "offset_db": 0.0,
+      "pass": true,
+      "snr": 6.0,
+      "v17_errors": 3920
+    },
+    {
+      "candidate_errors": 1708,
+      "case_index": 7,
+      "gain": 2782.20794419336,
+      "gain_ci_95": [
+        -864.2492352037785,
+        6849.53055653334
+      ],
+      "k": 972,
+      "n": 1944,
+      "offset_db": 0.3,
+      "pass": true,
+      "snr": 6.3,
+      "v17_errors": 1821
+    },
+    {
+      "candidate_errors": 14794,
+      "case_index": 10,
+      "gain": -91.09946121460234,
+      "gain_ci_95": [
+        -1116.104761685799,
+        990.869465242726
+      ],
+      "k": 1944,
+      "n": 3888,
+      "offset_db": -0.3,
+      "pass": true,
+      "snr": 5.7,
+      "v17_errors": 14763
+    },
+    {
+      "candidate_errors": 5149,
+      "case_index": 10,
+      "gain": 5387.116349221033,
+      "gain_ci_95": [
+        2166.1787074380636,
+        8939.455438667652
+      ],
+      "k": 1944,
+      "n": 3888,
+      "offset_db": 0.0,
+      "pass": true,
+      "snr": 6.0,
+      "v17_errors": 5829
+    },
+    {
+      "candidate_errors": 1773,
+      "case_index": 10,
+      "gain": 6198.457674244273,
+      "gain_ci_95": [
+        624.9438322748823,
+        12199.195928136955
+      ],
+      "k": 1944,
+      "n": 3888,
+      "offset_db": 0.3,
+      "pass": true,
+      "snr": 6.3,
+      "v17_errors": 2045
+    }
+  ],
+  "snr_offsets": [
+    -0.3,
+    0.0,
+    0.3
+  ],
+  "v17_binary": "C:\\Users\\shazi\\.local\\share\\opencode\\worktree\\bd12e4\\phase12-tap-tuning\\artifacts\\build\\v17_ref.exe"
+}

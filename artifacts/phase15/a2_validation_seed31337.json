@@ -1,0 +1,66 @@
+{
+  "bootstrap_resamples": 1000,
+  "cases": {
+    "10": {
+      "k": 1944,
+      "n": 3888,
+      "oracle": {
+        "baseline_errors": 25416,
+        "baseline_score": 158255.90631071836,
+        "candidate_errors": 19408,
+        "candidate_score": 169968.54814037768,
+        "gain": 11712.641829659318,
+        "gain_ci_95": [
+          9709.747243176382,
+          13786.97365051176
+        ]
+      },
+      "rate": 0.5,
+      "selection": {
+        "baseline_errors": 25416,
+        "baseline_score": 158255.90631071836,
+        "candidate_errors": 22618,
+        "candidate_score": 163321.20651929488,
+        "gain": 5065.300208576518,
+        "gain_ci_95": [
+          3108.0948779624364,
+          7168.1729239086435
+        ]
+      },
+      "selection_accuracy": 0.456,
+      "trajectories": 4
+    },
+    "7": {
+      "k": 972,
+      "n": 1944,
+      "oracle": {
+        "baseline_errors": 15639,
+        "baseline_score": 149242.7289615612,
+        "candidate_errors": 11653,
+        "candidate_score": 162019.85228083012,
+        "gain": 12777.123319268925,
+        "gain_ci_95": [
+          10597.142650487427,
+          15097.540445640068
+        ]
+      },
+      "rate": 0.5,
+      "selection": {
+        "baseline_errors": 15639,
+        "baseline_score": 149242.7289615612,
+        "candidate_errors": 13930,
+        "candidate_score": 154268.515283833,
+        "gain": 5025.786322271801,
+        "gain_ci_95": [
+          2761.5706615737304,
+          7142.879566632695
+        ]
+      },
+      "selection_accuracy": 0.436,
+      "trajectories": 4
+    }
+  },
+  "configs": "C:\\Users\\shazi\\.local\\share\\opencode\\worktree\\bd12e4\\phase12-tap-tuning\\artifacts\\phase15\\a1_tau_xi_selection.json",
+  "frames": 500,
+  "seed": 31337
+}

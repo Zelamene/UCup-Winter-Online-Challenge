@@ -120,6 +120,7 @@ class BatchedBSB:
         pair_amplitude: int = 0,
         amp_scale: float = 1.0,
         amp_steps: int = 8,
+        debug_finite: bool = False,
     ) -> np.ndarray:
         """Run batched bSB on B frames of LLRs and return hard bits of shape (B, N).
 
@@ -331,6 +332,10 @@ class BatchedBSB:
                 x_new[clipped] = np.where(x_new[clipped] >= 0.0, 1.0, -1.0)
                 y[clipped] = 0.0
             x = x_new
+            if debug_finite and not (
+                np.all(np.isfinite(x)) and np.all(np.isfinite(y)) and np.all(np.isfinite(force))
+            ):
+                raise FloatingPointError(f"non-finite decoder state at step {step}")
 
         return (x < 0.0).astype(np.int8)
 

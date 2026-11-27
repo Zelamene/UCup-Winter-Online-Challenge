@@ -78,6 +78,7 @@ def main() -> None:
     parser.add_argument("--v16-binary", type=Path, required=True)
     parser.add_argument("--v17-binary", type=Path, required=True)
     parser.add_argument("--changed-cases", type=int, nargs="+", required=True)
+    parser.add_argument("--bootstrap-resamples", type=int, default=2000)
     parser.add_argument(
         "--output", type=Path,
         default=ROOT / "artifacts" / "phase14" / "fresh_seed_6060.json",
@@ -130,7 +131,7 @@ def main() -> None:
                 }
                 if is_changed:
                     low, high = paired_bootstrap_ci(
-                        base_errors, cand_errors, k, 2000, SEED + case_index
+                        base_errors, cand_errors, k, args.bootstrap_resamples, SEED + case_index
                     )
                     entry["gain_ci_95"] = [low, high]
                     entry["gate_passed"] = gain >= MIN_GAIN and low > 0.0
@@ -150,6 +151,7 @@ def main() -> None:
         "samples": SAMPLES,
         "noise_scale": NOISE_SCALE,
         "min_changed_gain": MIN_GAIN,
+        "bootstrap_resamples": args.bootstrap_resamples,
         "v16_binary": str(args.v16_binary.resolve()),
         "v16_sha256": sha256(args.v16_binary),
         "v17_binary": str(args.v17_binary.resolve()),

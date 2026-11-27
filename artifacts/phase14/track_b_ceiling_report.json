@@ -9,7 +9,7 @@
   },
   "calibration": {
     "accepted_v16_judge_score": 2023997,
-    "baseline_note": "v16 is the accepted base; v17 remains unsubmitted and is not mixed in",
+    "baseline_note": "v16 is the ladder base; accepted v17 is the Phase 15 base and is not mixed into this v16 ladder",
     "bench_to_judge_delta_slope": 0.9470002758290964,
     "live_top_score": 2517863,
     "slope_source": "artifacts\\phase13\\bench_vs_judge_v15.json"
@@ -376,9 +376,15 @@
       "v16_score": 185022.77507796657
     }
   ],
-  "ceiling_assessment": "Measured offline decoders reach ~2,181,832, leaving ~336,031 points to the live top score. These are achievable lower bounds, not a formal ceiling; the remaining gap is unmodelled by the BP/OSD variants tested here.",
+  "ceiling_assessment": "Full 500-frame ladder estimate is ~2,181,832; adding the three short 100/60-frame rate-1/2 screens gives a corrected partial headline of ~2.25M (partial; 3/4 cases ML-limited). These are achievable lower bounds, not a formal ceiling; the remaining gap to the live top is unmodelled by the BP/OSD variants tested here.",
   "offline_header": "# OFFLINE ANALYSIS ONLY \u2014 never imported by the exporter",
   "osd_screen_status": "both_perbit_and_joint_osd2_screens_completed",
+  "osd_joint_rejection": {
+    "rate": 0.5,
+    "longer_check_gain_range": [-10000, -5000],
+    "ml_wrong_codeword_fractions": [0.34, 0.7, 0.58],
+    "decision": "reject OSD-2 on joint BP"
+  },
   "pair_factor_self_test": {
     "checked_snr_values": [
       6.0,

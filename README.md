@@ -17,10 +17,10 @@ Objective: increase the judge score beyond the current accepted best while keepi
 
 | Item | Value |
 |---|---:|
-| Best accepted | v16, `2,023,997` |
-| Last submitted | v16, `2,023,997` (`+8,174` vs v15) |
-| Local candidate | v17, A4-passed joint Gray-pair tuning on v16; not submitted |
-| Active decision | use v16 as the base for all future candidates |
+| Best accepted | v17, `2,038,794` |
+| Last submitted | v17, `2,038,794` (`+14,797` vs v16) |
+| Local candidate | none; Phase 15 screens are compared against cached v17 |
+| Active decision | use v17 as the base for all future candidates |
 | Public input dispatch | `N=1944, R=3/4, SNR≈10.3` (nearest configured `10.5`) |
 | Public BER, v8–v13c | `0.024784636` |
 | Public BER, v14 | `0.019216735` |
@@ -35,7 +35,7 @@ The best accepted architecture is:
 - rate-specific `beta` and `parity_scale` fields, tuned at `N=1296`;
 - exact `(N, K)` dispatch with the nearest configured SNR;
 - decoder lambda and energy-selection lambda are separate parameters;
-- 50 steps, one trajectory per case, QAIA/bSB only.
+- 50 steps, one trajectory per case, QAIA/bSB only, except exact Gray-pair coupling on accepted v17 cases 4/7/10.
 
 bSB is compliant ballistic SB: the check gradient uses continuous `x_j` in Eq. (1)
 with `sigma -> x`. No per-edge messages carry over between steps, so it is not
@@ -181,7 +181,7 @@ The bench is reliable for decisions of several thousand points but not marginal 
 - The judge score `2,023,997` is at the low edge of the `2.03–2.05M` target; all eight high-rate cases and the other three `R=1/2` cases remain byte-identical to v15.
 - R=3/4 is skipped because no changed case has cleared a gate in passing.
 - Phase 12 cleanup was committed and pushed as `e6ac605`.
-- Do not submit any later candidate until explicit authorization is given.
+- This Phase 12 stop position was superseded by accepted v17; Phase 15 uses v17 as its base.
 
 ## Phase 13 — offline ceiling analysis
 
@@ -197,13 +197,39 @@ Phase 14 builds a local v17 candidate on accepted v16. The decoder remains QAIA-
 
 A0 changed the bench LLR convention to nominal σ by default: noise still uses `σ·noise_scale`, but generated LLRs now match the judge's public file. The v16 baseline cache was rebuilt for all 12 cases on seeds `911`, `2024`, `31337`, `6060` (48 files). `tools/phase14_bench_shift.py` passed the `±1,000`-point regression on all 36 case/seed pairs; the worst shift was `+568.3` on case 6, seed `6060`.
 
-A3 joint tuning passed on cases 4 (`N=1296`, `+2,508 / +4,973`), 7 (`N=1944`, `+4,913 / +7,677`) and 10 (`N=3888`, `+9,493 / +7,099`) across validation seeds `2024 / 31337`, all with positive paired-bootstrap CIs and no parameter on a bound. Case 1 failed twice and remains v16-identical. Case 10's first two-cycle search timed out before writing an artifact; the one-cycle search cleared the gate. The partial v17 first hit a marginal runtime failure on case 4 (`3.05×` v16). The exporter now precomputes the `y`-linear component log-likelihoods and uses a cubic-interpolated softplus inside bisection, which reduced the worst runtime ratio to `1.48×` while preserving bit identity and the exact final consistency check. The full v17 candidate is in `submissions/v17_joint_pairs/`. Its complete A4 gate (`artifacts/phase14/final_gate.json`) reports `all_passed=true`: strict C++17 compile, validator, offline isolation, public case-9 SHA-256 `1BBF2BBA…8723A`, Python/batched/C++ bit identity, swapped-pair consistency guard, fresh seed `6060` (`+4,299 / +5,481 / +8,573` on cases 4/7/10, all other cases byte-identical), and the runtime guard. Total fresh-seed gain is `+18,353`, roughly `+17,380` after the Phase 13 judge-slope calibration. The v17 work was committed to `main` as `33e7f4c`; nothing has been pushed or submitted. The user chose to hold submission and continue Track B/C research.
+A3 joint tuning passed on cases 4 (`N=1296`, `+2,508 / +4,973`), 7 (`N=1944`, `+4,913 / +7,677`) and 10 (`N=3888`, `+9,493 / +7,099`) across validation seeds `2024 / 31337`, all with positive paired-bootstrap CIs and no parameter on a bound. Case 1 failed twice and remains v16-identical. Case 10's first two-cycle search timed out before writing an artifact; the one-cycle search cleared the gate. The partial v17 first hit a marginal runtime failure on case 4 (`3.05×` v16). The exporter now precomputes the `y`-linear component log-likelihoods and uses a cubic-interpolated softplus inside bisection, which reduced the worst runtime ratio to `1.48×` while preserving bit identity and the exact final consistency check. The full v17 candidate is in `submissions/v17_joint_pairs/`. Its complete A4 gate (`artifacts/phase14/final_gate.json`) reports `all_passed=true`: strict C++17 compile, validator, offline isolation, public case-9 SHA-256 `1BBF2BBA…8723A`, Python/batched/C++ bit identity, swapped-pair consistency guard, fresh seed `6060` (`+4,299 / +5,481 / +8,573` on cases 4/7/10, all other cases byte-identical), and the runtime guard. Total fresh-seed gain is `+18,353`, roughly `+17,380` after the Phase 13 judge-slope calibration. The v17 work was committed to `main` as `33e7f4c` and accepted by the judge at `2,038,794` (`+14,797` over v16). It is now the base for Phase 15.
 
 ### Post-v17 research — Tracks B and C
 
-Track B completed the offline joint-likelihood ceiling ladder in `tools/ceiling/bp_variants.py` and `tools/ceiling/phase14_track_b_report.py`. v18 was **not** promoted: at `N=3888, R=2/3`, joint BP beat per-bit BP by only `+780` (95% CI `[+515, +1,047]`), far below the `>5,000` trigger. Joint likelihood helped `R=1/2` substantially (`+12,058` at `N=1944`, `+20,554` at `N=3888`). The judge-scaled achievable-decoder estimate is `2,181,832`; the live top `2,517,863` leaves a `336,031` gap unmodelled by the BP/OSD variants tested. This is an achievable lower bound, not a formal ceiling. OSD-2 was only a 100-frame side-by-side screen; no order-3 OSD or list-MAP ceiling is claimed. Reports: `artifacts/phase14/track_b_ceiling_report.md` and `.json`.
+Track B completed the offline joint-likelihood ceiling ladder in `tools/ceiling/bp_variants.py` and `tools/ceiling/phase14_track_b_report.py`. v18 was **not** promoted: at `N=3888, R=2/3`, joint BP beat per-bit BP by only `+780` (95% CI `[+515, +1,047]`), far below the `>5,000` trigger. Joint likelihood helped `R=1/2` substantially (`+12,058` at `N=1944`, `+20,554` at `N=3888`). With the small omitted `R=1/2` cases sampled at only `100 / 60` frames (`±3–5k`), the partial judge-scaled achievable-decoder headline is `≈ 2.25M (partial; 3/4 cases ML-limited)`; the live top `2,517,863` remains unmodelled by the BP/OSD variants tested. This is an achievable lower bound, not a formal ceiling. OSD-2 on joint BP lost `−5k` to `−10k` at `R=1/2`, with maximum-likelihood selection choosing a wrong codeword in `0.34 / 0.70 / 0.58` fractions on the sampled cases. OSD-2 was only a 100-frame side-by-side screen; no order-3 OSD or list-MAP ceiling is claimed. Reports: `artifacts/phase14/track_b_ceiling_report.md` and `.json`.
 
 Track C completed C1–C4 screens in `tools/screen_joint_structural.py` with default-off decoder extensions in `tools/bsb_vectorized.py`. **No variant was promoted.** C1 (sign/magnitude bit classes) came closest but was seed-unstable and below the bar; C2 (exact pair TAP cross term), C3 (single amplitude coordinate), and C4 (`pair_scale` ramp) all lost score. C5 gradient deep unfolding is blocked because torch is not installed. The decoder extensions are default-off; scalar v17 behavior remained bit-identical, verified by 11 unit tests and three-way Python/batched/C++ identity on cases 4/7/10. Reports: `artifacts/phase14/track_c_report.md` and `.json`.
+
+## Phase 15 — v18 research plan
+
+Phase 15 is gated offline research on the accepted v17. Every candidate gain is paired frame-for-frame against a cached v17 binary on identical `real_bench.build_case(..., noise_scale=1.00112)` frames, with a 1,000-resample paired-bootstrap 95% CI. The target is `2.06–2.08M`, or `2.10M+` if the independent workstreams stack; the realistic QAIA/bSB ceiling inferred from Track B is about `2.25M`.
+
+- **A — trajectory portfolio.** Screen diverse compliant QAIA trajectories for cases 10 and 7 first. Continue only if the oracle gain is at least `+8k` and realised energy-selection gain at least `+4k` at `N=3888`; drop A if oracle gain is below `+5k`. A2 must clear `+2k` on both validation seeds.
+- **B — learned schedules.** Use a local CMA-ES implementation (33 log-multipliers in `[0.5, 2]`, `σ₀=0.15`, `λ=12`, `μ=6`) on cases `10 → 7 → 4 → 1`. Rate `1/2` needs `+2k`, rate `2/3` needs `+1.5k`, both with positive CI lower bounds. Case 10 must show `+5k` held-out gain by `30 Nov` or B is killed.
+- **C — rate-2/3 joint-pair spare bet.** Tune only `pair_gamma`, `beta`, `parity_scale`, and `dt` for case 11; drop C entirely unless case 11 clears `+1.5k` on both validation seeds.
+- **Combination.** Keep A+B only if it beats the better single stream by at least `+1k` on both seeds. Otherwise ship the best single passing stream or leave v17 unchanged.
+- **Fallback.** Prepare v18a with only the best single validated change. If a combined v18 regresses any changed case by more than `3k`, submit v18a; if that also regresses, resubmit v17 source.
+
+Fixed submission rules remain: at most 50 steps, at most six trajectories, no per-edge state, QAIA-only energy gradients/mean-field reaction terms, public case 9 byte-identical, strict C++17 compile, validator, offline isolation, three-way bit identity, and runtime judge estimate at most `60 s`.
+
+Workstream B is killed at the case-10 checkpoint: four CMA generations (33 log-multipliers, `λ=12`, `μ=6`) produced validation gains `-4,687` (seed 2024, CI `[-6,821, -2,638]`) and `-2,364` (seed 31337, CI `[-4,800, -28]`), both failing the `+2k` rate-1/2 gate and the `+5k` held-out checkpoint (`artifacts/phase15/workstream_b_case10_schedule.json`). No learned-schedule variant will be built for cases 7/4/1.
+
+Workstream C is dropped: four CMA generations on case 11 produced best validation gains `-420` (seed 2024, CI `[-1099, +322]`) and `-179` (seed 31337, CI `[-917, +483]`), both far below the required `+1,500` with positive lower bounds (`artifacts/phase15/workstream_c_case11.json`). No case 8/11 joint-pair variant will be built.
+
+Greedy case 10 also improved training gain from `+5,759` to `+9,491` with six trajectories, and held-out seeds 2024/31337 gave `+6,556` (CI `[4,657, 8,816]`) and `+7,512` (CI `[5,490, 9,708]`), both above the original portfolio. A two-case greedy archive is exported and passes validator, public SHA, and three-way identity (`artifacts/phase15/v18_greedy_both*`). Fresh seed 6060 passes both changed cases: case 7 `+5,803` and case 10 `+3,974`, all unchanged cases byte-identical (`artifacts/phase15/v18_greedy_both_fresh_seed_6060.json`). Its full final gate passed every correctness gate but failed the `60 s` judge-estimate cap on case 10 (`69.5 s` for 500 frames with six trajectories), so the six-trajectory case-10 portfolio is rejected. A five-trajectory case-10 variant also failed the runtime cap (`77.6 s`, despite passing fresh seed at `+3,574`), so it is rejected. Three- and four-trajectory case-10 variants are now being tested for the best gain that still clears `60 s` (`artifacts/phase15/v18_greedy_both3*` and `v18_greedy_both4*`). The three-trajectory case-10 portfolio clears both held-out seeds: seed 2024 `+3,909` (CI `[2,546, 5,322]`) and seed 31337 `+5,807` (CI `[4,055, 7,755]`). The four-trajectory portfolio is stronger on both: seed 2024 `+4,419` (CI `[2,833, 6,306]`) and seed 31337 `+6,251` (CI `[4,284, 8,430]`). Fresh seed 6060 passes for both: three trajectories `+2,747`, four trajectories `+3,385`, with every unchanged case byte-identical. Runtime measurements are distorted by a low-battery power limit (currently charging at `2%`, CPU capped at `2.1 GHz`): unchanged v17 rose from `~34 s` to `~62 s` on 500-frame case 10, so the absolute `60 s` local cap cannot be certified right now. A bit-preserving concurrent-trajectory exporter was added and passes validator/public SHA/three-way identity. The two-trajectory fallback fails fresh seed (`+1,049`, CI low below zero), so the final selection is the three-trajectory case-10 portfolio with the five-trajectory case-7 portfolio, packaged as `submissions/v18b_greedy_portfolio/` (`prepared_not_submitted`). A clean final gate should be rerun after the machine returns to normal power. The case-7-only final gate passed compile, tests, isolation, validator, identity, guard, fresh seed, and runtime, and failed only on a robustness-report formatting bug that tried to parse `mode="bsb"` as a float; `tools/phase15_robustness.py` is fixed. Greedy case 7 fresh-seed 6060 gain is `+5,803`, above the original `+4,437`.
+
+The greedy five-trajectory case-7 portfolio is now the leading v18 candidate: training gain `+8,045`, held-out seed 2024 `+7,431` (CI `[5,661, 9,474]`), seed 31337 `+5,739` (CI `[3,967, 7,656]`), both above the original four-trajectory gains. It exports to `artifacts/phase15/v18_greedy7.cpp` (validator pass, public case-9 SHA unchanged, portfolio three-way identity pass) and is included in the final `v18b` archive.
+
+Fresh seed `6060`, 300 frames, is mixed for the original two-case v18a: case 7 gains `+4,437` (CI `[1,852, 7,674]`) but case 10 gains only `+1,947` with CI low `−46`, so the two-case candidate fails the final checklist (`artifacts/phase15/v18a_fresh_seed_6060.json`). A case-7-only archive was exported and passes validator, public SHA, and three-way identity (`artifacts/phase15/v18a_case7only*`); it is superseded by the stronger five-trajectory case-7 portfolio in `v18b`. Greedy portfolio search improved case 7 training gain from `+4,552` to `+8,045` with five trajectories.
+
+Workstream A passed both gates with the `tau_xi` family on cases 7 and 10. A1 (200 seed-911 frames) found case-10 oracle `+11,918` and realised `+5,759` (CI `[2,465, 9,525]`); A2 reproduced gains on seeds 2024/31337 of `+3,186 / +5,065` for case 10 and `+6,900 / +5,026` for case 7, all with positive 95% CIs (`artifacts/phase15/a1_portfolio_screen.json`, `a2_validation_seed2024.json`, `a2_validation_seed31337.json`). A v18a manifest with only these two cases changed exports to strict C++17, preserves the public case-9 SHA, and passes a portfolio-aware three-way scalar/batched/C++ bit-identity check (`tools/phase15_equivalence.py`).
+
+Step 0 is complete: `submissions/v17_joint_pairs/judge_result.json` records the accepted total, the v17 README and candidate status are marked accepted, and the Track B report now uses the partial `≈ 2.25M (partial; 3/4 cases ML-limited)` headline with the added 100-frame cases 1/2/4 and the joint-OSD rejection. `artifacts/build/v17_ref.exe` was compiled from the exact submitted v17 source with strict C++17 flags. `artifacts/baseline_cache_v17/` contains frame-matched v17 errors for all 12 cases on seeds `911 / 2024 / 31337 / 6060`; `artifacts/phase15/step0_cache_check.json` proves source hash, inventory and repeat-generation bit identity (`all_passed=true`). `tools/cmaes_lite.py` passes its rotated-ellipsoid and checkpoint tests, and a 33-parameter schedule manifest exports to strict C++17 with unchanged public case-9 SHA while zero multipliers reproduce v17 bit-for-bit (`artifacts/phase15/export_probe.cpp`).
 
 ## Submission history
 
@@ -226,7 +252,7 @@ Track C completed C1–C4 screens in `tools/screen_joint_structural.py` with def
 | v14 | `1,847,842` | `+147,196` vs v13c | accepted new best: all eight high-rate cases moved from dSB portfolios to tuned bSB |
 | v15 | `2,015,823` | `+167,981` vs v14 | accepted new best: Onsager/TAP correction added to bSB on all 12 cases |
 | v16 | `2,023,997` | `+8,174` vs v15 | accepted new best: v15 + flat Stage A′ cases 7 and 10 |
-| v17 | not submitted | — | A4-passed local candidate: joint Gray-pair coupling on cases 4, 7, 10 |
+| v17 | `2,038,794` | `+14,797` vs v16 | accepted new best: joint Gray-pair coupling on cases 4, 7, 10 |
 
 Rate-level totals show where all durable progress came from:
 

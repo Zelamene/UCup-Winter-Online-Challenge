@@ -1,0 +1,13 @@
+{
+  "version": "v17",
+  "status": "Accepted",
+  "score": 2038794,
+  "delta_vs_v16": 14797,
+  "base": "v16",
+  "changed_cases": [4, 7, 10],
+  "per_case": null,
+  "per_case_note": "The judge result recorded here is the accepted total only; per-case judge scores were not published.",
+  "source_sha256": "A80AEF906B31A97CDC061667AF6A13CDB18F136572C85B4B09242C8BE6BB76D6",
+  "public_output_sha256": "1BBF2BBAA56E6AD871BB6FFE7F0AC4D501C31F3CE7A684195CAFD8F1AAA8723A",
+  "local_fresh_seed_6060_total_gain": 18352.836188371017
+}

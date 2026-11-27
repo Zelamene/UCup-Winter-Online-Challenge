@@ -31,6 +31,7 @@ CPP_TEMPLATE = r'''// Single-file structural QAIA decoder for the v3 manifest.
 #include <cstdint>
 #include <iostream>
 #include <limits>
+#include <thread>
 #include <utility>
 #include <vector>
 
@@ -500,21 +501,35 @@ int main() {
         }
         const std::vector<double>* frame_d =
             frame_joint ? &frame_tables[0].d : nullptr;
-        std::vector<std::vector<int>> hards;
-        std::vector<std::vector<double>> softs;
-        hards.reserve(static_cast<size_t>(active->count));
-        softs.reserve(static_cast<size_t>(active->count));
-        std::vector<double> lambdas;
-        lambdas.reserve(static_cast<size_t>(active->count));
+        std::vector<std::vector<int>> hards(static_cast<size_t>(active->count));
+        std::vector<std::vector<double>> softs(static_cast<size_t>(active->count));
+        std::vector<double> lambdas(static_cast<size_t>(active->count));
 
-        for (int index = 0; index < active->count; ++index) {
-            std::vector<double> soft;
-            hards.push_back(run_trajectory(
-                row, starts, cols, active->trajectories[index], soft,
+        // Independent trajectories are evaluated concurrently; the energy
+        // selection below still consumes them in manifest order, so the
+        // decided bits are unchanged.
+        if (active->count > 1) {
+            std::vector<std::thread> workers;
+            workers.reserve(static_cast<size_t>(active->count));
+            for (int index = 0; index < active->count; ++index) {
+                workers.emplace_back([&, index]() {
+                    hards[static_cast<size_t>(index)] = run_trajectory(
+                        row, starts, cols, active->trajectories[index],
+                        softs[static_cast<size_t>(index)], row_channel, frame_d
+                    );
+                    lambdas[static_cast<size_t>(index)] =
+                        active->trajectories[index].energy_lambda;
+                });
+            }
+            for (std::thread& worker : workers) {
+                worker.join();
+            }
+        } else {
+            hards[0] = run_trajectory(
+                row, starts, cols, active->trajectories[0], softs[0],
                 row_channel, frame_d
-            ));
-            softs.push_back(std::move(soft));
-            lambdas.push_back(active->trajectories[index].energy_lambda);
+            );
+            lambdas[0] = active->trajectories[0].energy_lambda;
         }
 
         std::vector<int> decided = hards[0];

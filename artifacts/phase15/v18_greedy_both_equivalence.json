@@ -1,0 +1,56 @@
+{
+  "all_passed": true,
+  "binary": "C:\\Users\\shazi\\.local\\share\\opencode\\worktree\\bd12e4\\phase12-tap-tuning\\artifacts\\build\\v18_greedy_both.exe",
+  "frames": 3,
+  "manifest": "C:\\Users\\shazi\\.local\\share\\opencode\\worktree\\bd12e4\\phase12-tap-tuning\\artifacts\\phase15_case_manifest_v18_greedy_both.json",
+  "results": [
+    {
+      "all_equal": true,
+      "batched_equals_cpp_selected": true,
+      "frames": 3,
+      "k": 972,
+      "n": 1944,
+      "per_trajectory_scalar_equals_batched": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "scalar_equals_batched_selected": true,
+      "scalar_equals_cpp_selected": true,
+      "selected_indices": [
+        0,
+        0,
+        4
+      ],
+      "snr": 6.0,
+      "trajectory_count": 5
+    },
+    {
+      "all_equal": true,
+      "batched_equals_cpp_selected": true,
+      "frames": 3,
+      "k": 1944,
+      "n": 3888,
+      "per_trajectory_scalar_equals_batched": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "scalar_equals_batched_selected": true,
+      "scalar_equals_cpp_selected": true,
+      "selected_indices": [
+        3,
+        2,
+        5
+      ],
+      "snr": 6.0,
+      "trajectory_count": 6
+    }
+  ],
+  "seed": 911
+}

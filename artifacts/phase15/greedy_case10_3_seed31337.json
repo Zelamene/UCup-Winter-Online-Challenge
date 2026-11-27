@@ -1,0 +1,37 @@
+{
+  "bootstrap_resamples": 1000,
+  "cases": {
+    "10": {
+      "k": 1944,
+      "n": 3888,
+      "oracle": {
+        "baseline_errors": 25416,
+        "baseline_score": 158255.90631071836,
+        "candidate_errors": 20386,
+        "candidate_score": 167833.4245050292,
+        "gain": 9577.518194310833,
+        "gain_ci_95": [
+          7883.615379339739,
+          11463.10237501333
+        ]
+      },
+      "rate": 0.5,
+      "selection": {
+        "baseline_errors": 25416,
+        "baseline_score": 158255.90631071836,
+        "candidate_errors": 22235,
+        "candidate_score": 164062.91311413213,
+        "gain": 5807.006803413766,
+        "gain_ci_95": [
+          4054.9971849767217,
+          7754.589261659974
+        ]
+      },
+      "selection_accuracy": 0.5,
+      "trajectories": 3
+    }
+  },
+  "configs": "C:\\Users\\shazi\\.local\\share\\opencode\\worktree\\bd12e4\\phase12-tap-tuning\\artifacts\\phase15\\selection_greedy_both3.json",
+  "frames": 500,
+  "seed": 31337
+}

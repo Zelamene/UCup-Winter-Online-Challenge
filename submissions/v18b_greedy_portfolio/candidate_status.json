@@ -1,0 +1,16 @@
+{
+  "base": "v17",
+  "changed_cases": [
+    7,
+    10
+  ],
+  "energy_portfolio": true,
+  "final_gate_passed": null,
+  "joint_pairs": true,
+  "source_bytes": 31112,
+  "source_sha256": "18655192D6CF415A911E9486B1E1D94E69FD40A8DFF35FBEAA40CB76ADC88100",
+  "status": "prepared_not_submitted",
+  "submission_authorized": false,
+  "user_decision": "awaiting explicit approval before any judge submission",
+  "version": "v18b"
+}

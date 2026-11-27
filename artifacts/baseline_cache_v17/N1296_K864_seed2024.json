@@ -1,0 +1,16 @@
+{
+  "array": "N1296_K864_seed2024.npy",
+  "binary": "artifacts\\build\\v17_ref.exe",
+  "binary_sha256": "ac4ceda82ab10e6910c7d47462552ccfeb6788ff41fd112116a1e752804e05a3",
+  "k": 864,
+  "llr_sigma": "nominal",
+  "n": 1296,
+  "noise_scale": 1.00112,
+  "samples": 500,
+  "score": 179562.87622130272,
+  "seconds": 5.355,
+  "seed": 2024,
+  "snr": 9.0,
+  "total_info_errors": 6916,
+  "total_wall_seconds": 6.556
+}

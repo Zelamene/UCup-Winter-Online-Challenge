@@ -1,0 +1,152 @@
+{
+  "all_passed": true,
+  "cases": [
+    {
+      "case_index": 1,
+      "k": 324,
+      "n": 648,
+      "pass": true,
+      "rate": 0.5,
+      "ratio": 0.988,
+      "snr": 6.0,
+      "v16_seconds": 1.881,
+      "v17_seconds": 1.859
+    },
+    {
+      "case_index": 2,
+      "k": 432,
+      "n": 648,
+      "pass": true,
+      "rate": 0.6666666666666666,
+      "ratio": 1.039,
+      "snr": 9.0,
+      "v16_seconds": 1.603,
+      "v17_seconds": 1.666
+    },
+    {
+      "case_index": 3,
+      "k": 486,
+      "n": 648,
+      "pass": true,
+      "rate": 0.75,
+      "ratio": 0.964,
+      "snr": 10.5,
+      "v16_seconds": 1.615,
+      "v17_seconds": 1.557
+    },
+    {
+      "case_index": 4,
+      "k": 648,
+      "n": 1296,
+      "pass": true,
+      "rate": 0.5,
+      "ratio": 1.016,
+      "snr": 6.0,
+      "v16_seconds": 6.227,
+      "v17_seconds": 6.326
+    },
+    {
+      "case_index": 5,
+      "k": 864,
+      "n": 1296,
+      "pass": true,
+      "rate": 0.6666666666666666,
+      "ratio": 0.937,
+      "snr": 9.0,
+      "v16_seconds": 4.072,
+      "v17_seconds": 3.816
+    },
+    {
+      "case_index": 6,
+      "k": 972,
+      "n": 1296,
+      "pass": true,
+      "rate": 0.75,
+      "ratio": 1.086,
+      "snr": 10.5,
+      "v16_seconds": 3.438,
+      "v17_seconds": 3.734
+    },
+    {
+      "case_index": 7,
+      "k": 972,
+      "n": 1944,
+      "pass": true,
+      "rate": 0.5,
+      "ratio": 2.226,
+      "snr": 6.0,
+      "v16_seconds": 11.953,
+      "v17_seconds": 26.61
+    },
+    {
+      "case_index": 8,
+      "k": 1296,
+      "n": 1944,
+      "pass": true,
+      "rate": 0.6666666666666666,
+      "ratio": 0.983,
+      "snr": 9.0,
+      "v16_seconds": 7.886,
+      "v17_seconds": 7.756
+    },
+    {
+      "case_index": 9,
+      "k": 1458,
+      "n": 1944,
+      "pass": true,
+      "rate": 0.75,
+      "ratio": 0.985,
+      "snr": 10.5,
+      "v16_seconds": 7.623,
+      "v17_seconds": 7.507
+    },
+    {
+      "case_index": 10,
+      "k": 1944,
+      "n": 3888,
+      "pass": true,
+      "rate": 0.5,
+      "ratio": 2.451,
+      "snr": 6.0,
+      "v16_seconds": 28.349,
+      "v17_seconds": 69.497
+    },
+    {
+      "case_index": 11,
+      "k": 2592,
+      "n": 3888,
+      "pass": true,
+      "rate": 0.6666666666666666,
+      "ratio": 0.976,
+      "snr": 9.0,
+      "v16_seconds": 20.401,
+      "v17_seconds": 19.91
+    },
+    {
+      "case_index": 12,
+      "k": 2916,
+      "n": 3888,
+      "pass": true,
+      "rate": 0.75,
+      "ratio": 1.022,
+      "snr": 10.5,
+      "v16_seconds": 19.375,
+      "v17_seconds": 19.799
+    }
+  ],
+  "max_ratio": 3.0,
+  "samples": 500,
+  "seed": 2024,
+  "wall_seconds": 506.197,
+  "worst": {
+    "case_index": 10,
+    "k": 1944,
+    "n": 3888,
+    "pass": true,
+    "rate": 0.5,
+    "ratio": 2.451,
+    "snr": 6.0,
+    "v16_seconds": 28.349,
+    "v17_seconds": 69.497
+  }
+}

@@ -1,12 +1,12 @@
 {
   "version": "v17",
-  "status": "gate_passed_awaiting_authorization",
+  "status": "accepted",
   "base": "v16",
   "changed_cases": [4, 7, 10],
   "joint_pairs": true,
   "final_gate_passed": true,
   "fresh_seed_6060_total_gain": 18352.836188371017,
-  "judge_score": null,
-  "submission_authorized": false,
-  "user_decision": "hold submission; continue Track B/C research"
+  "judge_score": 2038794,
+  "submission_authorized": true,
+  "user_decision": "accepted; retain as the base for Phase 15 candidates"
 }
