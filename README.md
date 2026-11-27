@@ -17,10 +17,10 @@ Objective: increase the judge score beyond the current accepted best while keepi
 
 | Item | Value |
 |---|---:|
-| Best accepted | v17, `2,038,794` |
-| Last submitted | v17, `2,038,794` (`+14,797` vs v16) |
-| Local candidate | none; Phase 15 screens are compared against cached v17 |
-| Active decision | use v17 as the base for all future candidates |
+| Best accepted | v18b, `2,051,900` |
+| Last submitted | v18b, `2,051,900` (`+13,106` vs v17) |
+| Local candidate | none; v18b is accepted and is the new base |
+| Active decision | use v18b as the base for all future candidates |
 | Public input dispatch | `N=1944, R=3/4, SNR≈10.3` (nearest configured `10.5`) |
 | Public BER, v8–v13c | `0.024784636` |
 | Public BER, v14 | `0.019216735` |
@@ -28,6 +28,8 @@ Objective: increase the judge score beyond the current accepted best while keepi
 | v15 per-case scores | `[129979,177394,185451,140530,179802,183299,137314,184164,184485,145794,182587,185024]` |
 | v16 per-case scores | `[129979,177394,185451,140530,179802,183299,140699,184164,184485,150583,182587,185024]` |
 | v15 judge runtime | `384–4279ms` per case — well under the 2-minute limit |
+| v18b per-case scores | `[129979,177394,185451,145151,179802,183299,150030,184164,184485,164534,182587,185024]` |
+| v18b judge runtime | `389–13,801ms` per case — well under the 2-minute limit |
 
 The best accepted architecture is:
 
@@ -35,7 +37,7 @@ The best accepted architecture is:
 - rate-specific `beta` and `parity_scale` fields, tuned at `N=1296`;
 - exact `(N, K)` dispatch with the nearest configured SNR;
 - decoder lambda and energy-selection lambda are separate parameters;
-- 50 steps, one trajectory per case, QAIA/bSB only, except exact Gray-pair coupling on accepted v17 cases 4/7/10.
+- 50 steps, QAIA/bSB only; v17 added exact Gray-pair coupling on cases 4/7/10, and accepted v18b adds energy-selected multi-trajectory portfolios on cases 7 and 10.
 
 bSB is compliant ballistic SB: the check gradient uses continuous `x_j` in Eq. (1)
 with `sigma -> x`. No per-edge messages carry over between steps, so it is not
@@ -221,7 +223,7 @@ Workstream B is killed at the case-10 checkpoint: four CMA generations (33 log-m
 
 Workstream C is dropped: four CMA generations on case 11 produced best validation gains `-420` (seed 2024, CI `[-1099, +322]`) and `-179` (seed 31337, CI `[-917, +483]`), both far below the required `+1,500` with positive lower bounds (`artifacts/phase15/workstream_c_case11.json`). No case 8/11 joint-pair variant will be built.
 
-Greedy case 10 also improved training gain from `+5,759` to `+9,491` with six trajectories, and held-out seeds 2024/31337 gave `+6,556` (CI `[4,657, 8,816]`) and `+7,512` (CI `[5,490, 9,708]`), both above the original portfolio. A two-case greedy archive is exported and passes validator, public SHA, and three-way identity (`artifacts/phase15/v18_greedy_both*`). Fresh seed 6060 passes both changed cases: case 7 `+5,803` and case 10 `+3,974`, all unchanged cases byte-identical (`artifacts/phase15/v18_greedy_both_fresh_seed_6060.json`). Its full final gate passed every correctness gate but failed the `60 s` judge-estimate cap on case 10 (`69.5 s` for 500 frames with six trajectories), so the six-trajectory case-10 portfolio is rejected. A five-trajectory case-10 variant also failed the runtime cap (`77.6 s`, despite passing fresh seed at `+3,574`), so it is rejected. Three- and four-trajectory case-10 variants are now being tested for the best gain that still clears `60 s` (`artifacts/phase15/v18_greedy_both3*` and `v18_greedy_both4*`). The three-trajectory case-10 portfolio clears both held-out seeds: seed 2024 `+3,909` (CI `[2,546, 5,322]`) and seed 31337 `+5,807` (CI `[4,055, 7,755]`). The four-trajectory portfolio is stronger on both: seed 2024 `+4,419` (CI `[2,833, 6,306]`) and seed 31337 `+6,251` (CI `[4,284, 8,430]`). Fresh seed 6060 passes for both: three trajectories `+2,747`, four trajectories `+3,385`, with every unchanged case byte-identical. Runtime measurements are distorted by a low-battery power limit (currently charging at `2%`, CPU capped at `2.1 GHz`): unchanged v17 rose from `~34 s` to `~62 s` on 500-frame case 10, so the absolute `60 s` local cap cannot be certified right now. A bit-preserving concurrent-trajectory exporter was added and passes validator/public SHA/three-way identity. The two-trajectory fallback fails fresh seed (`+1,049`, CI low below zero), so the final selection is the three-trajectory case-10 portfolio with the five-trajectory case-7 portfolio, packaged as `submissions/v18b_greedy_portfolio/` (`prepared_not_submitted`). A clean final gate should be rerun after the machine returns to normal power. The case-7-only final gate passed compile, tests, isolation, validator, identity, guard, fresh seed, and runtime, and failed only on a robustness-report formatting bug that tried to parse `mode="bsb"` as a float; `tools/phase15_robustness.py` is fixed. Greedy case 7 fresh-seed 6060 gain is `+5,803`, above the original `+4,437`.
+Greedy case 10 improved training gain from `+5,759` to `+9,491` with six trajectories, and held-out seeds 2024/31337 gave `+6,556` (CI `[4,657, 8,816]`) and `+7,512` (CI `[5,490, 9,708]`), both above the original portfolio. A two-case greedy archive exported cleanly and passed validator, public SHA, and three-way identity (`artifacts/phase15/v18_greedy_both*`). Fresh seed 6060 passed both changed cases: case 7 `+5,803` and case 10 `+3,974`, all unchanged cases byte-identical (`artifacts/phase15/v18_greedy_both_fresh_seed_6060.json`). Its full final gate passed every correctness gate but failed the `60 s` judge-estimate cap on case 10 (`69.5 s` for 500 frames with six trajectories), so the six-trajectory case-10 portfolio was rejected. A five-trajectory case-10 variant also failed the runtime cap (`77.6 s`, despite passing fresh seed at `+3,574`), so it was rejected. Three- and four-trajectory case-10 variants were then compared (`artifacts/phase15/v18_greedy_both3*` and `v18_greedy_both4*`). The three-trajectory case-10 portfolio cleared both held-out seeds: seed 2024 `+3,909` (CI `[2,546, 5,322]`) and seed 31337 `+5,807` (CI `[4,055, 7,755]`). The four-trajectory portfolio was stronger on both: seed 2024 `+4,419` (CI `[2,833, 6,306]`) and seed 31337 `+6,251` (CI `[4,284, 8,430]`). Fresh seed 6060 passed both: three trajectories `+2,747`, four trajectories `+3,385`, with every unchanged case byte-identical. Runtime measurements were distorted by a low-battery power limit (charging at `2%`, CPU capped at `2.1 GHz`): unchanged v17 rose from `~34 s` to `~62 s` on 500-frame case 10, so the absolute local cap could not be certified at that time. A bit-preserving concurrent-trajectory exporter was added and passed validator/public SHA/three-way identity. The two-trajectory fallback failed fresh seed (`+1,049`, CI low below zero), so the final selection was the three-trajectory case-10 portfolio with the five-trajectory case-7 portfolio, packaged as `submissions/v18b_greedy_portfolio/`. The case-7-only final gate passed compile, tests, isolation, validator, identity, guard, fresh seed, and runtime, and failed only on a robustness-report formatting bug that tried to parse `mode="bsb"` as a float; `tools/phase15_robustness.py` is fixed. Greedy case 7 fresh-seed 6060 gain is `+5,803`, above the original `+4,437`. The selected source was subsequently submitted and accepted, as recorded below.
 
 The greedy five-trajectory case-7 portfolio is now the leading v18 candidate: training gain `+8,045`, held-out seed 2024 `+7,431` (CI `[5,661, 9,474]`), seed 31337 `+5,739` (CI `[3,967, 7,656]`), both above the original four-trajectory gains. It exports to `artifacts/phase15/v18_greedy7.cpp` (validator pass, public case-9 SHA unchanged, portfolio three-way identity pass) and is included in the final `v18b` archive.
 
@@ -230,6 +232,8 @@ Fresh seed `6060`, 300 frames, is mixed for the original two-case v18a: case 7 g
 Workstream A passed both gates with the `tau_xi` family on cases 7 and 10. A1 (200 seed-911 frames) found case-10 oracle `+11,918` and realised `+5,759` (CI `[2,465, 9,525]`); A2 reproduced gains on seeds 2024/31337 of `+3,186 / +5,065` for case 10 and `+6,900 / +5,026` for case 7, all with positive 95% CIs (`artifacts/phase15/a1_portfolio_screen.json`, `a2_validation_seed2024.json`, `a2_validation_seed31337.json`). A v18a manifest with only these two cases changed exports to strict C++17, preserves the public case-9 SHA, and passes a portfolio-aware three-way scalar/batched/C++ bit-identity check (`tools/phase15_equivalence.py`).
 
 Step 0 is complete: `submissions/v17_joint_pairs/judge_result.json` records the accepted total, the v17 README and candidate status are marked accepted, and the Track B report now uses the partial `≈ 2.25M (partial; 3/4 cases ML-limited)` headline with the added 100-frame cases 1/2/4 and the joint-OSD rejection. `artifacts/build/v17_ref.exe` was compiled from the exact submitted v17 source with strict C++17 flags. `artifacts/baseline_cache_v17/` contains frame-matched v17 errors for all 12 cases on seeds `911 / 2024 / 31337 / 6060`; `artifacts/phase15/step0_cache_check.json` proves source hash, inventory and repeat-generation bit identity (`all_passed=true`). `tools/cmaes_lite.py` passes its rotated-ellipsoid and checkpoint tests, and a 33-parameter schedule manifest exports to strict C++17 with unchanged public case-9 SHA while zero multipliers reproduce v17 bit-for-bit (`artifacts/phase15/export_probe.cpp`).
+
+The submitted `v18b` source combines the five-trajectory case-7 portfolio with the three-trajectory case-10 portfolio and bit-preserving concurrent trajectory execution. The judge accepted all 12 cases at `2,051,900`, `+13,106` over v17 (`submissions/v18b_greedy_portfolio/judge_result.json`). The per-case judge scores are `[129979, 177394, 185451, 145151, 179802, 183299, 150030, 184164, 184485, 164534, 182587, 185024]`, with `389–13,801ms` runtime and at most `20.1 MiB` memory. The accepted judge run supersedes the earlier local `60 s` certification gap caused by the low-battery CPU cap.
 
 ## Submission history
 
@@ -253,6 +257,7 @@ Step 0 is complete: `submissions/v17_joint_pairs/judge_result.json` records the 
 | v15 | `2,015,823` | `+167,981` vs v14 | accepted new best: Onsager/TAP correction added to bSB on all 12 cases |
 | v16 | `2,023,997` | `+8,174` vs v15 | accepted new best: v15 + flat Stage A′ cases 7 and 10 |
 | v17 | `2,038,794` | `+14,797` vs v16 | accepted new best: joint Gray-pair coupling on cases 4, 7, 10 |
+| v18b | `2,051,900` | `+13,106` vs v17 | accepted new best: energy-selected tau/xi portfolios on cases 7, 10 |
 
 Rate-level totals show where all durable progress came from:
 
@@ -270,6 +275,10 @@ Rate-level totals show where all durable progress came from:
 | v13c | `454,231` | `573,546` | `672,869` | `1,700,646` |
 | v14 | `454,231` | `670,586` | `723,025` | `1,847,842` |
 | v15 | `553,617` | `723,947` | `738,259` | `2,015,823` |
+| v16 | `561,791` | `723,947` | `738,259` | `2,023,997` |
+| v18b | `589,694` | `723,947` | `738,259` | `2,051,900` |
+
+v17 per-case judge scores were not published, so its rate split is omitted. v18b's split is computed from its published per-case scores: all `R=2/3` and `R=3/4` totals remain at v15/v16 levels, while `R=1/2` rises to `589,694`.
 
 Through v12, `R=1/2` had never improved over v1 and every durable gain came from high-rate per-case tuning. v13c changed that: scheduled bSB lifted `R=1/2` from `360,797` to `454,231` while leaving the eight high-rate cases bit-identical to v12. v14 completed the transition by replacing all eight high-rate dSB portfolios with tuned bSB trajectories, adding `+97,040` at `R=2/3` and `+50,156` at `R=3/4` with no regression in any case.
 
@@ -288,6 +297,7 @@ v15 changed the landscape rather than the schedules. The v14 trajectories were k
 9. **Cross-seed robustness checks are useful only as a weak filter.** They rejected several apparent gains before submission, but they failed to predict both v10 case 11 and v11 case 6.
 10. **Stage A → gated Stage B generalizes to high rates.** Rate-specific anchors found large gains at `R=2/3` and `R=3/4`; schedules were kept only when they beat flat Stage A on both validation seeds. The v14 total was predicted at `1,847,584` and judged at `1,847,842`, an error of only `258` points.
 11. **Fixing the continuous landscape, not just the schedule.** v15 kept v14's schedules and added an Onsager/TAP reaction term that is the gradient of a polynomial constant on `±1` spins. It improved all 12 cases and added `+167,981`, showing that plain bSB behaves like mean-field SB and that the reaction correction is the dominant remaining QAIA-internal lever.
+12. **Energy-selected compliant trajectory portfolios at `R=1/2`.** v18b combined five tuned bSB trajectories on case 7 and three on case 10 with exact energy selection, adding `+13,106` while all unchanged cases stayed byte-identical and judge runtime stayed below `14 s` per case.
 
 ## Assumptions and directions that proved wrong
 

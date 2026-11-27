@@ -1,6 +1,7 @@
 {
   "version": "v17",
   "status": "accepted",
+  "superseded_by": "v18b",
   "base": "v16",
   "changed_cases": [4, 7, 10],
   "joint_pairs": true,
@@ -8,5 +9,5 @@
   "fresh_seed_6060_total_gain": 18352.836188371017,
   "judge_score": 2038794,
   "submission_authorized": true,
-  "user_decision": "accepted; retain as the base for Phase 15 candidates"
+  "user_decision": "accepted; superseded by v18b as best, retained as Phase 15 provenance"
 }

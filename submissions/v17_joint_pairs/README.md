@@ -1,6 +1,6 @@
 # v17 — Phase 14 joint Gray-pair candidate
 
-Accepted submission. The full Phase 14 gate passed, and the judge returned `2,038,794` (`+14,797` over v16).
+Accepted submission; superseded by v18b (`2,051,900`). The full Phase 14 gate passed, and the judge returned `2,038,794` (`+14,797` over v16).
 
 Base: accepted v16 (`submissions/v16_tap_case_tuning/`), score `2,023,997`.
 
@@ -26,4 +26,4 @@ Fresh seed `6060`, 300 frames, versus v16: case 4 `+4,299` (CI `[+2,227, +6,377]
 
 Full A4 gate: `artifacts/phase14/final_gate.json`, `all_passed=true`. Source is `28,829` bytes (SHA-256 `A80AEF906B31A97CDC061667AF6A13CDB18F136572C85B4B09242C8BE6BB76D6`); strict C++17 compile, validator, offline isolation, public case-9 identity, three-way bit identity, consistency guard, fresh-seed gate and `3×` runtime guard all pass. Worst runtime ratio is `1.48×` v16 on case 4.
 
-Judge result: `Accepted` at `2,038,794`, `+14,797` over accepted v16 (`judge_result.json`). This archive is the base for Phase 15; no later candidate should be built from v16.
+Judge result: `Accepted` at `2,038,794`, `+14,797` over accepted v16 (`judge_result.json`). This archive was the base for Phase 15; accepted v18b supersedes it as the best submission, and no later candidate should be built from v16.
