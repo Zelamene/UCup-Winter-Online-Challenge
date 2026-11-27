@@ -1,0 +1,267 @@
+{
+  "phase": 14,
+  "track": "C",
+  "baseline": "v17 joint-pair best_config (held unsubmitted)",
+  "configs": [
+    "artifacts/phase14/joint_N1296_R05.json",
+    "artifacts/phase14/joint_N1944_R05.json",
+    "artifacts/phase14/joint_N3888_R05.json"
+  ],
+  "screen": {
+    "case_sizes": [
+      1296,
+      3888
+    ],
+    "frames_per_seed": 100,
+    "seeds": [
+      2024,
+      6060
+    ],
+    "noise_scale": 1.00112,
+    "bars": {
+      "1296": 4000.0,
+      "3888": 8000.0
+    },
+    "retune_seed": 2024,
+    "bootstrap_samples": 1000,
+    "bootstrap_unit": "paired whole frames"
+  },
+  "promoted_variants": [],
+  "promoted_by_case": {
+    "1296": [],
+    "3888": []
+  },
+  "results": [
+    {
+      "variant": "C1",
+      "n": 1296,
+      "chosen": "xi_mag_0.90",
+      "chosen_params": {
+        "xi_classes": [
+          1.0,
+          0.9
+        ],
+        "move": "mag_0.90"
+      },
+      "baseline_2024": 139626.77136450258,
+      "baseline_6060": 129902.40129663826,
+      "score_2024": 142276.35923970697,
+      "score_6060": 128808.86735273653,
+      "gain_2024": 2649.5878752043936,
+      "gain_6060": -1093.5339439017262,
+      "ci_2024": [
+        -1084.2798731568546,
+        6617.805832502379
+      ],
+      "ci_6060": [
+        -4391.10815739342,
+        1897.9037578009365
+      ],
+      "bar": 4000.0,
+      "promoted": false
+    },
+    {
+      "variant": "C1",
+      "n": 3888,
+      "chosen": "xi_sign_0.90",
+      "chosen_params": {
+        "xi_classes": [
+          0.9,
+          1.0
+        ],
+        "move": "sign_0.90"
+      },
+      "baseline_2024": 147759.06535723252,
+      "baseline_6060": 152310.22052708108,
+      "score_2024": 150960.5056744757,
+      "score_6060": 152797.2288448304,
+      "gain_2024": 3201.440317243163,
+      "gain_6060": 487.008317749307,
+      "ci_2024": [
+        -394.1492183421877,
+        7176.651025221211
+      ],
+      "ci_6060": [
+        -3512.123321742143,
+        4825.073703147166
+      ],
+      "bar": 8000.0,
+      "promoted": false
+    },
+    {
+      "variant": "C2",
+      "n": 1296,
+      "chosen": "exact_pair_gamma_x0.4",
+      "chosen_params": {
+        "pair_exact": 1,
+        "pair_gamma": 0.06554772000000002,
+        "gamma_scale": 0.4
+      },
+      "baseline_2024": 139626.77136450258,
+      "baseline_6060": 129902.40129663826,
+      "score_2024": 139228.02841171325,
+      "score_6060": 126453.91061305831,
+      "gain_2024": -398.7429527893255,
+      "gain_6060": -3448.4906835799484,
+      "ci_2024": [
+        -3416.2388531729785,
+        2523.3682165726213
+      ],
+      "ci_6060": [
+        -6983.04072571203,
+        -428.4512887454356
+      ],
+      "bar": 4000.0,
+      "promoted": false
+    },
+    {
+      "variant": "C2",
+      "n": 3888,
+      "chosen": "exact_pair_gamma_x0.2",
+      "chosen_params": {
+        "pair_exact": 1,
+        "pair_gamma": 0.03724000000000001,
+        "gamma_scale": 0.2
+      },
+      "baseline_2024": 147759.06535723252,
+      "baseline_6060": 152310.22052708108,
+      "score_2024": 146229.74784026382,
+      "score_6060": 149441.73948688558,
+      "gain_2024": -1529.317516968702,
+      "gain_6060": -2868.4810401955037,
+      "ci_2024": [
+        -5581.481267066701,
+        1921.6938253877047
+      ],
+      "ci_6060": [
+        -6466.341392762102,
+        612.1061399486681
+      ],
+      "bar": 8000.0,
+      "promoted": false
+    },
+    {
+      "variant": "C3",
+      "n": 1296,
+      "chosen": "amp_scale_1.2",
+      "chosen_params": {
+        "pair_amplitude": 1,
+        "amp_scale": 1.2,
+        "amp_steps": 8
+      },
+      "baseline_2024": 139626.77136450258,
+      "baseline_6060": 129902.40129663826,
+      "score_2024": 109909.36680686747,
+      "score_6060": 102638.75858412315,
+      "gain_2024": -29717.404557635105,
+      "gain_6060": -27263.64271251511,
+      "ci_2024": [
+        -37522.1461101931,
+        -23316.147217440055
+      ],
+      "ci_6060": [
+        -33945.19021820725,
+        -21720.657998357165
+      ],
+      "bar": 4000.0,
+      "promoted": false
+    },
+    {
+      "variant": "C3",
+      "n": 3888,
+      "chosen": "amp_scale_1.2",
+      "chosen_params": {
+        "pair_amplitude": 1,
+        "amp_scale": 1.2,
+        "amp_steps": 8
+      },
+      "baseline_2024": 147759.06535723252,
+      "baseline_6060": 152310.22052708108,
+      "score_2024": 103080.17918594554,
+      "score_6060": 104605.54627726409,
+      "gain_2024": -44678.886171286984,
+      "gain_6060": -47704.67424981699,
+      "ci_2024": [
+        -52994.45175567496,
+        -38054.06718409815
+      ],
+      "ci_6060": [
+        -54685.78207404673,
+        -41203.10350172658
+      ],
+      "bar": 8000.0,
+      "promoted": false
+    },
+    {
+      "variant": "C4",
+      "n": 1296,
+      "chosen": "pair_ramp_10",
+      "chosen_params": {
+        "pair_scale_ramp_steps": 10,
+        "final_pair_scale": 1.0
+      },
+      "baseline_2024": 139626.77136450258,
+      "baseline_6060": 129902.40129663826,
+      "score_2024": 131561.46109888883,
+      "score_6060": 120326.2963173266,
+      "gain_2024": -8065.310265613749,
+      "gain_6060": -9576.104979311654,
+      "ci_2024": [
+        -13452.929367058907,
+        -3252.228919799795
+      ],
+      "ci_6060": [
+        -14788.67913241372,
+        -4380.337326746077
+      ],
+      "bar": 4000.0,
+      "promoted": false
+    },
+    {
+      "variant": "C4",
+      "n": 3888,
+      "chosen": "pair_ramp_10",
+      "chosen_params": {
+        "pair_scale_ramp_steps": 10,
+        "final_pair_scale": 1.0
+      },
+      "baseline_2024": 147759.06535723252,
+      "baseline_6060": 152310.22052708108,
+      "score_2024": 137456.4747959362,
+      "score_6060": 140463.76134963174,
+      "gain_2024": -10302.590561296325,
+      "gain_6060": -11846.459177449346,
+      "ci_2024": [
+        -16361.13291334837,
+        -4918.898193444185
+      ],
+      "ci_6060": [
+        -18272.183914601024,
+        -6462.982683429901
+      ],
+      "bar": 8000.0,
+      "promoted": false
+    }
+  ],
+  "c5_gradient_deep_unfolding": {
+    "status": "blocked",
+    "reason": "torch is not installed in the track-c environment; no package installation was performed",
+    "command_evidence": "python -c 'import torch' -> ModuleNotFoundError: No module named 'torch'"
+  },
+  "compliance": {
+    "C1": "QAIA-only: scalar multipliers on existing tau initialisation, xi force gain and beta Onsager gradient; no new state, decoding stage, or post-processing; 50 steps unchanged.",
+    "C2": "QAIA-only: exact two-spin Plefka/TAP expansion through O(J**3); force = -dV/dx_i for V = -0.5*gamma*J^2*(1-x_i^2)(1-x_j^2) + (2/3)*gamma*J^3*x_j*(x_i^3-x_i)*(1-x_j^2); V and the force vanish on +-1 spins; no messages or hard decisions.",
+    "C3": "QAIA-only structural screening: one continuous maximum-entropy amplitude coordinate per I/Q pair reparameterises only the pair channel/reaction terms; all four Gray corners are fixed points; no per-edge state and no post-processing. A single amplitude coordinate cannot preserve both Gray marginals, so the mapping shrinks sign-bit magnetisation near level +-1; empirically destructive.",
+    "C4": "QAIA-only: time-dependent pair coupling schedule in the same Hamiltonian gradient, ending at the exact pair_scale=1; no new state, messages, or decoding stage.",
+    "C5": "Not implemented: no torch available; no packages installed."
+  },
+  "exporter_if_promoted": {
+    "needed": false,
+    "note": "No variant was promoted, so no exporter change is required now. A promoted C1 would need new manifest class multipliers; C2 a pair_exact flag and O(J**3) cross term; C3 an amplitude-coordinate map with its inverse; C4 a per-step pair_scale schedule. No integration into v17 or full gate rerun was performed."
+  },
+  "verification": {
+    "scalar_default_parity": "Passed: hard-decision SHA-256 for 3-frame joint cases N=1296 618dbcf99837fc65f4c13781c35d6500b816628b0ff74b3bafaf0453924dbd43 and N=3888 2f132e30a48a4d5b6b14f642774287e1eb6510d427a4b534331cb00bdc10676e matched pre-extension decoder byte-for-byte.",
+    "unit_tests": "python -m unittest discover -s tools/tests -p 'test_*.py' -> 11 tests OK",
+    "py_compile": "tools/bsb_vectorized.py, tools/screen_joint_structural.py, tools/tests/test_bsb_vectorized.py"
+  }
+}

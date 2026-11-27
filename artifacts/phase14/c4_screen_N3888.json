@@ -1,0 +1,96 @@
+{
+  "variant": "C4",
+  "n": 3888,
+  "k": 1944,
+  "rate": 0.5,
+  "snr": 6.0,
+  "frames": 100,
+  "seeds": [
+    2024,
+    6060
+  ],
+  "noise_scale": 1.00112,
+  "baseline_config": {
+    "tau": 2.295,
+    "xi": 1.2640000000000002,
+    "lambd": 5.95,
+    "delta": 3.72,
+    "dt": 0.3484068,
+    "beta": 0.27,
+    "parity_scale": 0.31983234750000006,
+    "joint_pairs": 1,
+    "pair_scale": 1.0,
+    "pair_gamma": 0.18620000000000003
+  },
+  "promotion_bar": 8000.0,
+  "retune_seed": 2024,
+  "retune": [
+    {
+      "name": "pair_ramp_10",
+      "params": {
+        "pair_scale_ramp_steps": 10,
+        "final_pair_scale": 1.0
+      },
+      "score": 137456.4747959362,
+      "gain": -10302.590561296325,
+      "errors": 8206,
+      "gain_ci_95": [
+        -16701.925990469506,
+        -5112.424212257033
+      ]
+    },
+    {
+      "name": "pair_ramp_20",
+      "params": {
+        "pair_scale_ramp_steps": 20,
+        "final_pair_scale": 1.0
+      },
+      "score": 136338.41690906064,
+      "gain": -11420.64844817188,
+      "errors": 8420,
+      "gain_ci_95": [
+        -17816.902144956985,
+        -6273.409645442266
+      ]
+    }
+  ],
+  "chosen": {
+    "name": "pair_ramp_10",
+    "params": {
+      "pair_scale_ramp_steps": 10,
+      "final_pair_scale": 1.0
+    }
+  },
+  "baseline_scores": {
+    "2024": 147759.06535723252,
+    "6060": 152310.22052708108
+  },
+  "seeds_result": {
+    "2024": {
+      "baseline_score": 147759.06535723252,
+      "variant_score": 137456.4747959362,
+      "gain": -10302.590561296325,
+      "gain_ci_95": [
+        -16361.13291334837,
+        -4918.898193444185
+      ],
+      "baseline_errors": 6473,
+      "variant_errors": 8206
+    },
+    "6060": {
+      "baseline_score": 152310.22052708108,
+      "variant_score": 140463.76134963174,
+      "gain": -11846.459177449346,
+      "gain_ci_95": [
+        -18272.183914601024,
+        -6462.982683429901
+      ],
+      "baseline_errors": 5829,
+      "variant_errors": 7657
+    }
+  },
+  "min_gain": -11846.459177449346,
+  "min_ci_lower": -18272.183914601024,
+  "promoted": false,
+  "exporter_change_needed_if_promoted": true
+}

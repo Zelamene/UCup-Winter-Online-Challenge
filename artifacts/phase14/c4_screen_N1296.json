@@ -1,0 +1,96 @@
+{
+  "variant": "C4",
+  "n": 1296,
+  "k": 648,
+  "rate": 0.5,
+  "snr": 6.0,
+  "frames": 100,
+  "seeds": [
+    2024,
+    6060
+  ],
+  "noise_scale": 1.00112,
+  "baseline_config": {
+    "tau": 2.295,
+    "xi": 1.264,
+    "lambd": 5.95,
+    "delta": 3.72,
+    "dt": 0.236,
+    "beta": 0.27,
+    "parity_scale": 0.3201525,
+    "joint_pairs": 1,
+    "pair_scale": 1.0,
+    "pair_gamma": 0.16386930000000002
+  },
+  "promotion_bar": 4000.0,
+  "retune_seed": 2024,
+  "retune": [
+    {
+      "name": "pair_ramp_10",
+      "params": {
+        "pair_scale_ramp_steps": 10,
+        "final_pair_scale": 1.0
+      },
+      "score": 131561.46109888883,
+      "gain": -8065.310265613749,
+      "errors": 3133,
+      "gain_ci_95": [
+        -13880.528298830806,
+        -3147.3210499583665
+      ]
+    },
+    {
+      "name": "pair_ramp_20",
+      "params": {
+        "pair_scale_ramp_steps": 20,
+        "final_pair_scale": 1.0
+      },
+      "score": 124466.63506437898,
+      "gain": -15160.136300123602,
+      "errors": 3689,
+      "gain_ci_95": [
+        -22231.3935930899,
+        -9124.336662386715
+      ]
+    }
+  ],
+  "chosen": {
+    "name": "pair_ramp_10",
+    "params": {
+      "pair_scale_ramp_steps": 10,
+      "final_pair_scale": 1.0
+    }
+  },
+  "baseline_scores": {
+    "2024": 139626.77136450258,
+    "6060": 129902.40129663826
+  },
+  "seeds_result": {
+    "2024": {
+      "baseline_score": 139626.77136450258,
+      "variant_score": 131561.46109888883,
+      "gain": -8065.310265613749,
+      "gain_ci_95": [
+        -13452.929367058907,
+        -3252.228919799795
+      ],
+      "baseline_errors": 2602,
+      "variant_errors": 3133
+    },
+    "6060": {
+      "baseline_score": 129902.40129663826,
+      "variant_score": 120326.2963173266,
+      "gain": -9576.104979311654,
+      "gain_ci_95": [
+        -14788.67913241372,
+        -4380.337326746077
+      ],
+      "baseline_errors": 3255,
+      "variant_errors": 4058
+    }
+  },
+  "min_gain": -9576.104979311654,
+  "min_ci_lower": -14788.67913241372,
+  "promoted": false,
+  "exporter_change_needed_if_promoted": true
+}

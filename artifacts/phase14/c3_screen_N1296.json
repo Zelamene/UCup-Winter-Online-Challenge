@@ -1,0 +1,144 @@
+{
+  "variant": "C3",
+  "n": 1296,
+  "k": 648,
+  "rate": 0.5,
+  "snr": 6.0,
+  "frames": 100,
+  "seeds": [
+    2024,
+    6060
+  ],
+  "noise_scale": 1.00112,
+  "baseline_config": {
+    "tau": 2.295,
+    "xi": 1.264,
+    "lambd": 5.95,
+    "delta": 3.72,
+    "dt": 0.236,
+    "beta": 0.27,
+    "parity_scale": 0.3201525,
+    "joint_pairs": 1,
+    "pair_scale": 1.0,
+    "pair_gamma": 0.16386930000000002
+  },
+  "promotion_bar": 4000.0,
+  "retune_seed": 2024,
+  "retune": [
+    {
+      "name": "amp_scale_0.8",
+      "params": {
+        "pair_amplitude": 1,
+        "amp_scale": 0.8,
+        "amp_steps": 8
+      },
+      "score": 67125.55542004653,
+      "gain": -72501.21594445605,
+      "errors": 13814,
+      "gain_ci_95": [
+        -81941.30741066954,
+        -64808.06414457379
+      ]
+    },
+    {
+      "name": "amp_scale_0.9",
+      "params": {
+        "pair_amplitude": 1,
+        "amp_scale": 0.9,
+        "amp_steps": 8
+      },
+      "score": 76053.83107293803,
+      "gain": -63572.94029156455,
+      "errors": 11247,
+      "gain_ci_95": [
+        -72022.28153959039,
+        -55533.7691443721
+      ]
+    },
+    {
+      "name": "amp_scale_1",
+      "params": {
+        "pair_amplitude": 1,
+        "amp_scale": 1.0,
+        "amp_steps": 8
+      },
+      "score": 87687.46041551683,
+      "gain": -51939.310948985745,
+      "errors": 8604,
+      "gain_ci_95": [
+        -60946.039135632396,
+        -44217.73523796597
+      ]
+    },
+    {
+      "name": "amp_scale_1.1",
+      "params": {
+        "pair_amplitude": 1,
+        "amp_scale": 1.1,
+        "amp_steps": 8
+      },
+      "score": 100729.92387414994,
+      "gain": -38896.84749035264,
+      "errors": 6372,
+      "gain_ci_95": [
+        -46727.63278948969,
+        -32521.57987755998
+      ]
+    },
+    {
+      "name": "amp_scale_1.2",
+      "params": {
+        "pair_amplitude": 1,
+        "amp_scale": 1.2,
+        "amp_steps": 8
+      },
+      "score": 109909.36680686747,
+      "gain": -29717.404557635105,
+      "errors": 5158,
+      "gain_ci_95": [
+        -37308.261195250445,
+        -23035.636410731146
+      ]
+    }
+  ],
+  "chosen": {
+    "name": "amp_scale_1.2",
+    "params": {
+      "pair_amplitude": 1,
+      "amp_scale": 1.2,
+      "amp_steps": 8
+    }
+  },
+  "baseline_scores": {
+    "2024": 139626.77136450258,
+    "6060": 129902.40129663826
+  },
+  "seeds_result": {
+    "2024": {
+      "baseline_score": 139626.77136450258,
+      "variant_score": 109909.36680686747,
+      "gain": -29717.404557635105,
+      "gain_ci_95": [
+        -37522.1461101931,
+        -23316.147217440055
+      ],
+      "baseline_errors": 2602,
+      "variant_errors": 5158
+    },
+    "6060": {
+      "baseline_score": 129902.40129663826,
+      "variant_score": 102638.75858412315,
+      "gain": -27263.64271251511,
+      "gain_ci_95": [
+        -33945.19021820725,
+        -21720.657998357165
+      ],
+      "baseline_errors": 3255,
+      "variant_errors": 6098
+    }
+  },
+  "min_gain": -29717.404557635105,
+  "min_ci_lower": -37522.1461101931,
+  "promoted": false,
+  "exporter_change_needed_if_promoted": true
+}

@@ -15,6 +15,53 @@ EPS = 1e-12
 SCORE_SCALE = 100_000.0
 
 
+def amplitude_pair_spins(
+    first: np.ndarray,
+    second: np.ndarray,
+    scale: float = 1.0,
+    iterations: int = 8,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Map one soft PAM amplitude coordinate to a consistent Gray pair state.
+
+    For the four levels L = (-3, -1, +1, +3) (sqrt(10) units) the maximum-
+    entropy distribution p(L) ~ exp(lambda*L) has soft Gray spins
+
+        s0 = -(sinh(3l) + sinh(l)) / (cosh(3l) + cosh(l)),
+        s1 =  (cosh(3l) - cosh(l)) / (cosh(3l) + cosh(l)),
+
+    The decoder's soft amplitude coordinate is a = -s0(2+s1) (sqrt(10) units);
+    under this family its product-of-marginals value is
+
+        B(l) = (sinh(3l)+sinh(l)) * (3*cosh(3l)+cosh(l)) / (cosh(3l)+cosh(l))**2.
+
+    We invert B(l) = a by Newton steps. The map is a smooth one-coordinate
+    reparameterisation and fixes the four +-1 Gray corners.
+    """
+    amplitude = -first * (2.0 + second) * float(scale)
+    clipped = np.clip(amplitude, -3.0, 3.0)
+    lam = np.clip(clipped / 3.0, -4.0, 4.0)
+    for _ in range(max(1, int(iterations))):
+        c3, c1 = np.cosh(3.0 * lam), np.cosh(lam)
+        s3, s1 = np.sinh(3.0 * lam), np.sinh(lam)
+        denominator = c3 + c1
+        u = s3 + s1
+        v = 3.0 * c3 + c1
+        b_value = u * v / (denominator * denominator)
+        b_prime = (v * v + u * (9.0 * s3 + s1)) / (denominator * denominator) - 2.0 * b_value * (3.0 * s3 + s1) / denominator
+        lam = np.clip(lam + (clipped - b_value) / np.maximum(b_prime, EPS), -8.0, 8.0)
+    c3, c1 = np.cosh(3.0 * lam), np.cosh(lam)
+    s3, s1 = np.sinh(3.0 * lam), np.sinh(lam)
+    denominator = c3 + c1
+    mapped_first = -(s3 + s1) / denominator
+    mapped_second = (c3 - c1) / denominator
+    corner = np.abs(np.abs(amplitude) - 3.0) <= 1e-9
+    inner = np.abs(np.abs(amplitude) - 1.0) <= 1e-9
+    sign = np.where(amplitude >= 0.0, -1.0, 1.0)
+    mapped_first = np.where(corner | inner, sign, mapped_first)
+    mapped_second = np.where(corner, 1.0, np.where(inner, -1.0, mapped_second))
+    return mapped_first, mapped_second
+
+
 def pair_channel_arrays(
     llr: np.ndarray,
     tables: tuple[np.ndarray, np.ndarray, np.ndarray],
@@ -64,8 +111,15 @@ class BatchedBSB:
         dsb_finish: int = 0,
         joint_pairs: int = 0,
         pair_gamma: float = 0.0,
-        pair_scale: float = 1.0,
+        pair_scale: Union[float, Sequence[float], np.ndarray] = 1.0,
         pair_tables: tuple[np.ndarray, np.ndarray, np.ndarray] | None = None,
+        tau_classes: Sequence[float] | np.ndarray | None = None,
+        xi_classes: Sequence[float] | np.ndarray | None = None,
+        beta_classes: Sequence[float] | np.ndarray | None = None,
+        pair_exact: int = 0,
+        pair_amplitude: int = 0,
+        amp_scale: float = 1.0,
+        amp_steps: int = 8,
     ) -> np.ndarray:
         """Run batched bSB on B frames of LLRs and return hard bits of shape (B, N).
 
@@ -73,9 +127,18 @@ class BatchedBSB:
         is still QAIA-only and is used solely by the structural screen.
         ``joint_pairs`` replaces the per-bit channel field with the exact joint
         Gray-pair field; ``pair_tables`` must then be supplied from qam_pairs.
+
+        The optional class multipliers (Phase 14 Track C) scale tau, xi, and
+        beta on sign-bit positions (0, 2, ...) versus magnitude-bit positions
+        (1, 3, ...) of every Gray pair. ``pair_scale`` may also be a per-step
+        schedule. ``pair_exact=1`` uses the O(J**3) exact-pair TAP expansion
+        (self plus cross reaction); ``pair_amplitude=1`` replaces each pair's
+        two soft bits in every mean-field product by the pair's soft amplitude
+        coordinate in the pair channel/reaction terms. All options default to
+        the exact v17 scalar dynamics.
         """
         llr = np.asarray(llr, dtype=np.float64)
-        b = llr.shape[0]
+        b, n_bits = llr.shape
 
         # Convert schedules to float or 1D arrays
         xi_is_seq = isinstance(xi, (list, tuple, np.ndarray))
@@ -96,6 +159,21 @@ class BatchedBSB:
             beta = np.asarray(beta, dtype=np.float64)
             if beta.ndim != 1 or len(beta) != steps:
                 raise ValueError(f"beta schedule has {beta.size} values, expected {steps}")
+
+        def class_multipliers(values: Sequence[float] | np.ndarray | None, name: str) -> np.ndarray | None:
+            if values is None:
+                return None
+            mult = np.asarray(values, dtype=np.float64)
+            if mult.shape != (2,) or not np.all(np.isfinite(mult)):
+                raise ValueError(f"{name} must be two finite class multipliers")
+            site = np.empty(n_bits, dtype=np.float64)
+            site[0::2] = mult[0]
+            site[1::2] = mult[1]
+            return site
+
+        tau_mult = class_multipliers(tau_classes, "tau_classes")
+        xi_mult = class_multipliers(xi_classes, "xi_classes")
+        beta_mult = class_multipliers(beta_classes, "beta_classes")
 
         if dsb_finish < 0 or dsb_finish > steps:
             raise ValueError(f"dsb_finish must be in 0..{steps}, got {dsb_finish}")
@@ -119,13 +197,36 @@ class BatchedBSB:
             pair_d[:, 0::2] = d
             pair_d[:, 1::2] = d
             partner_index = np.arange(llr.shape[1], dtype=np.intp) ^ 1
-            pair_coupling = (2.0 * float(pair_scale)) * pair_d
-            pair_reaction = (float(pair_gamma) * 4.0) * (pair_d * pair_d)
+            pair_scale_seq = isinstance(pair_scale, (list, tuple, np.ndarray))
+            if pair_scale_seq:
+                pair_scale_values = np.asarray(pair_scale, dtype=np.float64)
+                if pair_scale_values.ndim != 1 or len(pair_scale_values) != steps:
+                    raise ValueError(
+                        f"pair_scale schedule has {pair_scale_values.size} values, expected {steps}"
+                    )
+                pair_coupling = None
+                pair_reaction = None
+                pair_reaction_cross = None
+            else:
+                pair_scale_values = None
+                pair_scale_scalar = float(pair_scale)
+                pair_coupling = (2.0 * pair_scale_scalar) * pair_d
+                pair_reaction = (float(pair_gamma) * 4.0) * (pair_d * pair_d)
+                if pair_exact:
+                    j_cubed = pair_coupling * pair_coupling * pair_coupling
+                    pair_reaction_cross = ((2.0 / 3.0) * float(pair_gamma)) * j_cubed
+                else:
+                    pair_reaction_cross = None
         else:
             channel_linear = llr
             pair_d = None
+            pair_scale_values = None
+            pair_coupling = None
+            pair_reaction = None
+            pair_reaction_cross = None
 
-        x = np.tanh(llr / float(tau)).astype(np.float64, copy=True)
+        init_tau = float(tau) if tau_mult is None else float(tau) * tau_mult
+        x = np.tanh(llr / init_tau).astype(np.float64, copy=True)
         y = np.zeros_like(x)
 
         pref = np.ones((b, self.m, self.deg + 1), dtype=np.float64)
@@ -142,6 +243,22 @@ class BatchedBSB:
             spins = np.where(np.abs(soft) < EPS, np.where(soft >= 0.0, EPS, -EPS), soft)
             if step >= dsb_start:
                 spins = np.where(x >= 0.0, 1.0, -1.0)
+            pair_spins = spins
+            if pair_d is not None and pair_amplitude:
+                # C3: collapse each Gray pair's two soft spins to its soft PAM
+                # amplitude L/sqrt(10) = -s0(2+s1)/sqrt(10), then map that one
+                # coordinate back through the maximum-entropy four-level family.
+                # This reparameterises only the pair channel/reaction terms;
+                # check-edge products keep using the original soft spins.
+                # Hard +-1 Gray corners are fixed points, so the Ising problem
+                # and its solutions are unchanged; no hard decision is taken.
+                first, second = amplitude_pair_spins(
+                    spins[:, 0::2], spins[:, 1::2],
+                    scale=amp_scale, iterations=amp_steps,
+                )
+                pair_spins = spins.copy()
+                pair_spins[:, 0::2] = first
+                pair_spins[:, 1::2] = second
 
             # Gather along check edges
             gathered = spins[:, self.cols]  # (B, M, deg)
@@ -163,10 +280,28 @@ class BatchedBSB:
             else:
                 force = channel_linear + coupling * weighted_sum
             if pair_d is not None:
-                partner = spins[:, partner_index]
-                force += pair_coupling * partner
+                partner = pair_spins[:, partner_index]
+                if pair_coupling is None:
+                    j_pair = (2.0 * float(pair_scale_values[step])) * pair_d
+                    reaction_pair = float(pair_gamma) * j_pair * j_pair
+                else:
+                    j_pair = pair_coupling
+                    reaction_pair = pair_reaction
+                force += j_pair * partner
                 if float(pair_gamma) != 0.0:
-                    force -= pair_reaction * (1.0 - partner * partner) * spins
+                    pair_force = reaction_pair * (1.0 - partner * partner) * pair_spins
+                    if pair_exact:
+                        if pair_reaction_cross is not None:
+                            cross = pair_reaction_cross
+                        else:
+                            j_cubed = j_pair * j_pair * j_pair
+                            cross = ((2.0 / 3.0) * float(pair_gamma)) * j_cubed
+                        # Exact O(J**3) pair cross term: -(2/3) gamma J**3
+                        # (1-x_j**2) x_j (3 x_i**2 - 1). It is -dV/dx_i for
+                        # V = (2/3) gamma J**3 x_j(x_i**3-x_i)(1-x_j**2)
+                        # plus the O(J**2) -0.5 gamma J**2 (1-x_i**2)(1-x_j**2).
+                        pair_force = pair_force + cross * (1.0 - partner * partner) * partner * (3.0 * pair_spins * pair_spins - 1.0)
+                    force -= pair_force
             beta_val = float(beta[step]) if beta_is_seq else float(beta)
             if beta_val != 0.0:
                 # Onsager/TAP reaction: gradient of a polynomial that is constant on +-1 spins
@@ -180,12 +315,15 @@ class BatchedBSB:
                     qs[:, :, t] = qs[:, :, t + 1] * q[:, :, t] + ps[:, :, t + 1] * u[:, :, t]
                 per_edge = qp[:, :, : self.deg] * ps[:, :, 1:] + pp[:, :, : self.deg] * qs[:, :, 1:]
                 reaction = (beta_val * (coupling * coupling)) * spins * (per_edge.reshape(b, -1) @ self.scatter_matrix)
+                if beta_mult is not None:
+                    reaction = reaction * beta_mult
                 if parity_scale != 1.0:
                     reaction = reaction * check_scale
                 force = force - reaction
             schedule = step / (steps - 1) if steps > 1 else 0.0
             pump = -(d_val - schedule) * x
-            y = y + dt_val * (pump + xi_val * force)
+            xi_force = xi_val * force if xi_mult is None else (xi_val * xi_mult) * force
+            y = y + dt_val * (pump + xi_force)
             x_new = x + dt_val * y
 
             clipped = np.abs(x_new) > 1.0
