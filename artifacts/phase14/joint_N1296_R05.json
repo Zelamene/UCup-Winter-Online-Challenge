@@ -1,0 +1,140 @@
+{
+  "phase": "A_prime",
+  "n": 1296,
+  "k": 648,
+  "rate": 0.5,
+  "snr": 6.0,
+  "noise_scale": 1.00112,
+  "joint_pairs": 1,
+  "pair_scale": 1.0,
+  "search_keys": [
+    "tau",
+    "xi",
+    "lambd",
+    "delta",
+    "dt",
+    "beta",
+    "parity_scale",
+    "pair_gamma"
+  ],
+  "train_samples": 300,
+  "val_samples": 500,
+  "train_seed": 911,
+  "val_seeds": [
+    2024,
+    31337
+  ],
+  "start_config": {
+    "tau": 2.295,
+    "xi": 1.264,
+    "lambd": 5.95,
+    "delta": 3.72,
+    "dt": 0.236,
+    "beta": 0.27,
+    "parity_scale": 0.42687,
+    "joint_pairs": 1,
+    "pair_scale": 1.0,
+    "pair_gamma": 0.1
+  },
+  "start_source": "C:\\Users\\shazi\\.local\\share\\opencode\\worktree\\bd12e4\\phase12-tap-tuning\\submissions\\v16_tap_case_tuning\\manifest.json",
+  "best_config": {
+    "tau": 2.295,
+    "xi": 1.264,
+    "lambd": 5.95,
+    "delta": 3.72,
+    "dt": 0.236,
+    "beta": 0.27,
+    "parity_scale": 0.3201525,
+    "joint_pairs": 1,
+    "pair_scale": 1.0,
+    "pair_gamma": 0.16386930000000002
+  },
+  "baseline_source": "v15_binary_cache",
+  "search_bounds": {
+    "tau": [
+      1.0,
+      10.0
+    ],
+    "xi": [
+      0.2,
+      3.0
+    ],
+    "lambd": [
+      2.0,
+      20.0
+    ],
+    "delta": [
+      1.5,
+      8.0
+    ],
+    "dt": [
+      0.12,
+      0.5
+    ],
+    "beta": [
+      0.05,
+      0.45
+    ],
+    "parity_scale": [
+      0.15,
+      1.2
+    ],
+    "pair_gamma": [
+      0.02,
+      0.4
+    ]
+  },
+  "bounds_scale": 1.0,
+  "bounds_overrides": {},
+  "search_seed": 5150,
+  "workers": 6,
+  "min_move_gain": 80.0,
+  "evaluations": 65,
+  "accepted_moves": 10,
+  "search_seconds": 1963.435,
+  "start_train_score": 137663.37050017534,
+  "train_score": 139454.64138223336,
+  "train_gain": 1791.2708820580156,
+  "val_score": 132758.8541151261,
+  "val_ber": 0.04703395061728395,
+  "gain": 2508.158029782935,
+  "ci_95": [
+    712.7597324182534,
+    6950.370680947606
+  ],
+  "validation": {
+    "2024": {
+      "baseline_score": 130250.69608534317,
+      "candidate_score": 132758.8541151261,
+      "gain": 2508.158029782935,
+      "gain_ci_95": [
+        712.7597324182534,
+        4205.641878899455
+      ],
+      "baseline_errors": 16145,
+      "candidate_errors": 15239
+    },
+    "31337": {
+      "baseline_score": 135103.79727292905,
+      "candidate_score": 140076.40421930363,
+      "gain": 4972.606946374581,
+      "gain_ci_95": [
+        3001.989955723106,
+        6950.370680947606
+      ],
+      "baseline_errors": 14438,
+      "candidate_errors": 12876
+    }
+  },
+  "edge_params": [],
+  "needs_boundary_rerun": false,
+  "gate": {
+    "threshold": 2000.0,
+    "min_val_gain": 2508.158029782935,
+    "all_seeds_ge_threshold": true,
+    "all_ci_lower_positive": true,
+    "no_boundary_hit": true,
+    "gate_passed": true
+  },
+  "gate_passed": true
+}

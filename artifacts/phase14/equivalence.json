@@ -1,0 +1,42 @@
+{
+  "all_passed": true,
+  "binary": "C:\\Users\\shazi\\.local\\share\\opencode\\worktree\\bd12e4\\phase12-tap-tuning\\artifacts\\phase14\\v17_final.exe",
+  "manifest": "C:\\Users\\shazi\\.local\\share\\opencode\\worktree\\bd12e4\\phase12-tap-tuning\\submissions\\v17_joint_pairs\\manifest.json",
+  "noise_scale": 1.00112,
+  "results": [
+    {
+      "all_equal": true,
+      "batched_equals_cpp": true,
+      "case_index": 4,
+      "frames": 3,
+      "joint_pairs": 1,
+      "k": 648,
+      "n": 1296,
+      "python_equals_batched": true,
+      "snr": 6.0
+    },
+    {
+      "all_equal": true,
+      "batched_equals_cpp": true,
+      "case_index": 7,
+      "frames": 3,
+      "joint_pairs": 1,
+      "k": 972,
+      "n": 1944,
+      "python_equals_batched": true,
+      "snr": 6.0
+    },
+    {
+      "all_equal": true,
+      "batched_equals_cpp": true,
+      "case_index": 10,
+      "frames": 3,
+      "joint_pairs": 1,
+      "k": 1944,
+      "n": 3888,
+      "python_equals_batched": true,
+      "snr": 6.0
+    }
+  ],
+  "seed": 4242
+}

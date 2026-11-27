@@ -51,6 +51,9 @@ def bsb_trajectory(cfg: dict) -> dict:
         "energy_lambda": lambd,  # for energy selection; identical to lambd for single traj
         "beta":         float(cfg.get("beta", 0.0)),
         "parity_scale": float(cfg.get("parity_scale", 1.0)),
+        "joint_pairs":  int(cfg.get("joint_pairs", 0)),
+        "pair_gamma":   float(cfg.get("pair_gamma", 0.0)),
+        "pair_scale":   float(cfg.get("pair_scale", 1.0)),
     }
 
 

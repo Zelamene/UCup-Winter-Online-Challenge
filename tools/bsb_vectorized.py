@@ -9,8 +9,26 @@ from typing import Sequence, Union
 import numpy as np
 import scipy.sparse as sp
 
+from qam_pairs import pair_tables as build_pair_tables  # noqa: E402
+
 EPS = 1e-12
 SCORE_SCALE = 100_000.0
+
+
+def pair_channel_arrays(
+    llr: np.ndarray,
+    tables: tuple[np.ndarray, np.ndarray, np.ndarray],
+    pair_scale: float = 1.0,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Return the batched linear pair field and per-site pair coupling."""
+    a, b, d = tables
+    channel = np.empty_like(llr, dtype=np.float64)
+    channel[:, 0::2] = 2.0 * a
+    channel[:, 1::2] = 2.0 * b
+    pair_d = np.empty_like(llr, dtype=np.float64)
+    pair_d[:, 0::2] = d
+    pair_d[:, 1::2] = d
+    return channel, pair_d
 
 
 class BatchedBSB:
@@ -44,11 +62,17 @@ class BatchedBSB:
         beta: Union[float, Sequence[float], np.ndarray] = 0.0,
         parity_scale: float = 1.0,
         dsb_finish: int = 0,
+        joint_pairs: int = 0,
+        pair_gamma: float = 0.0,
+        pair_scale: float = 1.0,
+        pair_tables: tuple[np.ndarray, np.ndarray, np.ndarray] | None = None,
     ) -> np.ndarray:
         """Run batched bSB on B frames of LLRs and return hard bits of shape (B, N).
 
         ``dsb_finish`` switches the last N steps to hard dSB check products; it
         is still QAIA-only and is used solely by the structural screen.
+        ``joint_pairs`` replaces the per-bit channel field with the exact joint
+        Gray-pair field; ``pair_tables`` must then be supplied from qam_pairs.
         """
         llr = np.asarray(llr, dtype=np.float64)
         b = llr.shape[0]
@@ -76,6 +100,30 @@ class BatchedBSB:
         if dsb_finish < 0 or dsb_finish > steps:
             raise ValueError(f"dsb_finish must be in 0..{steps}, got {dsb_finish}")
         dsb_start = steps - int(dsb_finish) if dsb_finish else steps + 1
+
+        joint = int(joint_pairs)
+        if joint not in (0, 1):
+            raise ValueError(f"joint_pairs must be 0 or 1, got {joint_pairs}")
+        if joint:
+            if llr.shape[1] % 4 != 0:
+                raise ValueError(f"joint_pairs requires n divisible by 4, got {llr.shape[1]}")
+            if pair_tables is None:
+                raise ValueError("joint_pairs requires pair_tables from qam_pairs.pair_tables")
+            a, bp, d = pair_tables
+            if a.shape != (b, llr.shape[1] // 2) or bp.shape != a.shape or d.shape != a.shape:
+                raise ValueError(f"pair tables have shape {a.shape}, expected {(b, llr.shape[1] // 2)}")
+            channel_linear = np.empty_like(llr)
+            channel_linear[:, 0::2] = 2.0 * a
+            channel_linear[:, 1::2] = 2.0 * bp
+            pair_d = np.empty_like(llr)
+            pair_d[:, 0::2] = d
+            pair_d[:, 1::2] = d
+            partner_index = np.arange(llr.shape[1], dtype=np.intp) ^ 1
+            pair_coupling = (2.0 * float(pair_scale)) * pair_d
+            pair_reaction = (float(pair_gamma) * 4.0) * (pair_d * pair_d)
+        else:
+            channel_linear = llr
+            pair_d = None
 
         x = np.tanh(llr / float(tau)).astype(np.float64, copy=True)
         y = np.zeros_like(x)
@@ -111,9 +159,14 @@ class BatchedBSB:
 
             coupling = 0.5 * l_val
             if parity_scale != 1.0:
-                force = llr + (coupling * check_scale) * weighted_sum
+                force = channel_linear + (coupling * check_scale) * weighted_sum
             else:
-                force = llr + coupling * weighted_sum
+                force = channel_linear + coupling * weighted_sum
+            if pair_d is not None:
+                partner = spins[:, partner_index]
+                force += pair_coupling * partner
+                if float(pair_gamma) != 0.0:
+                    force -= pair_reaction * (1.0 - partner * partner) * spins
             beta_val = float(beta[step]) if beta_is_seq else float(beta)
             if beta_val != 0.0:
                 # Onsager/TAP reaction: gradient of a polynomial that is constant on +-1 spins
@@ -156,9 +209,17 @@ class BatchedBSB:
         steps: int = 50,
         beta: Union[float, Sequence[float], np.ndarray] = 0.0,
         parity_scale: float = 1.0,
+        joint_pairs: int = 0,
+        pair_gamma: float = 0.0,
+        pair_scale: float = 1.0,
+        pair_tables: tuple[np.ndarray, np.ndarray, np.ndarray] | None = None,
     ) -> tuple[float, float, int]:
         """Compute score, BER, and bit error count on systematic information bits."""
-        hard = self.decode_batch(llr, tau, xi, lambd, delta, dt=dt, steps=steps, beta=beta, parity_scale=parity_scale)
+        hard = self.decode_batch(
+            llr, tau, xi, lambd, delta, dt=dt, steps=steps, beta=beta,
+            parity_scale=parity_scale, joint_pairs=joint_pairs,
+            pair_gamma=pair_gamma, pair_scale=pair_scale, pair_tables=pair_tables,
+        )
         b = llr.shape[0]
         total_info_bits = b * k
         errors = int(np.count_nonzero(hard[:, :k] != answers[:, :k]))
@@ -166,10 +227,21 @@ class BatchedBSB:
         score = -SCORE_SCALE * math.log10(ber)
         return score, ber, errors
 
-    def compute_energy(self, hard: np.ndarray, llr: np.ndarray, energy_lambda: float) -> np.ndarray:
+    def compute_energy(
+        self,
+        hard: np.ndarray,
+        channel_field: np.ndarray,
+        energy_lambda: float,
+        pair_d: np.ndarray | None = None,
+        pair_scale: float = 1.0,
+    ) -> np.ndarray:
         """Compute Ising energy for each frame in hard (B, N). Returns array of shape (B,)."""
         spins = np.where(hard == 0, 1.0, -1.0)
-        channel = -np.sum(llr * spins, axis=1)
+        channel = -np.sum(channel_field * spins, axis=1)
+        if pair_d is not None:
+            channel -= 2.0 * float(pair_scale) * np.sum(
+                pair_d[:, 0::2] * spins[:, 0::2] * spins[:, 1::2], axis=1
+            )
         gathered = spins[:, self.cols]
         products = np.prod(gathered, axis=2)
         penalty = np.sum(1.0 - products, axis=1)
@@ -184,11 +256,17 @@ class BatchedBSB:
         combine: str = "energy",
         dt: float = 0.2,
         steps: int = 50,
+        snr: float | None = None,
     ) -> tuple[float, float, int]:
         """Evaluate an ensemble of trajectories with energy or vote combine."""
         b = llr.shape[0]
         if not trajectories:
             raise ValueError("No trajectories provided")
+        tables = None
+        if any(int(traj.get("joint_pairs", 0)) for traj in trajectories):
+            if snr is None:
+                raise ValueError("joint_pairs requires snr")
+            tables = build_pair_tables(llr, snr)
 
         candidates = []
         energies = []
@@ -198,13 +276,30 @@ class BatchedBSB:
             lambd = traj["lambd"]
             delta = traj["delta"]
             traj_dt = traj.get("dt", dt)
-            hard = self.decode_batch(llr, tau, xi, lambd, delta, dt=traj_dt, steps=steps)
+            hard = self.decode_batch(
+                llr, tau, xi, lambd, delta, dt=traj_dt, steps=steps,
+                beta=traj.get("beta", 0.0),
+                parity_scale=traj.get("parity_scale", 1.0),
+                joint_pairs=traj.get("joint_pairs", 0),
+                pair_gamma=traj.get("pair_gamma", 0.0),
+                pair_scale=traj.get("pair_scale", 1.0),
+                pair_tables=tables,
+            )
             candidates.append(hard)
             if combine == "energy":
                 e_lam = traj.get("energy_lambda", lambd)
                 if isinstance(e_lam, (list, tuple, np.ndarray)):
                     e_lam = float(e_lam[-1])
-                energies.append(self.compute_energy(hard, llr, float(e_lam)))
+                energy_field = llr
+                energy_pair_d = None
+                if tables is not None and int(traj.get("joint_pairs", 0)):
+                    energy_field, energy_pair_d = pair_channel_arrays(
+                        llr, tables, float(traj.get("pair_scale", 1.0))
+                    )
+                energies.append(self.compute_energy(
+                    hard, energy_field, float(e_lam), energy_pair_d,
+                    float(traj.get("pair_scale", 1.0)),
+                ))
 
         candidates = np.stack(candidates, axis=0)  # (T, B, N)
         if len(trajectories) == 1:

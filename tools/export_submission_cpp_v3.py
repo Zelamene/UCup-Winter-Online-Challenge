@@ -58,6 +58,9 @@ struct TrajectoryConfig {
     double beta;          // Onsager/TAP reaction strength (bSB only); 0 disables
     double parity_scale;  // check-force scale on parity columns (last m); 1 disables
     const double* beta_values;
+    int joint_pairs;      // 1 = exact Gray-pair channel field (bSB only)
+    double pair_gamma;    // pair reaction strength
+    double pair_scale;    // diagnostic scale on the pair coupling; 1 is exact
 };
 
 struct CaseConfig {
@@ -71,14 +74,183 @@ struct CaseConfig {
 
 __ARRAYS__
 
+// Exact joint Gray-pair likelihood recovery. Both the Python reference and
+// this exporter use the same bracket, bisection count and Newton steps.
+static const double QAM_LEVELS[4] = {
+    -3.0 / std::sqrt(10.0), -1.0 / std::sqrt(10.0),
+     1.0 / std::sqrt(10.0),  3.0 / std::sqrt(10.0)
+};
+static const double QAM_BRACKET = 3.0 / std::sqrt(10.0) + 12.0;
+
+static double log_sum_exp2(double first, double second) {
+    const double peak = std::max(first, second);
+    return peak + std::log1p(std::exp(-std::fabs(first - second)));
+}
+
+// Bisection needs millions of softplus values per frame. A cubic-interpolated
+// table reproduces log1p(exp(-x)) to about 1e-10, far below the decoder's LLR
+// resolution; the final consistency check still uses the exact log_sum_exp2.
+static const int SOFTPLUS_STEPS = 1600;
+static const double SOFTPLUS_MAX = 40.0;
+static double softplus_table[SOFTPLUS_STEPS + 4];
+static bool softplus_ready = false;
+
+static void ensure_softplus_table() {
+    if (softplus_ready) return;
+    const double step = SOFTPLUS_MAX / SOFTPLUS_STEPS;
+    for (int index = 0; index <= SOFTPLUS_STEPS + 3; ++index) {
+        softplus_table[index] = std::log1p(std::exp(-step * index));
+    }
+    softplus_ready = true;
+}
+
+static double softplus_neg(double x) {
+    if (x >= SOFTPLUS_MAX) return 0.0;
+    ensure_softplus_table();
+    const double scaled = x * SOFTPLUS_STEPS / SOFTPLUS_MAX;
+    int index = static_cast<int>(scaled);
+    if (index > SOFTPLUS_STEPS - 1) index = SOFTPLUS_STEPS - 1;
+    const double t = scaled - index;
+    const double p0 = softplus_table[index];
+    const double p1 = softplus_table[index + 1];
+    const double p2 = softplus_table[index + 2];
+    const double p3 = softplus_table[index + 3];
+    const double t2 = t * t;
+    const double t3 = t2 * t;
+    const double l0 = (-t3 + 6.0 * t2 - 11.0 * t + 6.0) / 6.0;
+    const double l1 = (t3 - 5.0 * t2 + 6.0 * t) / 2.0;
+    const double l2 = (-t3 + 4.0 * t2 - 3.0 * t) / 2.0;
+    const double l3 = (t3 - 3.0 * t2 + 2.0 * t) / 6.0;
+    return p0 * l0 + p1 * l1 + p2 * l2 + p3 * l3;
+}
+
+static double fast_log_sum_exp2(double first, double second) {
+    const double peak = std::max(first, second);
+    return peak + softplus_neg(std::fabs(first - second));
+}
+
+// The common -y^2/(2 sigma^2) term cancels from every log-likelihood
+// difference below, so precompute only the y-linear part of each component.
+struct PairChannel {
+    double slope[4];
+    double intercept[4];
+    double inv_sigma_sq;
+};
+
+static PairChannel make_pair_channel(double sigma) {
+    PairChannel channel;
+    channel.inv_sigma_sq = 1.0 / (sigma * sigma);
+    for (int i = 0; i < 4; ++i) {
+        const double level = QAM_LEVELS[i];
+        channel.slope[i] = level * channel.inv_sigma_sq;
+        channel.intercept[i] = -0.5 * level * level * channel.inv_sigma_sq;
+    }
+    return channel;
+}
+
+static void component_loglikes(double y, const PairChannel& channel, double out[4]) {
+    for (int i = 0; i < 4; ++i) {
+        out[i] = channel.slope[i] * y + channel.intercept[i];
+    }
+}
+
+static double first_bit_llr_y(double y, const PairChannel& channel) {
+    double ell[4];
+    component_loglikes(y, channel, ell);
+    return fast_log_sum_exp2(ell[0], ell[1]) - fast_log_sum_exp2(ell[2], ell[3]);
+}
+
+static double second_bit_llr_y(double y, const PairChannel& channel) {
+    double ell[4];
+    component_loglikes(y, channel, ell);
+    return log_sum_exp2(ell[0], ell[3]) - log_sum_exp2(ell[1], ell[2]);
+}
+
+static double first_bit_llr_derivative(double y, const PairChannel& channel) {
+    double ell[4];
+    component_loglikes(y, channel, ell);
+    double peak = std::max(ell[0], ell[1]);
+    double w0 = std::exp(ell[0] - peak);
+    double w1 = std::exp(ell[1] - peak);
+    const double mu_negative = (w0 * QAM_LEVELS[0] + w1 * QAM_LEVELS[1]) / (w0 + w1);
+    peak = std::max(ell[2], ell[3]);
+    w0 = std::exp(ell[2] - peak);
+    w1 = std::exp(ell[3] - peak);
+    const double mu_positive = (w0 * QAM_LEVELS[2] + w1 * QAM_LEVELS[3]) / (w0 + w1);
+    return (mu_negative - mu_positive) * channel.inv_sigma_sq;
+}
+
+static double recover_amplitude(double target, const PairChannel& channel) {
+    double low = -QAM_BRACKET;
+    double high = QAM_BRACKET;
+    for (int i = 0; i < 64; ++i) {
+        const double middle = 0.5 * (low + high);
+        if (first_bit_llr_y(middle, channel) > target) {
+            low = middle;
+        } else {
+            high = middle;
+        }
+    }
+    double y = 0.5 * (low + high);
+    for (int i = 0; i < 2; ++i) {
+        const double derivative = first_bit_llr_derivative(y, channel);
+        if (std::fabs(derivative) < 1e-300) break;
+        const double step = (first_bit_llr_y(y, channel) - target) / derivative;
+        y = std::min(QAM_BRACKET, std::max(-QAM_BRACKET, y - step));
+    }
+    return y;
+}
+
+struct PairTables {
+    std::vector<double> linear;
+    std::vector<double> d;
+};
+
+static PairTables build_pair_tables(
+    const std::vector<double>& llr, double snr, double& bad_fraction
+) {
+    const int n = static_cast<int>(llr.size());
+    PairTables tables;
+    tables.linear.assign(n, 0.0);
+    tables.d.assign(n, 0.0);
+    const double sigma = 1.0 / std::sqrt(2.0 * std::pow(10.0, snr / 10.0));
+    const PairChannel channel = make_pair_channel(sigma);
+    int bad = 0;
+    for (int pair = 0; pair < n / 2; ++pair) {
+        const int first = 2 * pair;
+        const int second = first + 1;
+        const double y = recover_amplitude(llr[first], channel);
+        double ell[4];
+        component_loglikes(y, channel, ell);
+        // Gray order: 00 -> -3, 01 -> -1, 11 -> +1, 10 -> +3.
+        const double a = (ell[0] + ell[1] - ell[3] - ell[2]) / 4.0;
+        const double b = (ell[0] - ell[1] + ell[3] - ell[2]) / 4.0;
+        const double d = (ell[0] - ell[1] - ell[3] + ell[2]) / 4.0;
+        tables.linear[first] = 2.0 * a;
+        tables.linear[second] = 2.0 * b;
+        tables.d[first] = d;
+        tables.d[second] = d;
+        const double tolerance = 1e-6 * std::max(1.0, std::fabs(llr[second]));
+        if (std::fabs(second_bit_llr_y(y, channel) - llr[second]) > tolerance) {
+            ++bad;
+        }
+    }
+    bad_fraction = (n > 0) ? static_cast<double>(bad) / (n / 2) : 0.0;
+    return tables;
+}
+
 static std::vector<int> run_trajectory(
     const std::vector<double>& llr,
     const std::vector<int>& starts,
     const std::vector<int>& cols,
     const TrajectoryConfig& cfg,
-    std::vector<double>& x_out
+    std::vector<double>& x_out,
+    const std::vector<double>* pair_linear,
+    const std::vector<double>* pair_d
 ) {
     const int n = static_cast<int>(llr.size());
+    const bool joint = (cfg.joint_pairs == 1 && pair_linear != nullptr && pair_d != nullptr);
+    const std::vector<double>& channel = joint ? *pair_linear : llr;
     const int m = static_cast<int>(starts.size()) - 1;
     std::vector<double> spins(n);
     std::vector<double> weighted(n, 0.0);
@@ -170,9 +342,19 @@ static std::vector<int> run_trajectory(
         for (int col = 0; col < n; ++col) {
             const double scale = (use_scale && col >= parity_start) ? cfg.parity_scale : 1.0;
             if (use_scale) {
-                force[col] = llr[col] + (coupling * scale) * weighted[col];
+                force[col] = channel[col] + (coupling * scale) * weighted[col];
             } else {
-                force[col] = llr[col] + coupling * weighted[col];
+                force[col] = channel[col] + coupling * weighted[col];
+            }
+            if (joint) {
+                const int partner = col ^ 1;
+                const double other = spins[partner];
+                const double strength = (*pair_d)[col];
+                force[col] += 2.0 * cfg.pair_scale * strength * other;
+                if (cfg.pair_gamma != 0.0) {
+                    force[col] -= 4.0 * cfg.pair_gamma * strength * strength
+                                  * (1.0 - other * other) * spins[col];
+                }
             }
             if (beta != 0.0) {
                 double r = ((beta * (coupling * coupling)) * spins[col]) * reaction[col];
@@ -202,20 +384,28 @@ static std::vector<int> run_trajectory(
 
 static double energy_score(
     const std::vector<int>& hard,
-    const std::vector<double>& llr,
+    const std::vector<double>& channel,
     const std::vector<int>& starts,
     const std::vector<int>& cols,
-    double lambd
+    double lambd,
+    const std::vector<double>* pair_d,
+    double pair_scale
 ) {
-    const int n = static_cast<int>(llr.size());
+    const int n = static_cast<int>(channel.size());
     const int m = static_cast<int>(starts.size()) - 1;
     std::vector<double> spins(n);
     for (int col = 0; col < n; ++col) {
         spins[col] = (hard[col] == 0) ? 1.0 : -1.0;
     }
-    double channel = 0.0;
+    double channel_energy = 0.0;
     for (int col = 0; col < n; ++col) {
-        channel -= llr[col] * spins[col];
+        channel_energy -= channel[col] * spins[col];
+    }
+    if (pair_d != nullptr) {
+        for (int pair = 0; pair < n / 2; ++pair) {
+            channel_energy -= (2.0 * pair_scale * (*pair_d)[2 * pair])
+                              * spins[2 * pair] * spins[2 * pair + 1];
+        }
     }
     double penalty = 0.0;
     for (int row = 0; row < m; ++row) {
@@ -225,7 +415,7 @@ static double energy_score(
         }
         penalty += 1.0 - product;
     }
-    return channel + 0.5 * lambd * penalty;
+    return channel_energy + 0.5 * lambd * penalty;
 }
 
 int main() {
@@ -289,8 +479,27 @@ int main() {
         }
     }
 
+    bool case_joint = false;
+    for (int index = 0; index < active->count; ++index) {
+        if (active->trajectories[index].joint_pairs == 1) case_joint = true;
+    }
+
     for (int sample = 0; sample < b; ++sample) {
         const std::vector<double>& row = llr[static_cast<size_t>(sample)];
+        const std::vector<double>* row_channel = &row;
+        std::vector<PairTables> frame_tables;
+        bool frame_joint = case_joint;
+        if (case_joint) {
+            double bad_fraction = 0.0;
+            frame_tables.push_back(build_pair_tables(row, active->snr, bad_fraction));
+            if (bad_fraction > 0.001) {
+                frame_joint = false;
+            } else {
+                row_channel = &frame_tables[0].linear;
+            }
+        }
+        const std::vector<double>* frame_d =
+            frame_joint ? &frame_tables[0].d : nullptr;
         std::vector<std::vector<int>> hards;
         std::vector<std::vector<double>> softs;
         hards.reserve(static_cast<size_t>(active->count));
@@ -301,7 +510,8 @@ int main() {
         for (int index = 0; index < active->count; ++index) {
             std::vector<double> soft;
             hards.push_back(run_trajectory(
-                row, starts, cols, active->trajectories[index], soft
+                row, starts, cols, active->trajectories[index], soft,
+                row_channel, frame_d
             ));
             softs.push_back(std::move(soft));
             lambdas.push_back(active->trajectories[index].energy_lambda);
@@ -310,12 +520,17 @@ int main() {
         std::vector<int> decided = hards[0];
         if (active->combine == Combine::Energy) {
             double best_energy = energy_score(
-                decided, row, starts, cols, lambdas[0]
+                decided, *row_channel, starts, cols, lambdas[0],
+                active->trajectories[0].joint_pairs == 1 ? frame_d : nullptr,
+                active->trajectories[0].pair_scale
             );
             for (int index = 1; index < active->count; ++index) {
                 const double value = energy_score(
-                    hards[static_cast<size_t>(index)], row, starts, cols,
-                    lambdas[static_cast<size_t>(index)]
+                    hards[static_cast<size_t>(index)], *row_channel, starts, cols,
+                    lambdas[static_cast<size_t>(index)],
+                    active->trajectories[static_cast<size_t>(index)].joint_pairs == 1
+                        ? frame_d : nullptr,
+                    active->trajectories[static_cast<size_t>(index)].pair_scale
                 );
                 if (value < best_energy) {
                     best_energy = value;
@@ -431,6 +646,16 @@ def validate_case(case: object, label: str) -> dict:
         beta_schedules.append(beta_values)
         if mode != "bsb" and (any(value != 0.0 for value in beta_values) or float(traj.get("parity_scale", 1.0)) != 1.0):
             raise ValueError(f"{label}: beta/parity_scale require bsb mode (trajectory {index})")
+        joint = int(traj.get("joint_pairs", 0))
+        if joint not in (0, 1):
+            raise ValueError(f"{label}: trajectory {index} joint_pairs must be 0 or 1")
+        if joint:
+            if mode != "bsb":
+                raise ValueError(f"{label}: trajectory {index} joint_pairs requires bsb mode")
+            if int(case.get("n", 0)) % 4 != 0:
+                raise ValueError(f"{label}: trajectory {index} joint_pairs requires n divisible by 4")
+            _finite(traj.get("pair_gamma", 0.0), f"{label}: trajectory {index} pair_gamma")
+            _finite(traj.get("pair_scale", 1.0), f"{label}: trajectory {index} pair_scale")
         if combine == "energy" and "energy_lambda" not in traj:
             raise ValueError(
                 f"{label}: energy combine requires energy_lambda on trajectory {index}"
@@ -532,7 +757,10 @@ def make_case_block(index: int, case: dict) -> tuple[str, str]:
                 + [dt_ptr, MODES[case["mode"]]]
                 + [_fmt(beta_schedule[0]),
                    _fmt(_finite(traj.get("parity_scale", 1.0), f"{prefix} parity_scale")),
-                   beta_ptr]
+                   beta_ptr,
+                   str(int(traj.get("joint_pairs", 0))),
+                   _fmt(_finite(traj.get("pair_gamma", 0.0), f"{prefix} pair_gamma")),
+                   _fmt(_finite(traj.get("pair_scale", 1.0), f"{prefix} pair_scale"))]
             )
             + "}"
         )

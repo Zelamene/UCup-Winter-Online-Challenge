@@ -78,6 +78,7 @@ def generate_one(
     binary: Path,
     noise_scale: float,
     cache_dir: Path,
+    llr_sigma: str | float = "nominal",
 ) -> dict:
     """Build one case, run the baseline binary, and store per-frame errors."""
     binary = Path(binary)
@@ -86,7 +87,10 @@ def generate_one(
         raise FileNotFoundError(f"missing baseline binary: {binary}")
     cache_dir.mkdir(parents=True, exist_ok=True)
 
-    case = build_case(n, k, samples, snr, seed, noise_scale=noise_scale)
+    case = build_case(
+        n, k, samples, snr, seed,
+        noise_scale=noise_scale, llr_sigma=llr_sigma,
+    )
     started = time.perf_counter()
     with tempfile.TemporaryDirectory(prefix="baseline_", dir=cache_dir) as tmp_name:
         workdir = Path(tmp_name)
@@ -114,6 +118,7 @@ def generate_one(
         "seed": seed,
         "samples": samples,
         "noise_scale": noise_scale,
+        "llr_sigma": llr_sigma,
         "binary": str(binary),
         "binary_sha256": sha256(binary),
         "total_info_errors": total,
@@ -143,23 +148,33 @@ def main() -> None:
     parser.add_argument("--samples", type=int, default=500)
     parser.add_argument("--binary", type=Path, default=DEFAULT_BINARY)
     parser.add_argument("--noise-scale", type=float, default=1.001120)
+    parser.add_argument(
+        "--llr-sigma", default="nominal",
+        help="'nominal' (default), 'noise_scale', or an explicit positive sigma",
+    )
     parser.add_argument("--cache-dir", type=Path, default=DEFAULT_CACHE_DIR)
     parser.add_argument(
         "--all-high-rate",
         action="store_true",
         help="generate every R=2/3 and R=3/4 case for all requested seeds",
     )
+    parser.add_argument(
+        "--all-cases",
+        action="store_true",
+        help="generate all 12 (N, rate) cases for all requested seeds",
+    )
     args = parser.parse_args()
 
     seeds = args.seeds or [args.seed]
-    if args.all_high_rate:
+    rates = RATE_SNR_DB if args.all_cases else (RATE_SNR_DB[1:] if args.all_high_rate else None)
+    if rates is not None:
         for n in N_VALUES:
-            for rate, snr in RATE_SNR_DB[1:]:
+            for rate, snr in rates:
                 k = int(round(n * rate))
                 for seed in seeds:
                     generate_one(
                         n, k, snr, seed, args.samples, args.binary,
-                        args.noise_scale, args.cache_dir,
+                        args.noise_scale, args.cache_dir, args.llr_sigma,
                     )
         return
 
@@ -173,7 +188,7 @@ def main() -> None:
     for seed in seeds:
         generate_one(
             args.n, k, snr, seed, args.samples, args.binary,
-            args.noise_scale, args.cache_dir,
+            args.noise_scale, args.cache_dir, args.llr_sigma,
         )
 
 

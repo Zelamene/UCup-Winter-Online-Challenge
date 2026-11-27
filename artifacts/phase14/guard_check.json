@@ -1,0 +1,14 @@
+{
+  "all_passed": true,
+  "gate": {
+    "fallback_matches_reference_on_swapped": true,
+    "joint_active_on_original": true,
+    "joint_output_swap_diff_lines": 500,
+    "original_diff_lines": 346,
+    "reference_output_swap_diff_lines": 500,
+    "swapped_diff_lines": 0
+  },
+  "joint_binary": "C:\\Users\\shazi\\.local\\share\\opencode\\worktree\\bd12e4\\phase12-tap-tuning\\artifacts\\phase14\\guard_joint.exe",
+  "public_input": "C:\\Users\\shazi\\.local\\share\\opencode\\worktree\\bd12e4\\phase12-tap-tuning\\Problem statements\\publish.in",
+  "reference_binary": "C:\\Users\\shazi\\.local\\share\\opencode\\worktree\\bd12e4\\phase12-tap-tuning\\artifacts\\build\\v16_ref.exe"
+}

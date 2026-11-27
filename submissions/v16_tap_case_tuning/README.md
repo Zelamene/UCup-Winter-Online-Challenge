@@ -1,6 +1,6 @@
 # v16 — Phase 12 per-case TAP tuning candidate
 
-This is a local candidate only. It has **not** been submitted to the judge.
+This archive was submitted and accepted by the judge at `2,023,997` (`+8,174` over v15).
 
 Base: accepted v15 (`submissions/v15_tap_bsb_candidate/`).
 

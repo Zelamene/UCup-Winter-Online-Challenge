@@ -19,6 +19,7 @@ TOOLS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(TOOLS_DIR))
 
 from phase0_harness import parse_instance  # noqa: E402
+from qam_pairs import pair_tables as build_pair_tables  # noqa: E402
 
 ROOT = TOOLS_DIR.parent
 DEFAULT_MANIFEST = ROOT / "artifacts" / "phase8_case_manifest_v3.json"
@@ -93,6 +94,22 @@ def _build_sparse(h: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray, np
     return safe, mask, flat_cols, counts, m, n
 
 
+def _pair_channel_field(
+    rates: np.ndarray, tables: tuple[np.ndarray, np.ndarray, np.ndarray]
+) -> tuple[np.ndarray, np.ndarray]:
+    """Return the linear pair field and per-site coupling for joint Gray pairs."""
+    a, _b, d = tables
+    if rates.size % 2 != 0 or 2 * a.size != rates.size or 2 * d.size != rates.size:
+        raise ValueError(f"pair tables do not match {rates.size} LLRs")
+    linear = np.empty_like(rates, dtype=np.float64)
+    pair_d = np.empty_like(rates, dtype=np.float64)
+    linear[0::2] = 2.0 * a
+    linear[1::2] = 2.0 * _b
+    pair_d[0::2] = d
+    pair_d[1::2] = d
+    return linear, pair_d
+
+
 def _check_contribution(
     spins: np.ndarray,
     sparse: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, int, int],
@@ -162,6 +179,7 @@ def _decode_trajectory_sparse(
     mode: str,
     dt: float,
     steps: int,
+    pair_tables: tuple[np.ndarray, np.ndarray, np.ndarray] | None = None,
 ) -> tuple[list[int], np.ndarray]:
     if mode not in MODES:
         raise ValueError(f"invalid mode {mode!r}; expected one of {MODES}")
@@ -180,6 +198,26 @@ def _decode_trajectory_sparse(
         raise ValueError(f"llr must be a 1-D array, got shape {rates.shape}")
     if rates.size != sparse[5]:
         raise ValueError(f"llr has {rates.size} entries, expected {sparse[5]}")
+
+    joint_pairs = int(traj.get("joint_pairs", 0))
+    if joint_pairs not in (0, 1):
+        raise ValueError(f"joint_pairs must be 0 or 1, got {traj.get('joint_pairs')!r}")
+    pair_gamma = _finite(traj.get("pair_gamma", 0.0), "trajectory pair_gamma")
+    pair_scale = _finite(traj.get("pair_scale", 1.0), "trajectory pair_scale")
+    if joint_pairs:
+        if mode != "bsb":
+            raise ValueError("joint_pairs requires bsb mode")
+        if rates.size % 4 != 0:
+            raise ValueError(f"joint_pairs requires n divisible by 4, got {rates.size}")
+        if pair_tables is None:
+            raise ValueError("joint_pairs requires pair tables from qam_pairs.pair_tables")
+        channel_linear, pair_d = _pair_channel_field(rates, pair_tables)
+        partner_index = np.arange(rates.size, dtype=np.intp) ^ 1
+        pair_coupling = (2.0 * pair_scale) * pair_d
+        pair_reaction = (pair_gamma * 4.0) * (pair_d * pair_d)
+    else:
+        channel_linear = rates
+        pair_d = None
 
     beta_values = _beta_values(traj.get("beta", 0.0), "trajectory beta", steps)
     use_reaction = bool(np.any(beta_values != 0.0))
@@ -211,9 +249,14 @@ def _decode_trajectory_sparse(
         dt_step = float(dt_values[step])
         coupling = 0.5 * lambd
         if check_scale is None:
-            force = rates + coupling * weighted_sum
+            force = channel_linear + coupling * weighted_sum
         else:
-            force = rates + (coupling * check_scale) * weighted_sum
+            force = channel_linear + (coupling * check_scale) * weighted_sum
+        if pair_d is not None:
+            partner = spins[partner_index]
+            force += pair_coupling * partner
+            if pair_gamma != 0.0:
+                force -= pair_reaction * (1.0 - partner * partner) * spins
         beta = float(beta_values[step])
         if beta != 0.0:
             reaction = (beta * (coupling * coupling)) * spins * _onsager_contribution(spins, sparse)
@@ -240,12 +283,18 @@ def decode_trajectory(
     mode: str = "dsb",
     dt: float = 0.2,
     steps: int = 50,
+    snr: float | None = None,
 ) -> tuple[list[int], np.ndarray]:
     """Run one QAIA trajectory and return (hard bits, final soft spins)."""
     _schedule_values(dt, "dt", int(steps))
     sparse = _build_sparse(h)
+    tables = None
+    if int(traj.get("joint_pairs", 0)):
+        if snr is None:
+            raise ValueError("joint_pairs requires the case SNR")
+        tables = build_pair_tables(np.asarray(llr, dtype=np.float64), snr)
     return _decode_trajectory_sparse(
-        np.asarray(llr, dtype=np.float64), sparse, traj, mode, dt, int(steps)
+        np.asarray(llr, dtype=np.float64), sparse, traj, mode, dt, int(steps), tables
     )
 
 
@@ -277,6 +326,18 @@ def _validate_case(case: dict) -> tuple[str, str, list[dict], float, int]:
             _schedule_values(traj.get(key), f"trajectory {index} {key}", MANIFEST_STEPS)
         if "dt" in traj:
             _schedule_values(traj["dt"], f"trajectory {index} dt", MANIFEST_STEPS)
+        joint = int(traj.get("joint_pairs", 0))
+        if joint not in (0, 1):
+            raise ValueError(f"trajectory {index}: joint_pairs must be 0 or 1")
+        if joint:
+            if mode != "bsb":
+                raise ValueError(f"trajectory {index}: joint_pairs requires bsb mode")
+            if int(case.get("n", 0)) % 4 != 0:
+                raise ValueError(f"trajectory {index}: joint_pairs requires n divisible by 4")
+            if "snr" not in case:
+                raise ValueError("joint_pairs requires the case SNR")
+            _finite(traj.get("pair_gamma", 0.0), f"trajectory {index} pair_gamma")
+            _finite(traj.get("pair_scale", 1.0), f"trajectory {index} pair_scale")
         if combine == "energy":
             if "energy_lambda" not in traj:
                 raise ValueError(f"trajectory {index} needs energy_lambda for energy combine")
@@ -295,12 +356,20 @@ def _energy(
     rates: np.ndarray,
     sparse: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, int, int],
     lambd: float,
+    pair_tables: tuple[np.ndarray, np.ndarray, np.ndarray] | None = None,
+    pair_scale: float = 1.0,
 ) -> float:
     spins = np.where(np.asarray(hard, dtype=np.int8) == 0, 1.0, -1.0)
     products, _weighted_sum = _check_contribution(spins, sparse)
     channel = 0.0
     for col in range(rates.size):
         channel -= float(rates[col]) * float(spins[col])
+    if pair_tables is not None:
+        _a, _b, d = pair_tables
+        for pair in range(d.size):
+            channel -= (2.0 * float(pair_scale) * float(d[pair])) * (
+                float(spins[2 * pair]) * float(spins[2 * pair + 1])
+            )
     penalty = 0.0
     for product in products:
         penalty += 1.0 - float(product)
@@ -312,8 +381,13 @@ def decode_frame(llr: np.ndarray, h: np.ndarray, case: dict) -> list[int]:
     mode, combine, trajectories, dt, steps = _validate_case(case)
     sparse = _build_sparse(h)
     rates = np.asarray(llr, dtype=np.float64)
+    tables = (
+        build_pair_tables(rates, float(case["snr"]))
+        if any(int(traj.get("joint_pairs", 0)) for traj in trajectories)
+        else None
+    )
     results = [
-        _decode_trajectory_sparse(rates, sparse, traj, mode, dt, steps)
+        _decode_trajectory_sparse(rates, sparse, traj, mode, dt, steps, tables)
         for traj in trajectories
     ]
 
@@ -321,9 +395,11 @@ def decode_frame(llr: np.ndarray, h: np.ndarray, case: dict) -> list[int]:
         energies = [
             _energy(
                 hard,
-                rates,
+                _pair_channel_field(rates, tables)[0] if tables is not None and int(traj.get("joint_pairs", 0)) else rates,
                 sparse,
                 _finite(traj["energy_lambda"], f"trajectory {index} energy_lambda"),
+                tables if int(traj.get("joint_pairs", 0)) else None,
+                _finite(traj.get("pair_scale", 1.0), f"trajectory {index} pair_scale"),
             )
             for index, (hard, _x) in enumerate(results)
             for traj in (trajectories[index],)

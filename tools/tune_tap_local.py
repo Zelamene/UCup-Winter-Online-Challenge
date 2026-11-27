@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""Stage A': local TAP/bSB retune from the accepted v15 per-rate settings.
+"""Stage A': local TAP/bSB retune from the accepted v16 per-case settings.
 
-The search keeps the QAIA dynamics unchanged and only retunes the seven scalar
+The search keeps the QAIA dynamics unchanged and retunes the seven scalar
 trajectory fields ``tau``, ``xi``, ``lambd``, ``delta``, ``dt``, ``beta`` and
-``parity_scale``. It starts from the exact v15 case configuration, runs a
-coordinate pattern search on the seed-911 training frames, and validates each
-candidate frame-for-frame against the compiled v15 decoder on seeds 2024 and
-31337.
+``parity_scale``. With ``--joint`` it also searches ``pair_gamma`` while using
+the exact Gray-pair channel field. It starts from the v16 case configuration,
+runs a coordinate pattern search on the seed-911 training frames, and validates
+each candidate frame-for-frame against the compiled v16 decoder on seeds 2024
+and 31337.
 """
 
 from __future__ import annotations
@@ -25,6 +26,7 @@ sys.path.insert(0, str(TOOLS_DIR))
 
 from baseline_cache import DEFAULT_CACHE_DIR, load_baseline_errors  # noqa: E402
 from bsb_vectorized import BatchedBSB  # noqa: E402
+from qam_pairs import pair_tables as build_pair_tables  # noqa: E402
 from real_bench import RATE_SNR_DB, build_case  # noqa: E402
 from tune_bsb_stage_a import rate_tag  # noqa: E402
 
@@ -32,6 +34,7 @@ ROOT = TOOLS_DIR.parent
 SCORE_SCALE = 100_000.0
 STEPS = 50
 TAP_KEYS = ("tau", "xi", "lambd", "delta", "dt", "beta", "parity_scale")
+JOINT_TAP_KEYS = TAP_KEYS + ("pair_gamma",)
 TAP_BOUNDS: dict[str, tuple[float, float]] = {
     "tau": (1.0, 8.0),
     "xi": (0.2, 3.0),
@@ -40,9 +43,12 @@ TAP_BOUNDS: dict[str, tuple[float, float]] = {
     "dt": (0.12, 0.5),
     "beta": (0.05, 0.45),
     "parity_scale": (0.15, 1.2),
+    "pair_gamma": (0.02, 0.4),
 }
 DEFAULT_V15_MANIFEST = ROOT / "submissions" / "v15_tap_bsb_candidate" / "manifest.json"
+DEFAULT_V16_MANIFEST = ROOT / "submissions" / "v16_tap_case_tuning" / "manifest.json"
 DEFAULT_CACHE_DIR_V15 = ROOT / "artifacts" / "baseline_cache_v15"
+DEFAULT_CACHE_DIR_V16 = ROOT / "artifacts" / "baseline_cache_v16"
 NOISE_SCALE = 1.001120
 
 
@@ -129,10 +135,13 @@ def parse_bounds_override(values: list[str] | None) -> dict[str, tuple[float, fl
 
 
 def edge_params(
-    cfg: dict[str, float], bounds: dict[str, tuple[float, float]], tol: float = 1e-6
+    cfg: dict[str, float],
+    bounds: dict[str, tuple[float, float]],
+    keys: tuple[str, ...] = TAP_KEYS,
+    tol: float = 1e-6,
 ) -> list[str]:
     hits = []
-    for key in TAP_KEYS:
+    for key in keys:
         low, high = bounds[key]
         if abs(cfg[key] - low) <= tol or abs(cfg[key] - high) <= tol:
             hits.append(key)
@@ -161,7 +170,13 @@ def load_start_config(
     return {key: float(traj[key]) for key in TAP_KEYS}
 
 
-def evaluate(case: dict, sim: BatchedBSB, cfg: dict[str, float]) -> tuple[float, np.ndarray, int]:
+def evaluate(
+    case: dict,
+    sim: BatchedBSB,
+    cfg: dict[str, float],
+    pair_tables: tuple[np.ndarray, np.ndarray, np.ndarray] | None = None,
+) -> tuple[float, np.ndarray, int]:
+    joint = int(cfg.get("joint_pairs", 0))
     hard = sim.decode_batch(
         case["llr"],
         tau=cfg["tau"],
@@ -172,6 +187,10 @@ def evaluate(case: dict, sim: BatchedBSB, cfg: dict[str, float]) -> tuple[float,
         steps=STEPS,
         beta=cfg["beta"],
         parity_scale=cfg["parity_scale"],
+        joint_pairs=joint,
+        pair_gamma=cfg.get("pair_gamma", 0.0),
+        pair_scale=cfg.get("pair_scale", 1.0),
+        pair_tables=pair_tables,
     )
     errs = per_frame_errors(hard, case["answers"], case["k"])
     total = case["llr"].shape[0] * case["k"]
@@ -187,6 +206,8 @@ def coordinate_search(
     min_move_gain: float,
     max_cycles: int,
     workers: int = 6,
+    keys: tuple[str, ...] = TAP_KEYS,
+    pair_tables: tuple[np.ndarray, np.ndarray, np.ndarray] | None = None,
 ) -> tuple[dict[str, float], float, float, int, int]:
     """Pattern search with coarse (0.75, 1.33) and fine (0.9, 1.11) multipliers.
 
@@ -198,14 +219,14 @@ def coordinate_search(
 
     rng = np.random.default_rng(seed)
     best = dict(start)
-    best_score, _, _ = evaluate(case, sim, best)
+    best_score, _, _ = evaluate(case, sim, best, pair_tables)
     start_score = best_score
     evals = 1
     moves = 0
 
     for multipliers in ((0.75, 1.33), (0.9, 1.11)):
         for cycle in range(max_cycles):
-            order = list(TAP_KEYS)
+            order = list(keys)
             rng.shuffle(order)
             probes: list[tuple[str, dict[str, float]]] = []
             for key in order:
@@ -218,7 +239,8 @@ def coordinate_search(
 
             with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
                 futures = [
-                    executor.submit(evaluate, case, sim, cand) for _, cand in probes
+                    executor.submit(evaluate, case, sim, cand, pair_tables)
+                    for _, cand in probes
                 ]
                 scores = [future.result()[0] for future in futures]
             evals += len(probes)
@@ -265,18 +287,27 @@ def run(
     max_cycles: int,
     min_gain: float | None,
     workers: int = 6,
+    joint: bool = False,
 ) -> dict:
     k = int(round(n * rate))
     threshold = min_gain_for_rate(rate) if min_gain is None else float(min_gain)
+    keys = JOINT_TAP_KEYS if joint else TAP_KEYS
     bounds = widen_bounds(TAP_BOUNDS, bounds_scale)
+    if joint:
+        bounds["tau"] = (1.0, 10.0)
     if bounds_overrides:
         bounds.update(bounds_overrides)
         print("Widened bounds: " + " ".join(
             f"{key}=[{low:g}, {high:g}]" for key, (low, high) in sorted(bounds_overrides.items())
         ))
+    start_config = dict(start_config)
+    if joint:
+        start_config["joint_pairs"] = 1
+        start_config.setdefault("pair_scale", 1.0)
+        start_config.setdefault("pair_gamma", 0.10 if n <= 1296 else 0.14)
     print(f"Stage A': N={n} K={k} R={rate:.4f} SNR={snr:.1f} dB")
     print(f"Start: {start_source}")
-    print("  " + " ".join(f"{key}={start_config[key]:.5f}" for key in TAP_KEYS))
+    print("  " + " ".join(f"{key}={start_config[key]:.5f}" for key in keys))
 
     t0 = time.perf_counter()
     train_case = build_case(n, k, train_samples, snr, train_seed, noise_scale=NOISE_SCALE)
@@ -286,12 +317,17 @@ def run(
         for seed_value in val_seeds
     }
     sims = {seed_value: BatchedBSB(case["h"]) for seed_value, case in val_cases.items()}
+    tables_train = build_pair_tables(train_case["llr"], snr) if joint else None
+    tables_val = {
+        seed_value: build_pair_tables(case["llr"], snr) if joint else None
+        for seed_value, case in val_cases.items()
+    }
     print(f"cases built in {time.perf_counter() - t0:.1f} s", flush=True)
 
     t1 = time.perf_counter()
     best, best_score, start_score, evals, moves = coordinate_search(
         train_case, sim_train, start_config, bounds, seed,
-        min_move_gain, max_cycles, workers,
+        min_move_gain, max_cycles, workers, keys, tables_train,
     )
     elapsed = time.perf_counter() - t1
     print(
@@ -299,9 +335,9 @@ def run(
         f"{best_score:.1f} ({best_score - start_score:+.1f}), {moves} accepted moves",
         flush=True,
     )
-    print("  " + " ".join(f"{key}={best[key]:.5f}" for key in TAP_KEYS), flush=True)
+    print("  " + " ".join(f"{key}={best[key]:.5f}" for key in keys), flush=True)
 
-    edges = edge_params(best, bounds)
+    edges = edge_params(best, bounds, keys)
     needs_boundary_rerun = bool(edges)
     if edges:
         print(f"WARNING: best config is on a search bound for {', '.join(edges)}", flush=True)
@@ -313,7 +349,9 @@ def run(
             cache_dir, n, k, seed_value, expected_frames=val_samples
         )
         base_score = score_of(int(base_errs.sum()), val_samples * k)
-        cand_score, cand_errs, cand_errors = evaluate(case, sims[seed_value], best)
+        cand_score, cand_errs, cand_errors = evaluate(
+            case, sims[seed_value], best, tables_val[seed_value]
+        )
         low, high = paired_bootstrap(base_errs, cand_errs, k, 2000, rng)
         gain = cand_score - base_score
         per_seed[str(seed_value)] = {
@@ -345,6 +383,9 @@ def run(
         "rate": rate,
         "snr": snr,
         "noise_scale": NOISE_SCALE,
+        "joint_pairs": 1 if joint else 0,
+        "pair_scale": float(best.get("pair_scale", 1.0)),
+        "search_keys": list(keys),
         "train_samples": train_samples,
         "val_samples": val_samples,
         "train_seed": train_seed,
@@ -352,7 +393,7 @@ def run(
         "start_config": dict(start_config),
         "start_source": start_source,
         "best_config": best,
-        "baseline_source": "v15_binary_cache",
+        "baseline_source": "v16_binary_cache",
         "search_bounds": {key: list(value) for key, value in bounds.items()},
         "bounds_scale": float(bounds_scale),
         "bounds_overrides": {
@@ -392,14 +433,14 @@ def main() -> None:
     parser.add_argument("--n", type=int, required=True)
     parser.add_argument("--rate", type=float, default=0.5)
     parser.add_argument("--snr", type=float, default=None)
-    parser.add_argument("--start-manifest", type=Path, default=DEFAULT_V15_MANIFEST)
+    parser.add_argument("--start-manifest", type=Path, default=DEFAULT_V16_MANIFEST)
     parser.add_argument("--start-config", type=Path, default=None)
     parser.add_argument("--train-samples", type=int, default=300)
     parser.add_argument("--val-samples", type=int, default=500)
     parser.add_argument("--train-seed", type=int, default=911)
     parser.add_argument("--val-seeds", type=int, nargs="+", default=[2024, 31337])
     parser.add_argument("--seed", type=int, default=5150)
-    parser.add_argument("--cache-dir", type=Path, default=DEFAULT_CACHE_DIR_V15)
+    parser.add_argument("--cache-dir", type=Path, default=DEFAULT_CACHE_DIR_V16)
     parser.add_argument("--bounds-scale", type=float, default=1.0)
     parser.add_argument(
         "--bounds-override",
@@ -412,6 +453,11 @@ def main() -> None:
     parser.add_argument("--max-cycles", type=int, default=2)
     parser.add_argument("--workers", type=int, default=6)
     parser.add_argument("--min-gain", type=float, default=None)
+    parser.add_argument(
+        "--joint",
+        action="store_true",
+        help="enable exact Gray-pair coupling and search pair_gamma",
+    )
     parser.add_argument(
         "--out", type=Path, default=None,
         help="default is artifacts/tap_a_prime_N<N>_R<rate>.json",
@@ -455,6 +501,7 @@ def main() -> None:
         max_cycles=args.max_cycles,
         min_gain=args.min_gain,
         workers=args.workers,
+        joint=args.joint,
     )
     out = args.out or ROOT / "artifacts" / f"tap_a_prime_N{args.n}_R{rate_tag(args.rate)}.json"
     out.parent.mkdir(parents=True, exist_ok=True)

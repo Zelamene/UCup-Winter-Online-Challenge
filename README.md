@@ -17,15 +17,16 @@ Objective: increase the judge score beyond the current accepted best while keepi
 
 | Item | Value |
 |---|---:|
-| Best accepted | v15, `2,015,823` |
-| Last submitted | v15, `2,015,823` (`+167,981` vs v14) |
-| Local candidate | v16, not submitted: v15 + cases 7 and 10 |
-| Active decision | use v15 as the base for all future candidates |
+| Best accepted | v16, `2,023,997` |
+| Last submitted | v16, `2,023,997` (`+8,174` vs v15) |
+| Local candidate | v17, A4-passed joint Gray-pair tuning on v16; not submitted |
+| Active decision | use v16 as the base for all future candidates |
 | Public input dispatch | `N=1944, R=3/4, SNR≈10.3` (nearest configured `10.5`) |
 | Public BER, v8–v13c | `0.024784636` |
 | Public BER, v14 | `0.019216735` |
 | Public BER, v15 | `0.017493827` |
 | v15 per-case scores | `[129979,177394,185451,140530,179802,183299,137314,184164,184485,145794,182587,185024]` |
+| v16 per-case scores | `[129979,177394,185451,140530,179802,183299,140699,184164,184485,150583,182587,185024]` |
 | v15 judge runtime | `384–4279ms` per case — well under the 2-minute limit |
 
 The best accepted architecture is:
@@ -150,9 +151,9 @@ The case-10 schedule search was reproduced twice: `151,620.3 → 151,708.4`, a t
 
 The bench is reliable for decisions of several thousand points but not marginal ones. Fixed-rule v15 bench total is `1,996,724.5` versus the accepted judge total `2,015,823`, a `+19,099` judge bias. The linear fit has slope `0.947`, intercept `10,410.4`, RMSE `2,112.7`, MAE `1,535.3`, and max residual `4,674.0` points per case (`artifacts/phase13/bench_vs_judge_v15.json`). Offset mean is `+1,591.5` and ratio range is `0.9931–1.0609`. This supports the case-10 decision but does not make the 21.5-point case-7 miss credible.
 
-### Local v16 candidate
+### Accepted v16 candidate
 
-`submissions/v16_tap_case_tuning/` is a local candidate, not a submission. It is v15 plus flat Stage A′ cases 7 and 10. Cases `1–6, 8, 9, 11, 12` are byte-identical to v15.
+`submissions/v16_tap_case_tuning/` is the accepted v16 archive. It is v15 plus flat Stage A′ cases 7 and 10. Cases `1–6, 8, 9, 11, 12` are byte-identical to v15. The judge returned `2,023,997` (`+8,174` over v15).
 
 | Check | Result |
 |---|---|
@@ -163,7 +164,7 @@ The bench is reliable for decisions of several thousand points but not marginal 
 | Public case 9 | BER `0.017493827`; output byte-identical to v15 |
 | Public output SHA-256 | `1BBF2BBAA56E6AD871BB6FFE7F0AC4D501C31F3CE7A684195CAFD8F1AAA8723A`, same as v15 |
 | Fresh seed `6060` | Passed both changed cases |
-| Status | `local_candidate_not_submitted` |
+| Status | accepted by judge at `2,023,997` |
 
 ### Finding index
 
@@ -177,10 +178,10 @@ The bench is reliable for decisions of several thousand points but not marginal 
 ### Current stop position
 
 - Phase 12 is complete. The only v16 changes are cases 7 and 10, both flat Stage A′.
-- This remains far below the Phase 12 target of roughly `2.03–2.05M`; all eight high-rate cases and the other three `R=1/2` cases remain byte-identical to v15.
+- The judge score `2,023,997` is at the low edge of the `2.03–2.05M` target; all eight high-rate cases and the other three `R=1/2` cases remain byte-identical to v15.
 - R=3/4 is skipped because no changed case has cleared a gate in passing.
-- Nothing has been committed, pushed, or submitted for this cleanup.
-- Do not submit until explicit authorization is given.
+- Phase 12 cleanup was committed and pushed as `e6ac605`.
+- Do not submit any later candidate until explicit authorization is given.
 
 ## Phase 13 — offline ceiling analysis
 
@@ -189,6 +190,14 @@ Phase 13 is offline analysis only. BP, OSD, list-MAP, and other non-QAIA decoder
 Fixed rules are `real_bench.build_case(..., noise_scale=1.00112)`, seeds `2024`, `31337`, `6060`, 500 frames per case per seed, and paired frame bootstrap 95% CIs. `artifacts/phase13/cache_self_test.json` compared the v15 cache with itself and reported exactly zero delta and zero-width CI on every case. `artifacts/phase13/cache_smoke_manifest.json` confirmed `cache_binary.py` on seed `6060` with the v15 reference binary hash prefix `125a7211740a271b`.
 
 Step 0 recorded `2,517,863` as the live top UCup scoreboard total by `haminh109` on 2026-11-26 (`artifacts/phase13/step0_target_identity.json`). It is a real hidden-judge score, not a local ceiling: rank 1, second place `2,516,559`, gap `304`, contest live until 2026-12-08. The gap over accepted v15 is `+502,040`. The official formula is `-Σ 10·lg(BER_a)` over 12 hidden datasets, scaled by `10,000` by the judge. No source or algorithm is public, so this is not evidence that `2,517,863` is reachable by a QAIA-compliant decoder. The earlier offline full-BP estimate is about `2.27M`, still below the live target.
+
+## Phase 14 — joint Gray-pair coupling
+
+Phase 14 builds a local v17 candidate on accepted v16. The decoder remains QAIA-only: `tools/qam_pairs.py` recovers the exact transmitted 16-QAM amplitude from each pair of Gray bit LLRs and forms a channel table `log p(y|b0,b1)=const+a·s0+b·s1+d·s0·s1`. When `joint_pairs=1`, the bit field adds the mean-field reaction `2·pair_scale·d·x_other` and the TAP/Onsager correction `-pair_gamma·(2d)²·(1−x_other²)·x_self`. This is the negative gradient of a polynomial that is constant on `±1` spins; it stores no per-edge messages and does not change the Ising solution. The energy combine uses the same exact pair interaction. The exporter precomputes the `y`-linear part of the component log-likelihoods and uses a cubic-interpolated softplus only inside the 64-step bisection; the final pair consistency check still uses the exact stable log-sum-exp, and the Python reference remains exact. Defaults (`joint_pairs=0`, `pair_gamma=0`, `pair_scale=1`) leave cases bit-identical to v16.
+
+A0 changed the bench LLR convention to nominal σ by default: noise still uses `σ·noise_scale`, but generated LLRs now match the judge's public file. The v16 baseline cache was rebuilt for all 12 cases on seeds `911`, `2024`, `31337`, `6060` (48 files). `tools/phase14_bench_shift.py` passed the `±1,000`-point regression on all 36 case/seed pairs; the worst shift was `+568.3` on case 6, seed `6060`.
+
+A3 joint tuning passed on cases 4 (`N=1296`, `+2,508 / +4,973`), 7 (`N=1944`, `+4,913 / +7,677`) and 10 (`N=3888`, `+9,493 / +7,099`) across validation seeds `2024 / 31337`, all with positive paired-bootstrap CIs and no parameter on a bound. Case 1 failed twice and remains v16-identical. Case 10's first two-cycle search timed out before writing an artifact; the one-cycle search cleared the gate. The partial v17 first hit a marginal runtime failure on case 4 (`3.05×` v16). The exporter now precomputes the `y`-linear component log-likelihoods and uses a cubic-interpolated softplus inside bisection, which reduced the worst runtime ratio to `1.48×` while preserving bit identity and the exact final consistency check. The full v17 candidate is in `submissions/v17_joint_pairs/`. Its complete A4 gate (`artifacts/phase14/final_gate.json`) reports `all_passed=true`: strict C++17 compile, validator, offline isolation, public case-9 SHA-256 `1BBF2BBA…8723A`, Python/batched/C++ bit identity, swapped-pair consistency guard, fresh seed `6060` (`+4,299 / +5,481 / +8,573` on cases 4/7/10, all other cases byte-identical), and the runtime guard. Total fresh-seed gain is `+18,353`, roughly `+17,380` after the Phase 13 judge-slope calibration. Nothing in Phase 14 has been committed, pushed, or submitted. The user chose to hold submission and continue Track B/C research.
 
 ## Submission history
 
@@ -210,7 +219,8 @@ Step 0 recorded `2,517,863` as the live top UCup scoreboard total by `haminh109`
 | v13c | `1,700,646` | `+93,434` vs v12 | accepted new best: scheduled bSB for all four `R=1/2` cases |
 | v14 | `1,847,842` | `+147,196` vs v13c | accepted new best: all eight high-rate cases moved from dSB portfolios to tuned bSB |
 | v15 | `2,015,823` | `+167,981` vs v14 | accepted new best: Onsager/TAP correction added to bSB on all 12 cases |
-| v16 | not submitted | — | local candidate: v15 + flat Stage A′ cases 7 and 10 |
+| v16 | `2,023,997` | `+8,174` vs v15 | accepted new best: v15 + flat Stage A′ cases 7 and 10 |
+| v17 | not submitted | — | A4-passed local candidate: joint Gray-pair coupling on cases 4, 7, 10 |
 
 Rate-level totals show where all durable progress came from:
 

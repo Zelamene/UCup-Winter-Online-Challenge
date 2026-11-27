@@ -96,6 +96,18 @@ def validate_case(case: dict, label: str) -> tuple[dict, list[str]]:
                     errors.append(f"{label}: trajectory {index} dt has non-positive values")
             elif not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
                 errors.append(f"{label}: trajectory {index} invalid dt={value!r}")
+        if "joint_pairs" in traj and traj["joint_pairs"] not in (0, 1):
+            errors.append(f"{label}: trajectory {index} joint_pairs must be 0 or 1")
+        if int(traj.get("joint_pairs", 0)):
+            if case.get("mode") != "bsb":
+                errors.append(f"{label}: trajectory {index} joint_pairs requires bsb mode")
+            if int(case.get("n", 0)) % 4 != 0:
+                errors.append(f"{label}: trajectory {index} joint_pairs requires n divisible by 4")
+        for pair_key in ("pair_gamma", "pair_scale"):
+            if pair_key in traj:
+                value = traj[pair_key]
+                if not isinstance(value, (int, float)) or not math.isfinite(value):
+                    errors.append(f"{label}: trajectory {index} invalid {pair_key}={value!r}")
         energy_lambda = traj.get("energy_lambda")
         if case.get("combine") == "energy":
             if not isinstance(energy_lambda, (int, float)) or energy_lambda < 0:

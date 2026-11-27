@@ -33,6 +33,7 @@ def build_case(
     seed: int,
     irregular: float = 0.0,
     noise_scale: float = 1.0,
+    llr_sigma: str | float = "nominal",
 ) -> dict:
     """Return one complete judge-format case with ground-truth answers."""
     n, k, b = int(n), int(k), int(b)
@@ -49,7 +50,9 @@ def build_case(
     info = rng.integers(0, 2, size=(b, k), dtype=np.int8)
     parity = (info.astype(np.int16) @ a.T.astype(np.int16) % 2).astype(np.int8)
     answers = np.concatenate((info, parity), axis=1)
-    llr = generate_llrs(answers, snr_db, rng, noise_scale=noise_scale)
+    llr = generate_llrs(
+        answers, snr_db, rng, noise_scale=noise_scale, llr_sigma=llr_sigma
+    )
 
     case = {
         "n": n,
@@ -62,6 +65,7 @@ def build_case(
         "answers": answers,
         "rate": rate,
         "seed": int(seed),
+        "llr_sigma": llr_sigma,
     }
 
     g_product = (g.astype(np.int16) @ h.T.astype(np.int16)) % 2
@@ -129,6 +133,10 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=99)
     parser.add_argument("--irregular", type=float, default=0.0)
     parser.add_argument("--noise-scale", type=float, default=1.0)
+    parser.add_argument(
+        "--llr-sigma", default="nominal",
+        help="'nominal' (default), 'noise_scale', or an explicit positive sigma",
+    )
     parser.add_argument("--input-out", type=Path, default=None)
     parser.add_argument("--answers-out", type=Path, default=None)
     parser.add_argument("--stats-out", type=Path, default=None)
@@ -153,6 +161,7 @@ def main() -> None:
                     args.seed + index,
                     irregular=args.irregular,
                     noise_scale=args.noise_scale,
+                    llr_sigma=args.llr_sigma,
                 )
                 entry = case_stats(case)
                 entry["case_index"] = index
@@ -174,6 +183,7 @@ def main() -> None:
         args.seed,
         irregular=args.irregular,
         noise_scale=args.noise_scale,
+        llr_sigma=args.llr_sigma,
     )
     if args.input_out is not None:
         write_input(case, args.input_out)

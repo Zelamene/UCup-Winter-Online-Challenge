@@ -3,8 +3,12 @@
 
 The signal constellation uses amplitude levels [-3, -1, +1, +3] / sqrt(10) for
 each quadrature, so Es = 1.  Bit pairs map as 00 -> -3, 01 -> -1, 11 -> +1,
-10 -> +3.  Complex AWGN has variance sigma^2 per real dimension with
+10 -> +3.  Complex AWGN has variance sigma^2 per real dimension with noise
 sigma = noise_scale / sqrt(2 * 10**(snr_db/10)).
+
+By default the LLRs are computed with the *nominal* sigma, which matches the
+judge's public file.  Pass ``llr_sigma="noise_scale"`` to restore the old
+behaviour where the LLRs used the same sigma as the noise.
 
 Positive LLRs favour bit 0; hard decisions are ``llr < 0``.
 """
@@ -40,14 +44,46 @@ def _component_llrs(received: np.ndarray, sigma: float) -> np.ndarray:
     return result
 
 
-def _llrs_with_noise(bits4: np.ndarray, sigma: float, noise: np.ndarray) -> np.ndarray:
-    """LLRs from an explicit complex standard-normal noise vector."""
+def nominal_sigma(snr_db: float) -> float:
+    """Return the real-dimension AWGN sigma implied by the stated SNR."""
+    return 1.0 / math.sqrt(2.0 * 10.0 ** (float(snr_db) / 10.0))
+
+
+def _resolve_llr_sigma(llr_sigma: str | float, snr_db: float, noise_sigma: float) -> float:
+    """Resolve the sigma used for LLR computation."""
+    if isinstance(llr_sigma, str):
+        key = llr_sigma.lower()
+        if key == "nominal":
+            return nominal_sigma(snr_db)
+        if key in ("noise_scale", "noise-scale", "same"):
+            return noise_sigma
+        raise ValueError(f"unknown llr_sigma {llr_sigma!r}; expected 'nominal' or 'noise_scale'")
+    value = float(llr_sigma)
+    if not math.isfinite(value) or value <= 0.0:
+        raise ValueError(f"llr_sigma must be positive and finite, got {llr_sigma!r}")
+    return value
+
+
+def _llrs_with_noise(
+    bits4: np.ndarray,
+    noise_sigma: float,
+    noise: np.ndarray,
+    llr_sigma: float | None = None,
+) -> np.ndarray:
+    """LLRs from an explicit complex standard-normal noise vector.
+
+    ``noise_sigma`` generates the received amplitudes; ``llr_sigma`` computes the
+    exact LLRs. When they differ, the channel keeps the calibrated raw BER while
+    the reported LLRs match the judge's nominal SNR.
+    """
+    if llr_sigma is None:
+        llr_sigma = noise_sigma
     i_index = _symbol_index(bits4[:, 0], bits4[:, 1])
     q_index = _symbol_index(bits4[:, 2], bits4[:, 3])
-    received = LEVELS[i_index] + 1j * LEVELS[q_index] + sigma * noise
+    received = LEVELS[i_index] + 1j * LEVELS[q_index] + noise_sigma * noise
 
-    i_llr = _component_llrs(received.real, sigma)
-    q_llr = _component_llrs(received.imag, sigma)
+    i_llr = _component_llrs(received.real, llr_sigma)
+    q_llr = _component_llrs(received.imag, llr_sigma)
 
     result = np.empty(bits4.shape, dtype=np.float64)
     result[:, 0] = i_llr[:, 0]
@@ -63,11 +99,14 @@ def generate_llrs(
     snr_db: float,
     rng: np.random.Generator,
     noise_scale: float = 1.0,
+    llr_sigma: str | float = "nominal",
 ) -> np.ndarray:
     """Return exact AWGN LLRs with the same shape as ``bits``.
 
     The last axis of ``bits`` must be divisible by four; consecutive groups of
     four bits are mapped to one Gray 16-QAM symbol (I MSB, I LSB, Q MSB, Q LSB).
+    ``llr_sigma="nominal"`` matches the judge's public file; pass
+    ``"noise_scale"`` to restore the Phase 12 behaviour.
     """
     bits_array = np.asarray(bits)
     if bits_array.ndim < 1 or bits_array.shape[-1] % 4 != 0:
@@ -78,11 +117,12 @@ def generate_llrs(
     scale = float(noise_scale)
     if not math.isfinite(scale) or scale <= 0:
         raise ValueError(f"noise_scale must be positive and finite, got {noise_scale}")
-    sigma = scale / math.sqrt(2.0 * 10.0 ** (float(snr_db) / 10.0))
+    noise_sigma = scale * nominal_sigma(snr_db)
+    llr_value = _resolve_llr_sigma(llr_sigma, snr_db, noise_sigma)
 
     flat = bits_array.reshape(-1, 4).astype(np.int8, copy=False)
     noise = rng.standard_normal(flat.shape[0]) + 1j * rng.standard_normal(flat.shape[0])
-    result = _llrs_with_noise(flat, sigma, noise).reshape(bits_array.shape)
+    result = _llrs_with_noise(flat, noise_sigma, noise, llr_value).reshape(bits_array.shape)
 
     assert result.shape == bits_array.shape
     assert result.dtype == np.float64

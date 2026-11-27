@@ -1,0 +1,129 @@
+{
+  "all_passed": true,
+  "changed_cases": [
+    4,
+    7,
+    10
+  ],
+  "manifest": "C:\\Users\\shazi\\.local\\share\\opencode\\worktree\\bd12e4\\phase12-tap-tuning\\submissions\\v17_joint_pairs\\manifest.json",
+  "source": "C:\\Users\\shazi\\.local\\share\\opencode\\worktree\\bd12e4\\phase12-tap-tuning\\submissions\\v17_joint_pairs\\submission.cpp",
+  "steps": [
+    {
+      "name": "strict C++17 compile",
+      "ok": true,
+      "returncode": 0,
+      "seconds": 1.983,
+      "tail": []
+    },
+    {
+      "name": "A0 bench sigma shift",
+      "ok": true,
+      "tail": [
+        "{\n  \"all_raw_ber_identical\": false,\n  \"all_within_1k\": true,\n  \"worst_abs_shift\": 568.3100040790159,\n  \"worst_case\": {\n    \"case_index\": 6,\n    \"seed\": 6060,\n    \"shift\": 568.3100040790159\n  }\n}"
+      ]
+    },
+    {
+      "name": "A0 v16 cache inventory",
+      "ok": true,
+      "tail": [
+        "48 cache files in C:\\Users\\shazi\\.local\\share\\opencode\\worktree\\bd12e4\\phase12-tap-tuning\\artifacts\\baseline_cache_v16; expected 48"
+      ]
+    },
+    {
+      "name": "unit tests",
+      "ok": true,
+      "returncode": 0,
+      "seconds": 9.212,
+      "tail": [
+        "......",
+        "----------------------------------------------------------------------",
+        "Ran 6 tests in 8.846s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "name": "offline isolation",
+      "ok": true,
+      "returncode": 0,
+      "seconds": 0.261,
+      "tail": [
+        "checked 5 Phase 13 tools and 4 submission-path files",
+        "required header: # OFFLINE ANALYSIS ONLY \u2014 never imported by the exporter",
+        "PASS: offline analysis tools are isolated from exporters",
+        "NOTE: --strict currently adds no extra checks"
+      ]
+    },
+    {
+      "name": "manifest validator",
+      "ok": true,
+      "returncode": 0,
+      "seconds": 0.179,
+      "tail": [
+        "{\n  \"source_under_512k\": true,\n  \"at_most_twelve_cases\": true,\n  \"at_most_six_trajectories\": true,\n  \"fifty_steps\": true,\n  \"valid_modes\": true,\n  \"valid_combines\": true,\n  \"no_forbidden_tokens\": true,\n  \"no_offline_ceiling_symbols\": true\n}"
+      ]
+    },
+    {
+      "name": "public case byte identity",
+      "ok": true,
+      "tail": [
+        "hash=1bbf2bbaa56e6ad871bb6ffe7f0ac4d501c31f3ce7a684195cafd8f1aaa8723a",
+        "expected=1BBF2BBAA56E6AD871BB6FFE7F0AC4D501C31F3CE7A684195CAFD8F1AAA8723A",
+        "seconds=8.011"
+      ]
+    },
+    {
+      "name": "three-way bit identity",
+      "ok": true,
+      "returncode": 0,
+      "seconds": 70.44,
+      "tail": [
+        "{\n  \"all_passed\": true,\n  \"binary\": \"C:\\\\Users\\\\shazi\\\\.local\\\\share\\\\opencode\\\\worktree\\\\bd12e4\\\\phase12-tap-tuning\\\\artifacts\\\\phase14\\\\v17_final.exe\",\n  \"manifest\": \"C:\\\\Users\\\\shazi\\\\.local\\\\share\\\\opencode\\\\worktree\\\\bd12e4\\\\phase12-tap-tuning\\\\submissions\\\\v17_joint_pairs\\\\manifest.json\",\n  \"noise_scale\": 1.00112,\n  \"results\": [\n    {\n      \"all_equal\": true,\n      \"batched_equals_cpp\": true,\n      \"case_index\": 4,\n      \"frames\": 3,\n      \"joint_pairs\": 1,\n      \"k\": 648,\n      \"n\": 1296,\n      \"python_equals_batched\": true,\n      \"snr\": 6.0\n    },\n    {\n      \"all_equal\": true,\n      \"batched_equals_cpp\": true,\n      \"case_index\": 7,\n      \"frames\": 3,\n      \"joint_pairs\": 1,\n      \"k\": 972,\n      \"n\": 1944,\n      \"python_equals_batched\": true,\n      \"snr\": 6.0\n    },\n    {\n      \"all_equal\": true,\n      \"batched_equals_cpp\": true,\n      \"case_index\": 10,\n      \"frames\": 3,\n      \"joint_pairs\": 1,\n      \"k\": 1944,\n      \"n\": 3888,\n      \"python_equals_batched\": true,\n      \"snr\": 6.0\n    }\n  ],\n  \"seed\": 4242\n}"
+      ]
+    },
+    {
+      "name": "export guard manifest",
+      "ok": true,
+      "returncode": 0,
+      "seconds": 0.126,
+      "tail": [
+        "Wrote C:\\Users\\shazi\\.local\\share\\opencode\\worktree\\bd12e4\\phase12-tap-tuning\\artifacts\\phase14\\guard_joint.cpp (25666 bytes)"
+      ]
+    },
+    {
+      "name": "strict compile guard binary",
+      "ok": true,
+      "returncode": 0,
+      "seconds": 1.935,
+      "tail": []
+    },
+    {
+      "name": "consistency guard",
+      "ok": true,
+      "returncode": 0,
+      "seconds": 36.203,
+      "tail": [
+        "{\n  \"fallback_matches_reference_on_swapped\": true,\n  \"joint_active_on_original\": true,\n  \"joint_output_swap_diff_lines\": 500,\n  \"original_diff_lines\": 346,\n  \"reference_output_swap_diff_lines\": 500,\n  \"swapped_diff_lines\": 0\n}"
+      ]
+    },
+    {
+      "name": "fresh seed 6060",
+      "ok": true,
+      "returncode": 0,
+      "seconds": 353.579,
+      "tail": [
+        "{\n  \"all_passed\": true,\n  \"cases\": [\n    {\n      \"baseline_errors\": 5605,\n      \"baseline_score\": 123909.06479952826,\n      \"byte_identical\": true,\n      \"candidate_errors\": 5605,\n      \"candidate_score\": 123909.06479952826,\n      \"case_index\": 1,\n      \"changed\": false,\n      \"gain\": 0.0,\n      \"gain_ci_95\": null,\n      \"gate_passed\": true,\n      \"k\": 324,\n      \"n\": 648,\n      \"rate\": 0.5,\n      \"snr\": 6.0\n    },\n    {\n      \"baseline_errors\": 2353,\n      \"baseline_score\": 174098.30743585533,\n      \"byte_identical\": true,\n      \"candidate_errors\": 2353,\n      \"candidate_score\": 174098.30743585533,\n      \"case_index\": 2,\n      \"changed\": false,\n      \"gain\": 0.0,\n      \"gain_ci_95\": null,\n      \"gate_passed\": true,\n      \"k\": 432,\n      \"n\": 648,\n      \"rate\": 0.6666666666666666,\n      \"snr\": 9.0\n    },\n    {\n      \"baseline_errors\": 2208,\n      \"baseline_score\": 181975.84549247945,\n      \"byte_identical\": true,\n      \"candidate_errors\": 2208,\n      \"candidate_score\": 181975.84549247945,\n      \"case_index\": 3,\n      \"changed\": false,\n      \"gain\": 0.0,\n      \"gain_ci_95\": null,\n      \"gate_passed\": true,\n      \"k\": 486,\n      \"n\": 648,\n      \"rate\": 0.75,\n      \"snr\": 10.5\n    },\n    {\n      \"baseline_errors\": 9762,\n      \"baseline_score\": 129915.74572697534,\n      \"byte_identical\": false,\n      \"candidate_errors\": 8842,\n      \"candidate_score\": 134214.57500204007,\n      \"case_index\": 4,\n      \"changed\": true,\n      \"gain\": 4298.829275064738,\n      \"gain_ci_95\": [\n        2226.884041605791,\n        6376.631296044711\n      ],\n      \"gate_passed\": true,\n      \"k\": 648,\n      \"n\": 1296,\n      \"rate\": 0.5,\n      \"snr\": 6.0\n    },\n    {\n      \"baseline_errors\": 4221,\n      \"baseline_score\": 178821.96450441476,\n      \"byte_identical\": true,\n      \"candidate_errors\": 4221,\n      \"candidate_score\": 178821.96450441476,\n      \"case_index\": 5,\n      \"changed\": false,\n      \"gain\": 0.0,\n      \"gain_ci_95\": null,\n      \"gate_passed\": true,\n      \"k\": 864,\n      \"n\": 1296,\n      \"rate\": 0.6666666666666666,\n      \"snr\": 9.0\n    },\n    {\n      \"baseline_errors\": 4261,\n      \"baseline_score\": 183527.59854454838,\n      \"byte_identical\": true,\n      \"candidate_errors\": 4261,\n      \"candidate_score\": 183527.59854454838,\n      \"case_index\": 6,\n      \"changed\": false,\n      \"gain\": 0.0,\n      \"gain_ci_95\": null,\n      \"gate_passed\": true,\n      \"k\": 972,\n      \"n\": 1296,\n      \"rate\": 0.75,\n      \"snr\": 10.5\n    },\n    {\n      \"baseline_errors\": 11284,\n      \"baseline_score\": 141232.44421626083,\n      \"byte_identical\": false,\n      \"candidate_errors\": 9946,\n      \"candidate_score\": 146713.90647497308,\n      \"case_index\": 7,\n      \"changed\": true,\n      \"gain\": 5481.462258712243,\n      \"gain_ci_95\": [\n        2440.6624899697904,\n        8739.257320307288\n      ],\n      \"gate_passed\": true,\n      \"k\": 972,\n      \"n\": 1944,\n      \"rate\": 0.5,\n      \"snr\": 6.0\n    },\n    {\n      \"baseline_errors\": 6005,\n      \"baseline_score\": 181121.32445153123,\n      \"byte_identical\": true,\n      \"candidate_errors\": 6005,\n      \"candidate_score\": 181121.32445153123,\n      \"case_index\": 8,\n      \"changed\": false,\n      \"gain\": 0.0,\n      \"gain_ci_95\": null,\n      \"gate_passed\": true,\n      \"k\": 1296,\n      \"n\": 1944,\n      \"rate\": 0.6666666666666666,\n      \"snr\": 9.0\n    },\n    {\n      \"baseline_errors\": 6364,\n      \"baseline_score\": 183714.86077270744,\n      \"byte_identical\": true,\n      \"candidate_errors\": 6364,\n      \"candidate_score\": 183714.86077270744,\n      \"case_index\": 9,\n      \"changed\": false,\n      \"gain\": 0.0,\n      \"gain_ci_95\": null,\n      \"gate_passed\": true,\n      \"k\": 1458,\n      \"n\": 1944,\n      \"rate\": 0.75,\n      \"snr\": 10.5\n    },\n    {\n      \"baseline_errors\": 20728,\n      \"baseline_score\": 144926.01153321497,\n      \"byte_identical\": false,\n      \"candidate_errors\": 17015,\n      \"candidate_score\": 153498.556187809,\n      \"case_index\": 10,\n      \"changed\": true,\n      \"gain\": 8572.544654594036,\n      \"gain_ci_95\": [\n        5753.2657716115555,\n        11504.802757503527\n      ],\n      \"gate_passed\": true,\n      \"k\": 1944,\n      \"n\": 3888,\n      \"rate\": 0.5,\n      \"snr\": 6.0\n    },\n    {\n      \"baseline_errors\": 11944,\n      \"baseline_score\": 181360.6457201249,\n      \"byte_identical\": true,\n      \"candidate_errors\": 11944,\n      \"candidate_score\": 181360.6457201249,\n      \"case_index\": 11,\n      \"changed\": false,\n      \"gain\": 0.0,\n      \"gain_ci_95\": null,\n      \"gate_passed\": true,\n      \"k\": 2592,\n      \"n\": 3888,\n      \"rate\": 0.6666666666666666,\n      \"snr\": 9.0\n    },\n    {\n      \"baseline_errors\": 12425,\n      \"baseline_score\": 184761.23769602296,\n      \"byte_identical\": true,\n      \"candidate_errors\": 12425,\n      \"candidate_score\": 184761.23769602296,\n      \"case_index\": 12,\n      \"changed\": false,\n      \"gain\": 0.0,\n      \"gain_ci_95\": null,\n      \"gate_passed\": true,\n      \"k\": 2916,\n      \"n\": 3888,\n      \"rate\": 0.75,\n      \"snr\": 10.5\n    }\n  ],\n  \"changed_cases\": [\n    4,\n    7,\n    10\n  ],\n  \"min_changed_gain\": 1500.0,\n  \"noise_scale\": 1.00112,\n  \"samples\": 300,\n  \"seed\": 6060,\n  \"v16_binary\": \"C:\\\\Users\\\\shazi\\\\.local\\\\share\\\\opencode\\\\worktree\\\\bd12e4\\\\phase12-tap-tuning\\\\artifacts\\\\build\\\\v16_ref.exe\",\n  \"v16_sha256\": \"e6834fe800eed0a605f756c9676a3417d56e0235ec4edb2acf8cb3817b977f8b\",\n  \"v17_binary\": \"C:\\\\Users\\\\shazi\\\\.local\\\\share\\\\opencode\\\\worktree\\\\bd12e4\\\\phase12-tap-tuning\\\\artifacts\\\\phase14\\\\v17_final.exe\",\n  \"v17_sha256\": \"ac4ceda82ab10e6910c7d47462552ccfeb6788ff41fd112116a1e752804e05a3\",\n  \"wall_seconds\": 353.259\n}"
+      ]
+    },
+    {
+      "name": "runtime guard",
+      "ok": true,
+      "returncode": 0,
+      "seconds": 455.246,
+      "tail": [
+        "{\n  \"all_passed\": true,\n  \"cases\": [\n    {\n      \"case_index\": 1,\n      \"k\": 324,\n      \"n\": 648,\n      \"pass\": true,\n      \"rate\": 0.5,\n      \"ratio\": 0.984,\n      \"snr\": 6.0,\n      \"v16_seconds\": 1.885,\n      \"v17_seconds\": 1.856\n    },\n    {\n      \"case_index\": 2,\n      \"k\": 432,\n      \"n\": 648,\n      \"pass\": true,\n      \"rate\": 0.6666666666666666,\n      \"ratio\": 1.043,\n      \"snr\": 9.0,\n      \"v16_seconds\": 1.637,\n      \"v17_seconds\": 1.708\n    },\n    {\n      \"case_index\": 3,\n      \"k\": 486,\n      \"n\": 648,\n      \"pass\": true,\n      \"rate\": 0.75,\n      \"ratio\": 0.991,\n      \"snr\": 10.5,\n      \"v16_seconds\": 1.646,\n      \"v17_seconds\": 1.631\n    },\n    {\n      \"case_index\": 4,\n      \"k\": 648,\n      \"n\": 1296,\n      \"pass\": true,\n      \"rate\": 0.5,\n      \"ratio\": 1.48,\n      \"snr\": 6.0,\n      \"v16_seconds\": 4.665,\n      \"v17_seconds\": 6.905\n    },\n    {\n      \"case_index\": 5,\n      \"k\": 864,\n      \"n\": 1296,\n      \"pass\": true,\n      \"rate\": 0.6666666666666666,\n      \"ratio\": 0.892,\n      \"snr\": 9.0,\n      \"v16_seconds\": 4.142,\n      \"v17_seconds\": 3.696\n    },\n    {\n      \"case_index\": 6,\n      \"k\": 972,\n      \"n\": 1296,\n      \"pass\": true,\n      \"rate\": 0.75,\n      \"ratio\": 1.013,\n      \"snr\": 10.5,\n      \"v16_seconds\": 3.524,\n      \"v17_seconds\": 3.572\n    },\n    {\n      \"case_index\": 7,\n      \"k\": 972,\n      \"n\": 1944,\n      \"pass\": true,\n      \"rate\": 0.5,\n      \"ratio\": 1.365,\n      \"snr\": 6.0,\n      \"v16_seconds\": 8.994,\n      \"v17_seconds\": 12.275\n    },\n    {\n      \"case_index\": 8,\n      \"k\": 1296,\n      \"n\": 1944,\n      \"pass\": true,\n      \"rate\": 0.6666666666666666,\n      \"ratio\": 1.032,\n      \"snr\": 9.0,\n      \"v16_seconds\": 7.983,\n      \"v17_seconds\": 8.234\n    },\n    {\n      \"case_index\": 9,\n      \"k\": 1458,\n      \"n\": 1944,\n      \"pass\": true,\n      \"rate\": 0.75,\n      \"ratio\": 1.141,\n      \"snr\": 10.5,\n      \"v16_seconds\": 7.385,\n      \"v17_seconds\": 8.428\n    },\n    {\n      \"case_index\": 10,\n      \"k\": 1944,\n      \"n\": 3888,\n      \"pass\": true,\n      \"rate\": 0.5,\n      \"ratio\": 1.286,\n      \"snr\": 6.0,\n      \"v16_seconds\": 22.288,\n      \"v17_seconds\": 28.674\n    },\n    {\n      \"case_index\": 11,\n      \"k\": 2592,\n      \"n\": 3888,\n      \"pass\": true,\n      \"rate\": 0.6666666666666666,\n      \"ratio\": 1.059,\n      \"snr\": 9.0,\n      \"v16_seconds\": 20.658,\n      \"v17_seconds\": 21.878\n    },\n    {\n      \"case_index\": 12,\n      \"k\": 2916,\n      \"n\": 3888,\n      \"pass\": true,\n      \"rate\": 0.75,\n      \"ratio\": 1.005,\n      \"snr\": 10.5,\n      \"v16_seconds\": 19.888,\n      \"v17_seconds\": 19.989\n    }\n  ],\n  \"max_ratio\": 3.0,\n  \"samples\": 500,\n  \"seed\": 2024,\n  \"wall_seconds\": 454.936,\n  \"worst\": {\n    \"case_index\": 4,\n    \"k\": 648,\n    \"n\": 1296,\n    \"pass\": true,\n    \"rate\": 0.5,\n    \"ratio\": 1.48,\n    \"snr\": 6.0,\n    \"v16_seconds\": 4.665,\n    \"v17_seconds\": 6.905\n  }\n}"
+      ]
+    }
+  ],
+  "wall_seconds": 937.238
+}

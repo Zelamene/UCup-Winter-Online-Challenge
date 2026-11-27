@@ -1,0 +1,16 @@
+{
+  "array": "N3888_K2592_seed31337.npy",
+  "binary": "artifacts\\build\\v16_ref.exe",
+  "binary_sha256": "e6834fe800eed0a605f756c9676a3417d56e0235ec4edb2acf8cb3817b977f8b",
+  "k": 2592,
+  "llr_sigma": "nominal",
+  "n": 3888,
+  "noise_scale": 1.00112,
+  "samples": 500,
+  "score": 180828.6847044518,
+  "seconds": 27.309,
+  "seed": 31337,
+  "snr": 9.0,
+  "total_info_errors": 20152,
+  "total_wall_seconds": 36.478
+}
