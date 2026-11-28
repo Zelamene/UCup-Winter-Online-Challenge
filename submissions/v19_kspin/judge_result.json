@@ -1,0 +1,36 @@
+{
+  "version": "v19",
+  "submission_label": "v19",
+  "status": "Accepted",
+  "score": 2081900,
+  "delta_vs_v18b": 30000,
+  "base": "v18b",
+  "changed_cases": [1, 4, 7, 10],
+  "per_case": [
+    {"case": 1, "status": "Accepted", "score": 135526, "time_ms": 900, "memory_mib": 3.7},
+    {"case": 2, "status": "Accepted", "score": 177394, "time_ms": 447, "memory_mib": 3.5},
+    {"case": 3, "status": "Accepted", "score": 185451, "time_ms": 396, "memory_mib": 3.5},
+    {"case": 4, "status": "Accepted", "score": 154670, "time_ms": 1782, "memory_mib": 6.7},
+    {"case": 5, "status": "Accepted", "score": 179802, "time_ms": 939, "memory_mib": 6.8},
+    {"case": 6, "status": "Accepted", "score": 183299, "time_ms": 825, "memory_mib": 6.8},
+    {"case": 7, "status": "Accepted", "score": 159042, "time_ms": 4968, "memory_mib": 10.4},
+    {"case": 8, "status": "Accepted", "score": 184164, "time_ms": 1444, "memory_mib": 10.0},
+    {"case": 9, "status": "Accepted", "score": 184485, "time_ms": 1268, "memory_mib": 10.0},
+    {"case": 10, "status": "Accepted", "score": 170456, "time_ms": 5664, "memory_mib": 19.5},
+    {"case": 11, "status": "Accepted", "score": 182587, "time_ms": 3209, "memory_mib": 19.4},
+    {"case": 12, "status": "Accepted", "score": 185024, "time_ms": 2857, "memory_mib": 19.4}
+  ],
+  "per_case_note": "Per-case scores, time costs, and memory costs are copied from the accepted judge result. Unchanged cases kept their v18b scores.",
+  "per_case_delta_vs_v18b": {
+    "1": 5547,
+    "4": 9519,
+    "7": 9012,
+    "10": 5922
+  },
+  "max_time_ms": 5664,
+  "total_time_ms": 24699,
+  "max_memory_mib": 19.5,
+  "source_sha256": "9A940D50831F1A2FAAE7E3BF9435E588259C5868BDC784EAF0FDE1516F2696B7",
+  "public_case9_output_sha256": "1BBF2BBAA56E6AD871BB6FFE7F0AC4D501C31F3CE7A684195CAFD8F1AAA8723A",
+  "pre_submission_projection": "2,080,000–2,087,000"
+}

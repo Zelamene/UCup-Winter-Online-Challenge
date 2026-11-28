@@ -71,4 +71,4 @@ public case-9 SHA, and scalar/batched/C++ bit identity all pass.
 
 Source SHA-256: `18655192D6CF415A911E9486B1E1D94E69FD40A8DFF35FBEAA40CB76ADC88100`.
 
-Status: submitted and accepted. No further submission is pending.
+Status: submitted and accepted; superseded by v19.

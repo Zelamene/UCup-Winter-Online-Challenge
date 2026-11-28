@@ -1,6 +1,6 @@
-# v19 — Local Phase 16 K-spin candidate
+# v19 — Accepted Phase 16 K-spin decoder
 
-Local candidate only. It has **not** been submitted and has no judge score. Accepted v18b remains the best submission and the fallback.
+Submitted and accepted at `2,081,900` (`+30,000` over v18b). v19 is now the best submission; v18b remains the fallback.
 
 Base: accepted v18b (`submissions/v18b_greedy_portfolio/`), judge score `2,051,900`.
 
@@ -11,6 +11,27 @@ Changed cases: 1, 4, 7, 10. All are rate `1/2`. Cases 2, 3, 5, 6, 8, 9, 11, 12 a
 For systematic `H=[A|I]`, each parity spin is replaced by the product of its information-support spins. The remaining degree-six spin system has only valid codewords as states, so the 50-step QAIA dynamics run on the K information spins and the parity bits are re-encoded at the output. The field uses the same exact Gray-pair channel tables as v18: linear terms `2a_P` / `2b_P`, pair term `D_P·x_p`, and TAP reaction `−γ·D_P²·(1−x_p²)·x_i`. Parity weights are soft-clipped `g·clip·tanh(L_{k+c}/clip)`; selection energy is `−Σ_i ℓ_i s_i − Σ_c w_c ∏_{j∈N(c)} s_j`. There is no per-edge memory and no forbidden post-processing.
 
 Common settings: `xi=1.0`, `delta=3.441`, `dt=0.47`, `beta=0.317`, `g=0.98`, `clip=2.8`, `joint_pairs=1`, `select_unclipped=0`. Cases 1, 4 and 10 use one trajectory with `tau=2.976`, `pair_gamma=0`. Case 7 uses a three-trajectory energy portfolio with `(tau,pair_gamma)` of `(2.976,0)`, `(3.5,0)`, `(2.976,0.1)`.
+
+## Judge result
+
+All 12 cases were accepted. The total was `2,081,900`, exactly `+30,000` over v18b, inside the pre-submission projection of `2,080,000–2,087,000`.
+
+| # | Score | Δ vs v18b | Time | Memory |
+|---:|---:|---:|---:|---:|
+| 1 | `135526` | `+5,547` | `900ms` | `3.7 MiB` |
+| 2 | `177394` | `0` | `447ms` | `3.5 MiB` |
+| 3 | `185451` | `0` | `396ms` | `3.5 MiB` |
+| 4 | `154670` | `+9,519` | `1,782ms` | `6.7 MiB` |
+| 5 | `179802` | `0` | `939ms` | `6.8 MiB` |
+| 6 | `183299` | `0` | `825ms` | `6.8 MiB` |
+| 7 | `159042` | `+9,012` | `4,968ms` | `10.4 MiB` |
+| 8 | `184164` | `0` | `1,444ms` | `10.0 MiB` |
+| 9 | `184485` | `0` | `1,268ms` | `10.0 MiB` |
+| 10 | `170456` | `+5,922` | `5,664ms` | `19.5 MiB` |
+| 11 | `182587` | `0` | `3,209ms` | `19.4 MiB` |
+| 12 | `185024` | `0` | `2,857ms` | `19.4 MiB` |
+
+Worst judge time was `5,664ms` and peak memory `19.5 MiB`. Full result: `judge_result.json`.
 
 ## Validation
 
@@ -27,4 +48,4 @@ Runtime judge estimate worst case: `13.403 s` on case 10, under the `60 s` local
 
 Source SHA-256: `9A940D50831F1A2FAAE7E3BF9435E588259C5868BDC784EAF0FDE1516F2696B7`.
 
-Status: prepared, gated locally, **pending explicit submission approval**.
+Status: **submitted and accepted**; v19 supersedes v18b as the best submission.
