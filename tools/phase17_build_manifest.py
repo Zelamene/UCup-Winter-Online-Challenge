@@ -30,6 +30,9 @@ KSPIN_DEFAULTS = {
     "select_unclipped": 0,
     "energy_lambda": 1.0,
 }
+KSPIN_INHERITED = set(KSPIN_DEFAULTS) | {
+    "energy_lambda", "beta_values", "g_values", "tau_cls", "xi_cls", "beta_cls",
+}
 BSB_DEFAULTS = {
     "tau": 5.184,
     "xi": 0.6,
@@ -42,20 +45,23 @@ BSB_DEFAULTS = {
 }
 
 
-def normalise_trajectory(base_traj: dict, raw: dict, mode: str) -> dict:
-    """Fill missing trajectory keys without discarding learned arrays."""
+def normalise_trajectory(
+    base_traj: dict, raw: dict, mode: str, base_mode: str
+) -> dict:
+    """Fill missing trajectory keys without importing another mode's parameters."""
     if not isinstance(raw, dict):
         raise ValueError(f"trajectory must be an object, got {type(raw).__name__}")
+    same_mode = str(base_mode) == mode
     if mode == "kspin":
-        result = dict(raw)
+        result = {key: value for key, value in raw.items() if key != "parity_scale"}
         defaults = KSPIN_DEFAULTS
-        inherited = None
+        inherited = KSPIN_INHERITED if same_mode else set()
     else:
         result = {key: value for key, value in raw.items() if key in pc.CONFIG_KEYS}
         defaults = BSB_DEFAULTS
-        inherited = pc.CONFIG_KEYS
+        inherited = pc.CONFIG_KEYS if same_mode else set()
     for key, value in (base_traj or {}).items():
-        if key not in result and (inherited is None or key in inherited) and value is not None:
+        if key not in result and key in inherited and value is not None:
             result[key] = value
     for key, value in defaults.items():
         result.setdefault(key, value)
@@ -98,8 +104,10 @@ def main() -> None:
         if mode not in ("bsb", "dsb", "kspin"):
             raise ValueError(f"case {index}: unsupported mode {mode!r}")
         base_trajectory = base_case.get("trajectories", [{}])[0]
+        base_mode = str(base_case.get("mode", "kspin"))
         trajectories = [
-            normalise_trajectory(base_trajectory, item, mode) for item in raw_trajectories
+            normalise_trajectory(base_trajectory, item, mode, base_mode)
+            for item in raw_trajectories
         ]
         case = dict(base_case)
         case.update({
