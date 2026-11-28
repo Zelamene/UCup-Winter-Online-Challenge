@@ -106,6 +106,10 @@ def main() -> None:
     parser.add_argument("--base-manifest", type=Path, default=V19_MANIFEST)
     parser.add_argument("--judge-result", type=Path, default=V19_JUDGE_RESULT)
     parser.add_argument("--public-sha256", default=PUBLIC_SHA256)
+    parser.add_argument(
+        "--combo-reference", type=Path, default=None,
+        help="better single-track manifest for the required +1000 combination gate",
+    )
     parser.add_argument("--min-gain", type=float, default=1500.0)
     parser.add_argument("--max-judge-seconds", type=float, default=60.0)
     args = parser.parse_args()
@@ -181,6 +185,17 @@ def main() -> None:
          "--output", str(out / "case_gate.json")],
         steps, out / "case_gate.json",
     )
+    if args.combo_reference is not None:
+        run_step(
+            "combination beats better single manifest (>= +1000)",
+            [sys.executable, "tools/phase17_combo_gate.py",
+             "--reference", str(args.combo_reference.resolve()),
+             "--candidate", str(args.manifest.resolve()),
+             "--cache-dir", str(ROOT / "artifacts" / "baseline_cache_v19"),
+             "--seeds", "2024", "31337", "--min-gain", "1000",
+             "--output", str(out / "combo_gate.json")],
+            steps, out / "combo_gate.json",
+        )
     run_step(
         "fresh seed 6060 vs v19",
         [sys.executable, "tools/phase14_fresh_seed_check.py",
@@ -237,6 +252,9 @@ def main() -> None:
         "manifest": str(args.manifest.resolve()),
         "source": str(args.source.resolve()),
         "v19_binary": str(args.v19_binary.resolve()),
+        "combo_reference": (
+            str(args.combo_reference.resolve()) if args.combo_reference is not None else None
+        ),
         "changed_cases": args.changed_cases,
         "total_gate_gains": total_gains,
         "steps": steps,
