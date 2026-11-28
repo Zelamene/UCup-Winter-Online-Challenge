@@ -18,6 +18,7 @@ import numpy as np
 TOOLS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(TOOLS_DIR))
 
+import kspin_reference as kspin_ref  # noqa: E402
 from phase0_harness import parse_instance  # noqa: E402
 from qam_pairs import pair_tables as build_pair_tables  # noqa: E402
 
@@ -26,7 +27,7 @@ DEFAULT_MANIFEST = ROOT / "artifacts" / "phase8_case_manifest_v3.json"
 DEFAULT_INPUT = ROOT / "Problem statements" / "publish.in"
 DEFAULT_OUTPUT = ROOT / "artifacts" / "phase8_python_v3_public.out"
 
-MODES = ("dsb", "bsb")
+MODES = ("dsb", "bsb", "kspin")
 COMBINES = ("energy", "vote", "soft_vote")
 MAX_TRAJECTORIES = 6
 MANIFEST_STEPS = 50
@@ -185,6 +186,8 @@ def _decode_trajectory_sparse(
         raise ValueError(f"invalid mode {mode!r}; expected one of {MODES}")
     if steps < 1:
         raise ValueError(f"steps must be positive, got {steps}")
+    if mode == "kspin":
+        raise ValueError("kspin trajectories must use decode_trajectory or decode_frame")
 
     schedules = {
         key: _schedule_values(traj.get(key), f"trajectory {key}", steps)
@@ -287,14 +290,27 @@ def decode_trajectory(
 ) -> tuple[list[int], np.ndarray]:
     """Run one QAIA trajectory and return (hard bits, final soft spins)."""
     _schedule_values(dt, "dt", int(steps))
+    rates = np.asarray(llr, dtype=np.float64)
+    if mode == "kspin":
+        if snr is None:
+            raise ValueError("kspin requires the case SNR")
+        matrix = np.asarray(h, dtype=np.int8)
+        if matrix.ndim != 2:
+            raise ValueError(f"h must be 2-D, got shape {matrix.shape}")
+        m, n = matrix.shape
+        hard, soft = kspin_ref.decode(
+            rates, matrix, int(n) - int(m), snr, traj,
+            steps=int(steps), return_soft=True,
+        )
+        return hard.astype(np.int64).tolist(), soft
     sparse = _build_sparse(h)
     tables = None
     if int(traj.get("joint_pairs", 0)):
         if snr is None:
             raise ValueError("joint_pairs requires the case SNR")
-        tables = build_pair_tables(np.asarray(llr, dtype=np.float64), snr)
+        tables = build_pair_tables(rates, snr)
     return _decode_trajectory_sparse(
-        np.asarray(llr, dtype=np.float64), sparse, traj, mode, dt, int(steps), tables
+        rates, sparse, traj, mode, dt, int(steps), tables
     )
 
 
@@ -330,8 +346,8 @@ def _validate_case(case: dict) -> tuple[str, str, list[dict], float, int]:
         if joint not in (0, 1):
             raise ValueError(f"trajectory {index}: joint_pairs must be 0 or 1")
         if joint:
-            if mode != "bsb":
-                raise ValueError(f"trajectory {index}: joint_pairs requires bsb mode")
+            if mode not in ("bsb", "kspin"):
+                raise ValueError(f"trajectory {index}: joint_pairs requires bsb or kspin mode")
             if int(case.get("n", 0)) % 4 != 0:
                 raise ValueError(f"trajectory {index}: joint_pairs requires n divisible by 4")
             if "snr" not in case:
@@ -376,9 +392,70 @@ def _energy(
     return channel + 0.5 * lambd * penalty
 
 
+def _encode_kspin_parity(h: np.ndarray, k: int, info_bits: np.ndarray) -> np.ndarray:
+    """Re-encode parity positions from decoded information bits."""
+    _m, supports, _degree = kspin_ref.info_topology(h, k)
+    n = int(np.asarray(h).shape[1])
+    hard = np.empty(n, dtype=np.int64)
+    hard[:k] = info_bits
+    for row, cols in enumerate(supports):
+        parity = 0
+        for col in cols:
+            parity ^= int(info_bits[col])
+        hard[k + row] = parity
+    return hard
+
+
+def _decode_kspin_frame(
+    llr: np.ndarray,
+    h: np.ndarray,
+    case: dict,
+    trajectories: list[dict],
+    steps: int,
+) -> list[int]:
+    """Scalar K-spin frame decode, mirroring the exported C++ operation order."""
+    rates = np.asarray(llr, dtype=np.float64)
+    matrix = np.asarray(h, dtype=np.int8)
+    m, n = matrix.shape
+    k = n - m
+    if k % 2 != 0:
+        raise ValueError("kspin requires even K")
+    for traj in trajectories:
+        if _finite(traj.get("parity_scale", 1.0), "parity_scale") != 1.0:
+            raise ValueError("kspin does not use parity_scale; it must be 1")
+    results = []
+    for traj in trajectories:
+        hard, soft = kspin_ref.decode(
+            rates, h, k, float(case["snr"]), traj, steps=steps, return_soft=True
+        )
+        results.append((hard[:k].copy(), soft.copy()))
+
+    if len(results) == 1:
+        info_bits = results[0][0]
+    elif case["combine"] == "energy":
+        energies = [
+            kspin_ref.energy(
+                info, rates, h, k, float(case["snr"]), traj,
+                select_unclipped=int(traj.get("select_unclipped", 0)),
+            )
+            for (info, _soft), traj in zip(results, trajectories)
+        ]
+        info_bits = results[int(np.argmin(energies))][0]
+    elif case["combine"] == "vote":
+        ones = np.sum(np.stack([info for info, _ in results]), axis=0)
+        info_bits = (2 * ones >= len(results)).astype(np.int64)
+    else:
+        total = np.sum(np.stack([soft for _, soft in results]), axis=0)
+        info_bits = (total < 0.0).astype(np.int64)
+    return _encode_kspin_parity(h, k, info_bits).tolist()
+
+
 def decode_frame(llr: np.ndarray, h: np.ndarray, case: dict) -> list[int]:
     """Decode one frame using the combine rule declared by ``case``."""
     mode, combine, trajectories, dt, steps = _validate_case(case)
+    if mode == "kspin":
+        return _decode_kspin_frame(llr, h, case, trajectories, steps)
+
     sparse = _build_sparse(h)
     rates = np.asarray(llr, dtype=np.float64)
     tables = (

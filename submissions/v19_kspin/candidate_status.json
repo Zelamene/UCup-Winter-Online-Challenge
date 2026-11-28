@@ -1,0 +1,11 @@
+{
+  "status": "local_candidate_gate_passed_pending_approval",
+  "base": "v18b",
+  "changed_cases": [1, 4, 7, 10],
+  "submitted": false,
+  "judge_score": null,
+  "final_gate": "artifacts/phase16/final/final_gate.json",
+  "source_sha256": "9A940D50831F1A2FAAE7E3BF9435E588259C5868BDC784EAF0FDE1516F2696B7",
+  "source_bytes": 46677,
+  "public_output_sha256": "1BBF2BBAA56E6AD871BB6FFE7F0AC4D501C31F3CE7A684195CAFD8F1AAA8723A"
+}

@@ -32,10 +32,12 @@ STEPS = 50
 NOISE_SCALE = 1.001120
 V17_MANIFEST = ROOT / "submissions" / "v17_joint_pairs" / "manifest.json"
 V17_CACHE = ROOT / "artifacts" / "baseline_cache_v17"
+V18_CACHE = ROOT / "artifacts" / "baseline_cache_v18"
 PHASE15_ARTIFACTS = ROOT / "artifacts" / "phase15"
 CONFIG_KEYS = (
     "tau", "xi", "lambd", "delta", "dt", "beta", "parity_scale",
     "joint_pairs", "pair_gamma", "pair_scale", "energy_lambda",
+    "g", "clip", "select_unclipped",
 )
 CASE_SPECS = tuple(
     (index + 1, n, int(round(n * rate)), rate, snr)
@@ -203,8 +205,15 @@ class CaseWorkspace:
         }
 
 
-def decode_hard(workspace: CaseWorkspace, config: dict, debug_finite: bool = False) -> np.ndarray:
+def decode_hard(
+    workspace: CaseWorkspace,
+    config: dict,
+    debug_finite: bool = False,
+    batch_size: int | None = None,
+) -> np.ndarray:
     """Decode one configuration and return hard bits of shape (frames, n)."""
+    if str(config.get("mode", "bsb")) == "kspin":
+        return decode_kspin(workspace, config, debug_finite, batch_size)
     if any(isinstance(config.get(key), (list, tuple, np.ndarray))
            for key in ("xi", "lambd", "delta", "dt", "beta")):
         return decode_hard_schedules(workspace, config, debug_finite)
@@ -225,12 +234,59 @@ def decode_hard(workspace: CaseWorkspace, config: dict, debug_finite: bool = Fal
         pair_gamma=float(config.get("pair_gamma", 0.0)),
         pair_scale=float(config.get("pair_scale", 1.0)),
         pair_tables=workspace.tables if joint else None,
+        redundant_supports=config.get("redundant_supports"),
+        redundant_gamma=float(config.get("redundant_gamma", 0.0)),
+        tap2=float(config.get("tap2", 0.0)),
         debug_finite=debug_finite,
     )
 
 
+def decode_kspin(
+    workspace: CaseWorkspace,
+    config: dict,
+    debug_finite: bool = False,
+    batch_size: int | None = None,
+) -> np.ndarray:
+    """Decode one K-spin configuration and return full N-bit codewords."""
+    joint = int(config.get("joint_pairs", 0))
+    llr = workspace.case["llr"]
+    kwargs = dict(
+        tau=config["tau"],
+        xi=config["xi"],
+        lambd=config.get("lambd", 1.0),
+        delta=config["delta"],
+        dt=config["dt"],
+        steps=STEPS,
+        beta=config.get("beta", 0.0),
+        joint_pairs=joint,
+        pair_gamma=float(config.get("pair_gamma", 0.0)),
+        pair_tables=workspace.tables if joint else None,
+        mode="kspin",
+        g=float(config.get("g", 1.0)),
+        clip=float(config.get("clip", 1.0e30)),
+        select_unclipped=int(config.get("select_unclipped", 0)),
+        debug_finite=debug_finite,
+    )
+    if batch_size is None or int(batch_size) >= len(llr):
+        return workspace.sim.decode_batch(llr, **kwargs)
+    size = int(batch_size)
+    if size <= 0:
+        raise ValueError("batch_size must be positive")
+    chunks = []
+    for start in range(0, len(llr), size):
+        chunk_kwargs = dict(kwargs)
+        if joint:
+            chunk_kwargs["pair_tables"] = tuple(
+                table[start:start + size] for table in workspace.tables
+            )
+        chunks.append(workspace.sim.decode_batch(llr[start:start + size], **chunk_kwargs))
+    return np.concatenate(chunks, axis=0)
+
+
 def decode_hard_schedules(workspace: CaseWorkspace, config: dict, debug_finite: bool = False) -> np.ndarray:
     """Decode one configuration with per-step schedules for the five tunable groups."""
+    if str(config.get("mode", "bsb")) == "kspin":
+        return decode_kspin(workspace, config, debug_finite)
     joint = int(config.get("joint_pairs", 0))
     return workspace.sim.decode_batch(
         workspace.case["llr"],
@@ -246,6 +302,9 @@ def decode_hard_schedules(workspace: CaseWorkspace, config: dict, debug_finite: 
         pair_gamma=float(config.get("pair_gamma", 0.0)),
         pair_scale=float(config.get("pair_scale", 1.0)),
         pair_tables=workspace.tables if joint else None,
+        redundant_supports=config.get("redundant_supports"),
+        redundant_gamma=float(config.get("redundant_gamma", 0.0)),
+        tap2=float(config.get("tap2", 0.0)),
         debug_finite=debug_finite,
     )
 
@@ -279,6 +338,18 @@ def trajectory_energies(
     energy_lambda: float | None = None,
 ) -> np.ndarray:
     """Exact C++ energy-combine score for one trajectory's hard decisions."""
+    if str(config.get("mode", "bsb")) == "kspin":
+        joint = int(config.get("joint_pairs", 0))
+        return workspace.sim.compute_kspin_energies(
+            hard,
+            workspace.case["llr"],
+            float(workspace.snr),
+            joint_pairs=joint,
+            pair_tables=workspace.tables if joint else None,
+            g=float(config.get("g", 1.0)),
+            clip=float(config.get("clip", 1.0e30)),
+            select_unclipped=int(config.get("select_unclipped", 0)),
+        )
     spins = 1.0 - 2.0 * np.asarray(hard, dtype=np.float64)
     joint = int(config.get("joint_pairs", 0))
     if joint:

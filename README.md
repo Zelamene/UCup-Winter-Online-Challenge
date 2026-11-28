@@ -19,8 +19,8 @@ Objective: increase the judge score beyond the current accepted best while keepi
 |---|---:|
 | Best accepted | v18b, `2,051,900` |
 | Last submitted | v18b, `2,051,900` (`+13,106` vs v17) |
-| Local candidate | none; v18b is accepted and is the new base |
-| Active decision | use v18b as the base for all future candidates |
+| Local candidate | v19 K-spin; full gate passed, not submitted |
+| Active decision | v19 is ready for explicit submission approval; v18b remains the accepted fallback |
 | Public input dispatch | `N=1944, R=3/4, SNR≈10.3` (nearest configured `10.5`) |
 | Public BER, v8–v13c | `0.024784636` |
 | Public BER, v14 | `0.019216735` |
@@ -30,6 +30,7 @@ Objective: increase the judge score beyond the current accepted best while keepi
 | v15 judge runtime | `384–4279ms` per case — well under the 2-minute limit |
 | v18b per-case scores | `[129979,177394,185451,145151,179802,183299,150030,184164,184485,164534,182587,185024]` |
 | v18b judge runtime | `389–13,801ms` per case — well under the 2-minute limit |
+| v19 source | `46,677` bytes; SHA-256 `9A940D50831F1A2FAAE7E3BF9435E588259C5868BDC784EAF0FDE1516F2696B7` |
 
 The best accepted architecture is:
 
@@ -37,7 +38,7 @@ The best accepted architecture is:
 - rate-specific `beta` and `parity_scale` fields, tuned at `N=1296`;
 - exact `(N, K)` dispatch with the nearest configured SNR;
 - decoder lambda and energy-selection lambda are separate parameters;
-- 50 steps, QAIA/bSB only; v17 added exact Gray-pair coupling on cases 4/7/10, and accepted v18b adds energy-selected multi-trajectory portfolios on cases 7 and 10.
+- 50 steps, QAIA/bSB only; v17 added exact Gray-pair coupling on cases 4/7/10, accepted v18b adds energy-selected multi-trajectory portfolios on cases 7 and 10, and local v19 adds eliminated-spin K-spin QAIA on the four rate-1/2 cases.
 
 bSB is compliant ballistic SB: the check gradient uses continuous `x_j` in Eq. (1)
 with `sigma -> x`. No per-edge messages carry over between steps, so it is not
@@ -235,6 +236,32 @@ Step 0 is complete: `submissions/v17_joint_pairs/judge_result.json` records the 
 
 The submitted `v18b` source combines the five-trajectory case-7 portfolio with the three-trajectory case-10 portfolio and bit-preserving concurrent trajectory execution. The judge accepted all 12 cases at `2,051,900`, `+13,106` over v17 (`submissions/v18b_greedy_portfolio/judge_result.json`). The per-case judge scores are `[129979, 177394, 185451, 145151, 179802, 183299, 150030, 184164, 184485, 164534, 182587, 185024]`, with `389–13,801ms` runtime and at most `20.1 MiB` memory. The accepted judge run supersedes the earlier local `60 s` certification gap caused by the low-battery CPU cap.
 
+## Phase 16 — K-spin structural decoder (v19 local candidate)
+
+Phase 16 tests a structural change on the four rate-1/2 cases while keeping every other case byte-identical to accepted v18b. With systematic `H=[A|I]`, substituting each parity spin by the product of its information-support spins leaves a degree-six spin system whose every state is a valid codeword. The 50-step QAIA dynamics run on the K information spins only; parity output bits are re-encoded at the end, so re-encoding is representation, not post-processing. For joint Gray pairs the field is `ℓ_i = 2a_P` or `2b_P + D_P·x_p − γ·D_P²·(1−x_p²)·x_i`, parity weights are `g·clip·tanh(L_{k+c}/clip)`, and selection energy is `E(s)=−Σ_i ℓ_i s_i − Σ_c w_c ∏_{j∈N(c)} s_j`. `Mode::KSpin` uses exact pair-table recovery and stores no per-edge state; non-K-spin cases remain v18b-identical.
+
+`tools/kspin_reference.py` is the reconstructed scalar probe and reproduces the original case-4 result. The tuned common settings are `xi=1.0`, `delta=3.441`, `dt=0.47`, `beta=0.317`, `g=0.98`, `clip=2.8`, `joint_pairs=1`, `select_unclipped=0`. Cases 1, 4 and 10 use one trajectory with `tau=2.976`, `pair_gamma=0`. Case 7 uses an energy-selected three-trajectory portfolio: `(tau,pair_gamma)` of `(2.976,0)`, `(3.5,0)` and `(2.976,0.1)`.
+
+| Seed | Case 1 gain / CI | Case 4 gain / CI | Case 7 gain / CI | Case 10 gain / CI | Total |
+|---|---:|---:|---:|---:|---:|
+| 2024 | `+6,549.2` / `[+3,502.8, +9,600.7]` | `+9,663.2` / `[+6,906.0, +12,460.0]` | `+3,938.1` / `[+966.5, +6,990.9]` | `+8,282.9` / `[+5,495.0, +11,241.4]` | `+28,433.4` |
+| 31337 | `+6,705.7` / `[+4,191.7, +9,630.4]` | `+8,979.3` / `[+6,260.7, +11,886.4]` | `+8,736.5` / `[+5,799.2, +11,983.6]` | `+10,399.9` / `[+7,093.8, +13,623.9]` | `+34,821.4` |
+
+All four changed cases clear the required `+2,000` gate with positive 95% paired-bootstrap lower bounds on both seeds. Fresh seed `6060`, 300 frames, 1,000 resamples:
+
+| Case | Gain / CI | Result |
+|---:|---:|---|
+| 1 | `+6,960.2` / `[+3,951.3, +10,384.5]` | passed |
+| 4 | `+7,079.5` / `[+3,606.7, +10,654.7]` | passed |
+| 7 | `+10,666.3` / `[+6,983.2, +14,654.5]` | passed |
+| 10 | `+9,092.2` / `[+5,103.3, +13,521.3]` | passed |
+
+The eight unchanged cases are byte-identical to v18b. Full gate `artifacts/phase16/final/final_gate.json` reports `all_passed=true`: strict C++17 compile, 26 unit tests, offline isolation, manifest validator, public case-9 SHA-256 `1BBF2BBA…8723A`, scalar/batched/C++ bit identity on all changed cases, both gate seeds, fresh seed `6060`, and the runtime judge estimate. The worst estimated judge time is `13.403 s` on case 10, below the `60 s` cap; the source is `46,677` bytes.
+
+Two identity defects found during the gate were fixed and covered by tests: scalar `decode_trajectory()` routed K-spin through a helper with undefined `h`/`snr`, and the scalar `pair_gamma` reaction applied an extra factor of four to `D_P²`. The final scalar, batched and C++ outputs match per trajectory and after energy selection.
+
+Status: **local candidate only**. It has not been submitted, has no judge score, and requires explicit approval. v18b remains the best accepted submission and the fallback if v19 is not submitted.
+
 ## Submission history
 
 | Version | Score | Delta | Outcome |
@@ -298,6 +325,7 @@ v15 changed the landscape rather than the schedules. The v14 trajectories were k
 10. **Stage A → gated Stage B generalizes to high rates.** Rate-specific anchors found large gains at `R=2/3` and `R=3/4`; schedules were kept only when they beat flat Stage A on both validation seeds. The v14 total was predicted at `1,847,584` and judged at `1,847,842`, an error of only `258` points.
 11. **Fixing the continuous landscape, not just the schedule.** v15 kept v14's schedules and added an Onsager/TAP reaction term that is the gradient of a polynomial constant on `±1` spins. It improved all 12 cases and added `+167,981`, showing that plain bSB behaves like mean-field SB and that the reaction correction is the dominant remaining QAIA-internal lever.
 12. **Energy-selected compliant trajectory portfolios at `R=1/2`.** v18b combined five tuned bSB trajectories on case 7 and three on case 10 with exact energy selection, adding `+13,106` while all unchanged cases stayed byte-identical and judge runtime stayed below `14 s` per case.
+13. **Changing the spin variables can beat changing the schedule.** Local v19 eliminates parity spins on all four rate-1/2 cases and passes both validation seeds, fresh seed `6060`, and runtime. It is pending submission approval, so the `+28k/+35k` validation gains are not yet judge-validated.
 
 ## Assumptions and directions that proved wrong
 

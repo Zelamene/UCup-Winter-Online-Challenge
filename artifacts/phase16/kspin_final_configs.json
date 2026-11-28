@@ -1,0 +1,79 @@
+{
+  "1": {
+    "tau": 2.976,
+    "xi": 1.0,
+    "delta": 3.441,
+    "dt": 0.47,
+    "beta": 0.317,
+    "joint_pairs": 1,
+    "pair_gamma": 0.0,
+    "g": 0.98,
+    "clip": 2.8,
+    "select_unclipped": 0
+  },
+  "4": {
+    "tau": 2.976,
+    "xi": 1.0,
+    "delta": 3.441,
+    "dt": 0.47,
+    "beta": 0.317,
+    "joint_pairs": 1,
+    "pair_gamma": 0.0,
+    "g": 0.98,
+    "clip": 2.8,
+    "select_unclipped": 0
+  },
+  "7": {
+    "note": "v19 three-trajectory K-spin energy portfolio: base, tau 3.5, pair_gamma 0.1",
+    "trajectories": [
+      {
+        "tau": 2.976,
+        "xi": 1.0,
+        "delta": 3.441,
+        "dt": 0.47,
+        "beta": 0.317,
+        "joint_pairs": 1,
+        "pair_gamma": 0.0,
+        "g": 0.98,
+        "clip": 2.8,
+        "select_unclipped": 0
+      },
+      {
+        "tau": 3.5,
+        "xi": 1.0,
+        "delta": 3.441,
+        "dt": 0.47,
+        "beta": 0.317,
+        "joint_pairs": 1,
+        "pair_gamma": 0.0,
+        "g": 0.98,
+        "clip": 2.8,
+        "select_unclipped": 0
+      },
+      {
+        "tau": 2.976,
+        "xi": 1.0,
+        "delta": 3.441,
+        "dt": 0.47,
+        "beta": 0.317,
+        "joint_pairs": 1,
+        "pair_gamma": 0.1,
+        "g": 0.98,
+        "clip": 2.8,
+        "select_unclipped": 0
+      }
+    ]
+  },
+  "10": {
+    "tau": 2.976,
+    "xi": 1.0,
+    "delta": 3.441,
+    "dt": 0.47,
+    "beta": 0.317,
+    "joint_pairs": 1,
+    "pair_gamma": 0.0,
+    "g": 0.98,
+    "clip": 2.8,
+    "select_unclipped": 0
+  }
+}

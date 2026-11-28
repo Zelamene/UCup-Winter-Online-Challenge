@@ -97,6 +97,245 @@ class BatchedBSB:
         data = np.ones(self.m * self.deg, dtype=np.float64)
         self.scatter_matrix = sp.csr_matrix((data, (row_idx, col_idx)), shape=(self.m * self.deg, self.n))
 
+    def _kspin_topology(self) -> tuple[int, np.ndarray, sp.csr_matrix]:
+        """Info-only check topology for ``H=[A|I]``; cached after first use."""
+        cached = getattr(self, "_kspin_cache", None)
+        if cached is not None:
+            return cached
+        k = self.n - self.m
+        if k <= 0 or k % 2 != 0:
+            raise ValueError("K-spin requires a positive even K")
+        parity = self.h[:, k:]
+        if not np.array_equal(parity, np.eye(self.m, dtype=np.int8)):
+            raise ValueError("K-spin requires parity columns to be the identity")
+        rows = [np.flatnonzero(self.h[row, :k]) for row in range(self.m)]
+        degrees = [len(row) for row in rows]
+        if not degrees or len(set(degrees)) != 1:
+            raise ValueError("K-spin requires a regular information check degree")
+        cols = np.zeros((self.m, int(degrees[0])), dtype=np.int64)
+        for row_index, row in enumerate(rows):
+            cols[row_index] = row
+        row_idx = np.arange(self.m * cols.shape[1])
+        scatter = sp.csr_matrix(
+            (np.ones(self.m * cols.shape[1], dtype=np.float64), (row_idx, cols.ravel())),
+            shape=(self.m * cols.shape[1], k),
+        )
+        self._kspin_cache = (k, cols, scatter)
+        return self._kspin_cache
+
+    def decode_kspin_batch(
+        self,
+        llr: np.ndarray,
+        tau: float,
+        xi: Union[float, Sequence[float], np.ndarray],
+        delta: Union[float, Sequence[float], np.ndarray],
+        dt: Union[float, Sequence[float], np.ndarray] = 0.2,
+        steps: int = 50,
+        beta: Union[float, Sequence[float], np.ndarray] = 0.0,
+        joint_pairs: int = 0,
+        pair_gamma: float = 0.0,
+        pair_tables: tuple[np.ndarray, np.ndarray, np.ndarray] | None = None,
+        g: float = 1.0,
+        clip: float = 1e30,
+        select_unclipped: int = 0,
+        debug_finite: bool = False,
+    ) -> np.ndarray:
+        """Run K-spin bSB and return full N-bit hard codewords of shape (B, N)."""
+        rates = np.asarray(llr, dtype=np.float64)
+        b, n_bits = rates.shape
+        if n_bits != self.n:
+            raise ValueError(f"llr has {n_bits} bits, expected {self.n}")
+        k, cols, scatter = self._kspin_topology()
+        degree = int(cols.shape[1])
+        if steps < 1:
+            raise ValueError("steps must be positive")
+        if select_unclipped not in (0, 1):
+            raise ValueError("select_unclipped must be 0 or 1")
+        joint = int(joint_pairs)
+        if joint not in (0, 1):
+            raise ValueError(f"joint_pairs must be 0 or 1, got {joint_pairs}")
+        if joint and k % 4 != 0:
+            raise ValueError("joint_pairs requires K divisible by 4")
+        if joint:
+            if pair_tables is None:
+                raise ValueError("joint_pairs requires pair_tables from qam_pairs.pair_tables")
+            a, bp, d = pair_tables
+            if a.shape[0] < b or a.shape[1] < k // 2 or bp.shape != a.shape or d.shape != a.shape:
+                raise ValueError(f"pair tables have shape {a.shape}, expected at least {(b, k // 2)}")
+            a, bp, d = a[:b, : k // 2], bp[:b, : k // 2], d[:b, : k // 2]
+            channel_linear = np.empty((b, k), dtype=np.float64)
+            channel_linear[:, 0::2] = 2.0 * a
+            channel_linear[:, 1::2] = 2.0 * bp
+            d_values = np.empty((b, k), dtype=np.float64)
+            d_values[:, 0::2] = 2.0 * d
+            d_values[:, 1::2] = 2.0 * d
+            partner_index = np.arange(k, dtype=np.intp) ^ 1
+        else:
+            channel_linear = rates[:, :k].copy()
+            d_values = None
+            partner_index = None
+
+        clip_value = float(clip)
+        if not math.isfinite(clip_value):
+            weights = rates[:, k:k + self.m].copy()
+        else:
+            if clip_value <= 0.0:
+                raise ValueError("clip must be positive")
+            weights = float(g) * clip_value * np.tanh(
+                rates[:, k:k + self.m] / clip_value
+            )
+        if not np.all(np.isfinite(weights)):
+            raise ValueError("parity weights contain non-finite values")
+
+        xi_is_seq = isinstance(xi, (list, tuple, np.ndarray))
+        delta_is_seq = isinstance(delta, (list, tuple, np.ndarray))
+        dt_is_seq = isinstance(dt, (list, tuple, np.ndarray))
+        beta_is_seq = isinstance(beta, (list, tuple, np.ndarray))
+        if xi_is_seq:
+            xi = np.asarray(xi, dtype=np.float64)
+        if delta_is_seq:
+            delta = np.asarray(delta, dtype=np.float64)
+        if dt_is_seq:
+            dt = np.asarray(dt, dtype=np.float64)
+        if beta_is_seq:
+            beta = np.asarray(beta, dtype=np.float64)
+            if beta.ndim != 1 or len(beta) != steps:
+                raise ValueError(f"beta schedule has {beta.size} values, expected {steps}")
+
+        init_tau = float(tau[0]) if isinstance(tau, (list, tuple, np.ndarray)) else float(tau)
+        x = np.tanh(rates[:, :k] / init_tau).astype(np.float64, copy=True)
+        y = np.zeros_like(x)
+        pref = np.ones((b, self.m, degree + 1), dtype=np.float64)
+        suff = np.ones((b, self.m, degree + 1), dtype=np.float64)
+        if beta_is_seq or float(beta) != 0.0:
+            pp = np.ones((b, self.m, degree + 1), dtype=np.float64)
+            qp = np.zeros((b, self.m, degree + 1), dtype=np.float64)
+            ps = np.ones((b, self.m, degree + 1), dtype=np.float64)
+            qs = np.zeros((b, self.m, degree + 1), dtype=np.float64)
+
+        for step in range(int(steps)):
+            soft = np.clip(x, -1.0, 1.0)
+            soft = np.where(
+                np.abs(soft) < EPS, np.where(soft >= 0.0, EPS, -EPS), soft
+            )
+            if d_values is not None:
+                partner = soft[:, partner_index]
+                field = channel_linear + d_values * partner
+                pair_gamma_value = float(pair_gamma)
+                if pair_gamma_value != 0.0:
+                    pair_d = d_values / 2.0
+                    field = field - (
+                        4.0 * pair_gamma_value * pair_d * pair_d
+                        * (1.0 - partner * partner) * soft
+                    )
+            else:
+                field = channel_linear
+
+            gathered = soft[:, cols]
+            pref[:, :, 1:] = np.cumprod(gathered, axis=2)
+            suff[:, :, :-1] = np.cumprod(gathered[:, :, ::-1], axis=2)[:, :, ::-1]
+            excluded = pref[:, :, :degree] * suff[:, :, 1:]
+            weighted = (weights[:, :, None] * excluded).reshape(b, -1) @ scatter
+
+            beta_val = float(beta[step]) if beta_is_seq else float(beta)
+            force = field + weighted
+            if beta_val != 0.0:
+                q = gathered * gathered
+                u = 1.0 - q
+                for index in range(degree):
+                    pp[:, :, index + 1] = pp[:, :, index] * q[:, :, index]
+                    qp[:, :, index + 1] = (
+                        qp[:, :, index] * q[:, :, index] + pp[:, :, index] * u[:, :, index]
+                    )
+                for index in range(degree - 1, -1, -1):
+                    ps[:, :, index] = ps[:, :, index + 1] * q[:, :, index]
+                    qs[:, :, index] = (
+                        qs[:, :, index + 1] * q[:, :, index]
+                        + ps[:, :, index + 1] * u[:, :, index]
+                    )
+                per_edge = qp[:, :, :degree] * ps[:, :, 1:] + pp[:, :, :degree] * qs[:, :, 1:]
+                reaction = (
+                    beta_val * weights[:, :, None] * weights[:, :, None] * gathered * per_edge
+                ).reshape(b, -1) @ scatter
+                force = force - reaction
+
+            xi_val = float(xi[step]) if xi_is_seq else float(xi)
+            delta_val = float(delta[step]) if delta_is_seq else float(delta)
+            dt_val = float(dt[step]) if dt_is_seq else float(dt)
+            schedule = step / (steps - 1) if steps > 1 else 0.0
+            pump = -(delta_val - schedule) * x
+            y = y + dt_val * (pump + xi_val * force)
+            x_new = x + dt_val * y
+            clipped = np.abs(x_new) > 1.0
+            if np.any(clipped):
+                x_new[clipped] = np.where(x_new[clipped] >= 0.0, 1.0, -1.0)
+                y[clipped] = 0.0
+            x = x_new
+            self._last_kspin_force = force.copy()
+            if debug_finite and not (
+                np.all(np.isfinite(x)) and np.all(np.isfinite(y)) and np.all(np.isfinite(force))
+            ):
+                raise FloatingPointError(f"non-finite K-spin state at step {step}")
+
+        info_bits = (x < 0.0).astype(np.int8)
+        hard = np.empty((b, n_bits), dtype=np.int8)
+        hard[:, :k] = info_bits
+        hard[:, k:] = np.bitwise_xor.reduce(info_bits[:, cols], axis=2)
+        self._last_kspin_x = x.copy()
+        return hard
+
+    def compute_kspin_energies(
+        self,
+        hard: np.ndarray,
+        llr: np.ndarray,
+        snr: float,
+        joint_pairs: int = 0,
+        pair_tables: tuple[np.ndarray, np.ndarray, np.ndarray] | None = None,
+        g: float = 1.0,
+        clip: float = 1e30,
+        select_unclipped: int = 0,
+    ) -> np.ndarray:
+        """Energy of K-spin hard codewords, one value per frame."""
+        if int(select_unclipped) not in (0, 1):
+            raise ValueError("select_unclipped must be 0 or 1")
+        k, cols, _scatter = self._kspin_topology()
+        rates = np.asarray(llr, dtype=np.float64)
+        bits = np.asarray(hard, dtype=np.int8)
+        if bits.ndim != 2 or bits.shape != rates.shape:
+            raise ValueError("hard and llr shapes must match")
+        spins = 1.0 - 2.0 * bits[:, :k].astype(np.float64)
+        joint = int(joint_pairs)
+        if joint and pair_tables is None:
+            raise ValueError("joint_pairs requires pair_tables")
+        if joint:
+            a, bp, d = pair_tables
+            if a.shape[0] < bits.shape[0] or a.shape[1] < k // 2:
+                raise ValueError(f"pair tables have shape {a.shape}, expected at least {(bits.shape[0], k // 2)}")
+            a, bp, d = (
+                a[: bits.shape[0], : k // 2],
+                bp[: bits.shape[0], : k // 2],
+                d[: bits.shape[0], : k // 2],
+            )
+            field = np.empty((bits.shape[0], k), dtype=np.float64)
+            field[:, 0::2] = 2.0 * a
+            field[:, 1::2] = 2.0 * bp
+            d_values = np.empty((bits.shape[0], k), dtype=np.float64)
+            d_values[:, 0::2] = 2.0 * d
+            d_values[:, 1::2] = 2.0 * d
+            field = field + d_values * spins[:, np.arange(k, dtype=np.intp) ^ 1]
+        else:
+            field = rates[:, :k]
+        value = -np.sum(field * spins, axis=1)
+        clip_value = float(clip)
+        if select_unclipped or not math.isfinite(clip_value):
+            weights = rates[:, k:k + self.m].copy()
+        else:
+            weights = float(g) * clip_value * np.tanh(
+                rates[:, k:k + self.m] / clip_value
+            )
+        products = np.prod(spins[:, cols], axis=2)
+        return value - np.sum(weights * products, axis=1)
+
     def decode_batch(
         self,
         llr: np.ndarray,
@@ -120,6 +359,13 @@ class BatchedBSB:
         pair_amplitude: int = 0,
         amp_scale: float = 1.0,
         amp_steps: int = 8,
+        redundant_supports: Sequence[Sequence[int]] | None = None,
+        redundant_gamma: float = 0.0,
+        tap2: float = 0.0,
+        mode: str = "bsb",
+        g: float = 1.0,
+        clip: float = 1e30,
+        select_unclipped: int = 0,
         debug_finite: bool = False,
     ) -> np.ndarray:
         """Run batched bSB on B frames of LLRs and return hard bits of shape (B, N).
@@ -135,11 +381,39 @@ class BatchedBSB:
         schedule. ``pair_exact=1`` uses the O(J**3) exact-pair TAP expansion
         (self plus cross reaction); ``pair_amplitude=1`` replaces each pair's
         two soft bits in every mean-field product by the pair's soft amplitude
-        coordinate in the pair channel/reaction terms. All options default to
-        the exact v17 scalar dynamics.
+        coordinate in the pair channel/reaction terms. ``redundant_supports``
+        adds implied parity-check monomials (row-space combinations of H) to
+        the Ising landscape with coupling ``redundant_gamma``; each monomial is
+        satisfied by every codeword, so the Ising solution is unchanged.
+        ``tap2`` adds the exact gradient of a second-order check potential that
+        also vanishes on `±1` spins. ``mode="kspin"`` eliminates the parity
+        spins using ``H=[A|I]`` and runs the same bSB update on the information
+        spins; ``g``/``clip`` define the parity coupling and ``select_unclipped``
+        only affects energy selection. All options default to exact v17 dynamics.
         """
         llr = np.asarray(llr, dtype=np.float64)
         b, n_bits = llr.shape
+        if mode == "kspin":
+            return self.decode_kspin_batch(
+                llr=llr,
+                tau=tau,
+                xi=xi,
+                delta=delta,
+                dt=dt,
+                steps=steps,
+                beta=beta,
+                joint_pairs=joint_pairs,
+                pair_gamma=pair_gamma,
+                pair_tables=pair_tables,
+                g=g,
+                clip=clip,
+                select_unclipped=select_unclipped,
+                debug_finite=debug_finite,
+            )
+        if mode not in ("bsb", "dsb"):
+            raise ValueError(f"unsupported decode mode {mode!r}")
+        if select_unclipped not in (0, 1):
+            raise ValueError("select_unclipped must be 0 or 1")
 
         # Convert schedules to float or 1D arrays
         xi_is_seq = isinstance(xi, (list, tuple, np.ndarray))
@@ -179,6 +453,18 @@ class BatchedBSB:
         if dsb_finish < 0 or dsb_finish > steps:
             raise ValueError(f"dsb_finish must be in 0..{steps}, got {dsb_finish}")
         dsb_start = steps - int(dsb_finish) if dsb_finish else steps + 1
+
+        redundant: tuple[tuple[int, ...], ...] = ()
+        if redundant_supports is not None:
+            for support in redundant_supports:
+                indices = tuple(int(index) for index in support)
+                if len(indices) < 2 or len(set(indices)) != len(indices):
+                    raise ValueError("redundant support must contain distinct indices")
+                if any(index < 0 or index >= n_bits for index in indices):
+                    raise ValueError("redundant support index out of range")
+                redundant += (indices,)
+        red_gamma = float(redundant_gamma)
+        tap2_strength = float(tap2)
 
         joint = int(joint_pairs)
         if joint not in (0, 1):
@@ -303,8 +589,20 @@ class BatchedBSB:
                         # plus the O(J**2) -0.5 gamma J**2 (1-x_i**2)(1-x_j**2).
                         pair_force = pair_force + cross * (1.0 - partner * partner) * partner * (3.0 * pair_spins * pair_spins - 1.0)
                     force -= pair_force
+            if redundant and red_gamma != 0.0:
+                for support in redundant:
+                    gathered_r = spins[:, support]
+                    pref_r = np.concatenate(
+                        (np.ones((b, 1)), np.cumprod(gathered_r, axis=1)), axis=1
+                    )
+                    suff_r = np.concatenate(
+                        (np.cumprod(gathered_r[:, ::-1], axis=1)[:, ::-1], np.ones((b, 1))),
+                        axis=1,
+                    )
+                    excluded_r = pref_r[:, :-1] * suff_r[:, 1:]
+                    force[:, support] += red_gamma * excluded_r
             beta_val = float(beta[step]) if beta_is_seq else float(beta)
-            if beta_val != 0.0:
+            if beta_val != 0.0 or tap2_strength != 0.0:
                 # Onsager/TAP reaction: gradient of a polynomial that is constant on +-1 spins
                 q = gathered * gathered
                 u = 1.0 - q
@@ -321,6 +619,17 @@ class BatchedBSB:
                 if parity_scale != 1.0:
                     reaction = reaction * check_scale
                 force = force - reaction
+                if tap2_strength != 0.0:
+                    # -d/dx of -0.5*tap2*J^3*(sum x_i^2)*prod_i(1-x_i^2).
+                    # The potential is zero on every +-1 spin assignment.
+                    prod_all = np.prod(q, axis=2)
+                    sum_x2 = np.sum(q, axis=2)
+                    reaction2 = (
+                        tap2_strength * coupling * coupling * coupling
+                    ) * gathered * (prod_all[:, :, None] - sum_x2[:, :, None] * per_edge)
+                    if parity_scale != 1.0:
+                        reaction2 = reaction2 * check_scale[self.cols]
+                    force = force + reaction2.reshape(b, -1) @ self.scatter_matrix
             schedule = step / (steps - 1) if steps > 1 else 0.0
             pump = -(d_val - schedule) * x
             xi_force = xi_val * force if xi_mult is None else (xi_val * xi_mult) * force

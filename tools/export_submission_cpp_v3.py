@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_MANIFEST = ROOT / "artifacts" / "phase8_case_manifest_v3.json"
 DEFAULT_OUTPUT = ROOT / "submission_v3.cpp"
 
-MODES = {"dsb": "Mode::Dsb", "bsb": "Mode::Bsb"}
+MODES = {"dsb": "Mode::Dsb", "bsb": "Mode::Bsb", "kspin": "Mode::KSpin"}
 COMBINES = {
     "energy": "Combine::Energy",
     "vote": "Combine::Vote",
@@ -40,7 +40,7 @@ using std::size_t;
 static constexpr int STEPS = 50;
 static constexpr double EPS = 1e-12;
 
-enum class Mode { Dsb, Bsb };
+enum class Mode { Dsb, Bsb, KSpin };
 enum class Combine { Energy, Vote, SoftVote };
 
 struct TrajectoryConfig {
@@ -62,6 +62,9 @@ struct TrajectoryConfig {
     int joint_pairs;      // 1 = exact Gray-pair channel field (bSB only)
     double pair_gamma;    // pair reaction strength
     double pair_scale;    // diagnostic scale on the pair coupling; 1 is exact
+    double g;             // KSpin parity-coupling scale
+    double clip;          // KSpin soft-clip radius for parity LLRs
+    int select_unclipped; // KSpin energy selection uses raw parity LLRs
 };
 
 struct CaseConfig {
@@ -69,6 +72,7 @@ struct CaseConfig {
     int k;
     double snr;
     Combine combine;
+    Mode mode;
     int count;
     const TrajectoryConfig* trajectories;
 };
@@ -161,6 +165,14 @@ static double first_bit_llr_y(double y, const PairChannel& channel) {
     return fast_log_sum_exp2(ell[0], ell[1]) - fast_log_sum_exp2(ell[2], ell[3]);
 }
 
+// K-spin bit identity requires the same exact log1p(exp(-x)) used by
+// qam_pairs.py.  Non-K-spin cases keep the faster interpolated table.
+static double first_bit_llr_y_exact(double y, const PairChannel& channel) {
+    double ell[4];
+    component_loglikes(y, channel, ell);
+    return log_sum_exp2(ell[0], ell[1]) - log_sum_exp2(ell[2], ell[3]);
+}
+
 static double second_bit_llr_y(double y, const PairChannel& channel) {
     double ell[4];
     component_loglikes(y, channel, ell);
@@ -181,12 +193,17 @@ static double first_bit_llr_derivative(double y, const PairChannel& channel) {
     return (mu_negative - mu_positive) * channel.inv_sigma_sq;
 }
 
-static double recover_amplitude(double target, const PairChannel& channel) {
+static double recover_amplitude(
+    double target, const PairChannel& channel, bool exact = false
+) {
     double low = -QAM_BRACKET;
     double high = QAM_BRACKET;
     for (int i = 0; i < 64; ++i) {
         const double middle = 0.5 * (low + high);
-        if (first_bit_llr_y(middle, channel) > target) {
+        const double value = exact
+            ? first_bit_llr_y_exact(middle, channel)
+            : first_bit_llr_y(middle, channel);
+        if (value > target) {
             low = middle;
         } else {
             high = middle;
@@ -196,7 +213,10 @@ static double recover_amplitude(double target, const PairChannel& channel) {
     for (int i = 0; i < 2; ++i) {
         const double derivative = first_bit_llr_derivative(y, channel);
         if (std::fabs(derivative) < 1e-300) break;
-        const double step = (first_bit_llr_y(y, channel) - target) / derivative;
+        const double value = exact
+            ? first_bit_llr_y_exact(y, channel)
+            : first_bit_llr_y(y, channel);
+        const double step = (value - target) / derivative;
         y = std::min(QAM_BRACKET, std::max(-QAM_BRACKET, y - step));
     }
     return y;
@@ -208,7 +228,8 @@ struct PairTables {
 };
 
 static PairTables build_pair_tables(
-    const std::vector<double>& llr, double snr, double& bad_fraction
+    const std::vector<double>& llr, double snr, double& bad_fraction,
+    bool exact = false
 ) {
     const int n = static_cast<int>(llr.size());
     PairTables tables;
@@ -220,7 +241,7 @@ static PairTables build_pair_tables(
     for (int pair = 0; pair < n / 2; ++pair) {
         const int first = 2 * pair;
         const int second = first + 1;
-        const double y = recover_amplitude(llr[first], channel);
+        const double y = recover_amplitude(llr[first], channel, exact);
         double ell[4];
         component_loglikes(y, channel, ell);
         // Gray order: 00 -> -3, 01 -> -1, 11 -> +1, 10 -> +3.
@@ -383,6 +404,234 @@ static std::vector<int> run_trajectory(
     return hard;
 }
 
+static std::vector<double> kspin_parity_weights(
+    const std::vector<double>& llr, int k, int m, double g, double clip
+) {
+    std::vector<double> weights(static_cast<size_t>(m));
+    for (int row = 0; row < m; ++row) {
+        weights[static_cast<size_t>(row)] =
+            g * clip * std::tanh(llr[static_cast<size_t>(k + row)] / clip);
+    }
+    return weights;
+}
+
+static std::vector<int> run_kspin_trajectory(
+    const std::vector<double>& llr,
+    int k,
+    const std::vector<int>& info_starts,
+    const std::vector<int>& info_cols,
+    const TrajectoryConfig& cfg,
+    std::vector<double>& x_out,
+    const std::vector<double>* pair_linear,
+    const std::vector<double>* pair_d
+) {
+    const int n = static_cast<int>(llr.size());
+    const int m = n - k;
+    const bool joint = (cfg.joint_pairs == 1 && pair_linear != nullptr && pair_d != nullptr);
+    std::vector<double> x(static_cast<size_t>(k));
+    std::vector<double> y(static_cast<size_t>(k), 0.0);
+    std::vector<double> spins(static_cast<size_t>(k));
+    std::vector<double> weighted(static_cast<size_t>(k), 0.0);
+    std::vector<double> reaction(static_cast<size_t>(k), 0.0);
+    std::vector<double> field(static_cast<size_t>(k), 0.0);
+    std::vector<double> force(static_cast<size_t>(k), 0.0);
+    std::vector<double> weights = kspin_parity_weights(llr, k, m, cfg.g, cfg.clip);
+
+    int max_deg = 0;
+    for (int row = 0; row < m; ++row) {
+        max_deg = std::max(max_deg, info_starts[static_cast<size_t>(row + 1)]
+                                    - info_starts[static_cast<size_t>(row)]);
+    }
+    std::vector<double> pref(static_cast<size_t>(max_deg + 1), 1.0);
+    std::vector<double> suff(static_cast<size_t>(max_deg + 1), 1.0);
+    std::vector<double> qq(static_cast<size_t>(max_deg + 1));
+    std::vector<double> uu(static_cast<size_t>(max_deg + 1));
+    std::vector<double> pp(static_cast<size_t>(max_deg + 1));
+    std::vector<double> qp(static_cast<size_t>(max_deg + 1));
+    std::vector<double> ps(static_cast<size_t>(max_deg + 1));
+    std::vector<double> qs(static_cast<size_t>(max_deg + 1));
+
+    const double tau = cfg.tau_values ? cfg.tau_values[0] : cfg.tau;
+    for (int col = 0; col < k; ++col) {
+        x[static_cast<size_t>(col)] = std::tanh(llr[static_cast<size_t>(col)] / tau);
+    }
+
+    for (int step = 0; step < STEPS; ++step) {
+        for (int col = 0; col < k; ++col) {
+            double value = std::min(1.0, std::max(-1.0, x[static_cast<size_t>(col)]));
+            if (std::fabs(value) < EPS) {
+                value = (value >= 0.0) ? EPS : -EPS;
+            }
+            spins[static_cast<size_t>(col)] = value;
+        }
+        for (int col = 0; col < k; ++col) {
+            if (joint) {
+                const int partner = col ^ 1;
+                const double value = spins[static_cast<size_t>(col)];
+                const double other = spins[static_cast<size_t>(partner)];
+                const double d = (*pair_d)[static_cast<size_t>(col)];
+                double value_field = (*pair_linear)[static_cast<size_t>(col)] + 2.0 * d * other;
+                if (cfg.pair_gamma != 0.0) {
+                    value_field -= 4.0 * cfg.pair_gamma * d * d
+                                   * (1.0 - other * other) * value;
+                }
+                field[static_cast<size_t>(col)] = value_field;
+            } else {
+                field[static_cast<size_t>(col)] = llr[static_cast<size_t>(col)];
+            }
+        }
+
+        std::fill(weighted.begin(), weighted.end(), 0.0);
+        std::fill(reaction.begin(), reaction.end(), 0.0);
+        const bool use_reaction = (cfg.beta != 0.0);
+        for (int row = 0; row < m; ++row) {
+            const int start = info_starts[static_cast<size_t>(row)];
+            const int deg = info_starts[static_cast<size_t>(row + 1)] - start;
+            if (deg <= 0) continue;
+            pref[0] = 1.0;
+            for (int index = 0; index < deg; ++index) {
+                pref[static_cast<size_t>(index + 1)] =
+                    pref[static_cast<size_t>(index)]
+                    * spins[static_cast<size_t>(info_cols[static_cast<size_t>(start + index)])];
+            }
+            suff[static_cast<size_t>(deg)] = 1.0;
+            for (int index = deg - 1; index >= 0; --index) {
+                suff[static_cast<size_t>(index)] =
+                    suff[static_cast<size_t>(index + 1)]
+                    * spins[static_cast<size_t>(info_cols[static_cast<size_t>(start + index)])];
+            }
+            for (int index = 0; index < deg; ++index) {
+                const int col = info_cols[static_cast<size_t>(start + index)];
+                weighted[static_cast<size_t>(col)] +=
+                    weights[static_cast<size_t>(row)] * pref[static_cast<size_t>(index)]
+                    * suff[static_cast<size_t>(index + 1)];
+            }
+            if (!use_reaction) continue;
+            for (int index = 0; index < deg; ++index) {
+                const double value =
+                    spins[static_cast<size_t>(info_cols[static_cast<size_t>(start + index)])];
+                qq[static_cast<size_t>(index)] = value * value;
+                uu[static_cast<size_t>(index)] = 1.0 - qq[static_cast<size_t>(index)];
+            }
+            pp[0] = 1.0; qp[0] = 0.0;
+            for (int index = 0; index < deg; ++index) {
+                pp[static_cast<size_t>(index + 1)] =
+                    pp[static_cast<size_t>(index)] * qq[static_cast<size_t>(index)];
+                qp[static_cast<size_t>(index + 1)] =
+                    qp[static_cast<size_t>(index)] * qq[static_cast<size_t>(index)]
+                    + pp[static_cast<size_t>(index)] * uu[static_cast<size_t>(index)];
+            }
+            ps[static_cast<size_t>(deg)] = 1.0; qs[static_cast<size_t>(deg)] = 0.0;
+            for (int index = deg - 1; index >= 0; --index) {
+                ps[static_cast<size_t>(index)] =
+                    ps[static_cast<size_t>(index + 1)] * qq[static_cast<size_t>(index)];
+                qs[static_cast<size_t>(index)] =
+                    qs[static_cast<size_t>(index + 1)] * qq[static_cast<size_t>(index)]
+                    + ps[static_cast<size_t>(index + 1)] * uu[static_cast<size_t>(index)];
+            }
+            const double w = weights[static_cast<size_t>(row)];
+            for (int index = 0; index < deg; ++index) {
+                const int col = info_cols[static_cast<size_t>(start + index)];
+                const double value = spins[static_cast<size_t>(col)];
+                reaction[static_cast<size_t>(col)] += cfg.beta * w * w * value
+                    * (qp[static_cast<size_t>(index)] * ps[static_cast<size_t>(index + 1)]
+                       + pp[static_cast<size_t>(index)] * qs[static_cast<size_t>(index + 1)]);
+            }
+        }
+
+        const double xi = cfg.xi_values ? cfg.xi_values[step] : cfg.xi;
+        const double delta = cfg.delta_values ? cfg.delta_values[step] : cfg.delta;
+        const double dt = cfg.dt_values ? cfg.dt_values[step] : cfg.dt;
+        const double schedule = static_cast<double>(step) / (STEPS - 1);
+        for (int col = 0; col < k; ++col) {
+            const double f = field[static_cast<size_t>(col)]
+                             + weighted[static_cast<size_t>(col)]
+                             - reaction[static_cast<size_t>(col)];
+            const double pump = -(delta - schedule) * x[static_cast<size_t>(col)];
+            const double y_new = y[static_cast<size_t>(col)] + dt * (pump + xi * f);
+            const double x_new = x[static_cast<size_t>(col)] + dt * y_new;
+            if (std::fabs(x_new) > 1.0) {
+                x[static_cast<size_t>(col)] = (x_new >= 0.0) ? 1.0 : -1.0;
+                y[static_cast<size_t>(col)] = 0.0;
+            } else {
+                x[static_cast<size_t>(col)] = x_new;
+                y[static_cast<size_t>(col)] = y_new;
+            }
+        }
+    }
+
+    std::vector<int> hard(static_cast<size_t>(k));
+    for (int col = 0; col < k; ++col) {
+        hard[static_cast<size_t>(col)] = (x[static_cast<size_t>(col)] < 0.0) ? 1 : 0;
+    }
+    x_out = x;
+    return hard;
+}
+
+static double kspin_energy_score(
+    const std::vector<int>& info_hard,
+    const std::vector<double>& llr,
+    int k,
+    const std::vector<int>& info_starts,
+    const std::vector<int>& info_cols,
+    const std::vector<double>& clipped_weights,
+    const std::vector<double>* pair_linear,
+    const std::vector<double>* pair_d,
+    int select_unclipped
+) {
+    const int m = static_cast<int>(clipped_weights.size());
+    std::vector<double> spins(static_cast<size_t>(k));
+    for (int col = 0; col < k; ++col) {
+        spins[static_cast<size_t>(col)] =
+            (info_hard[static_cast<size_t>(col)] == 0) ? 1.0 : -1.0;
+    }
+    double value = 0.0;
+    for (int col = 0; col < k; ++col) {
+        double field = llr[static_cast<size_t>(col)];
+        if (pair_linear != nullptr && pair_d != nullptr) {
+            field = (*pair_linear)[static_cast<size_t>(col)]
+                    + 2.0 * (*pair_d)[static_cast<size_t>(col)]
+                    * spins[static_cast<size_t>(col ^ 1)];
+        }
+        value -= field * spins[static_cast<size_t>(col)];
+    }
+    for (int row = 0; row < m; ++row) {
+        double product = 1.0;
+        for (int pos = info_starts[static_cast<size_t>(row)];
+             pos < info_starts[static_cast<size_t>(row + 1)]; ++pos) {
+            product *= spins[static_cast<size_t>(info_cols[static_cast<size_t>(pos)])];
+        }
+        const double weight = select_unclipped
+            ? llr[static_cast<size_t>(k + row)]
+            : clipped_weights[static_cast<size_t>(row)];
+        value -= weight * product;
+    }
+    return value;
+}
+
+static std::vector<int> encode_kspin_parity(
+    const std::vector<int>& info_hard,
+    int k,
+    const std::vector<int>& info_starts,
+    const std::vector<int>& info_cols
+) {
+    const int m = static_cast<int>(info_starts.size()) - 1;
+    const int n = k + m;
+    std::vector<int> hard(static_cast<size_t>(n));
+    for (int col = 0; col < k; ++col) {
+        hard[static_cast<size_t>(col)] = info_hard[static_cast<size_t>(col)];
+    }
+    for (int row = 0; row < m; ++row) {
+        int parity = 0;
+        for (int pos = info_starts[static_cast<size_t>(row)];
+             pos < info_starts[static_cast<size_t>(row + 1)]; ++pos) {
+            parity ^= info_hard[static_cast<size_t>(info_cols[static_cast<size_t>(pos)])];
+        }
+        hard[static_cast<size_t>(k + row)] = parity;
+    }
+    return hard;
+}
+
 static double energy_score(
     const std::vector<int>& hard,
     const std::vector<double>& channel,
@@ -438,17 +687,23 @@ int main() {
     std::vector<int> starts(static_cast<size_t>(m) + 1, 0);
     std::vector<int> cols;
     cols.reserve(static_cast<size_t>(m) * 8);
+    std::vector<int> info_starts(static_cast<size_t>(m) + 1, 0);
+    std::vector<int> info_cols;
+    info_cols.reserve(static_cast<size_t>(m) * 8);
     for (int row = 0; row < m; ++row) {
         starts[row] = static_cast<int>(cols.size());
+        info_starts[row] = static_cast<int>(info_cols.size());
         for (int col = 0; col < n; ++col) {
             int value = 0;
             std::cin >> value;
             if (value != 0) {
                 cols.push_back(col);
+                if (col < k) info_cols.push_back(col);
             }
         }
     }
     starts[m] = static_cast<int>(cols.size());
+    info_starts[m] = static_cast<int>(info_cols.size());
 
     std::vector<std::vector<double>> llr(
         static_cast<size_t>(b), std::vector<double>(static_cast<size_t>(n))
@@ -480,6 +735,7 @@ int main() {
         }
     }
 
+    const bool case_kspin = (active->mode == Mode::KSpin);
     bool case_joint = false;
     for (int index = 0; index < active->count; ++index) {
         if (active->trajectories[index].joint_pairs == 1) case_joint = true;
@@ -492,7 +748,9 @@ int main() {
         bool frame_joint = case_joint;
         if (case_joint) {
             double bad_fraction = 0.0;
-            frame_tables.push_back(build_pair_tables(row, active->snr, bad_fraction));
+            frame_tables.push_back(
+                build_pair_tables(row, active->snr, bad_fraction, case_kspin)
+            );
             if (bad_fraction > 0.001) {
                 frame_joint = false;
             } else {
@@ -501,72 +759,158 @@ int main() {
         }
         const std::vector<double>* frame_d =
             frame_joint ? &frame_tables[0].d : nullptr;
-        std::vector<std::vector<int>> hards(static_cast<size_t>(active->count));
-        std::vector<std::vector<double>> softs(static_cast<size_t>(active->count));
-        std::vector<double> lambdas(static_cast<size_t>(active->count));
+        std::vector<int> decided;
 
-        // Independent trajectories are evaluated concurrently; the energy
-        // selection below still consumes them in manifest order, so the
-        // decided bits are unchanged.
-        if (active->count > 1) {
-            std::vector<std::thread> workers;
-            workers.reserve(static_cast<size_t>(active->count));
-            for (int index = 0; index < active->count; ++index) {
-                workers.emplace_back([&, index]() {
-                    hards[static_cast<size_t>(index)] = run_trajectory(
-                        row, starts, cols, active->trajectories[index],
-                        softs[static_cast<size_t>(index)], row_channel, frame_d
-                    );
-                    lambdas[static_cast<size_t>(index)] =
-                        active->trajectories[index].energy_lambda;
-                });
-            }
-            for (std::thread& worker : workers) {
-                worker.join();
-            }
-        } else {
-            hards[0] = run_trajectory(
-                row, starts, cols, active->trajectories[0], softs[0],
-                row_channel, frame_d
+        if (case_kspin) {
+            const int k = active->k;
+            std::vector<std::vector<int>> info_hards(
+                static_cast<size_t>(active->count), std::vector<int>(static_cast<size_t>(k))
             );
-            lambdas[0] = active->trajectories[0].energy_lambda;
-        }
-
-        std::vector<int> decided = hards[0];
-        if (active->combine == Combine::Energy) {
-            double best_energy = energy_score(
-                decided, *row_channel, starts, cols, lambdas[0],
-                active->trajectories[0].joint_pairs == 1 ? frame_d : nullptr,
-                active->trajectories[0].pair_scale
+            std::vector<std::vector<double>> softs(
+                static_cast<size_t>(active->count), std::vector<double>(static_cast<size_t>(k))
             );
-            for (int index = 1; index < active->count; ++index) {
-                const double value = energy_score(
-                    hards[static_cast<size_t>(index)], *row_channel, starts, cols,
-                    lambdas[static_cast<size_t>(index)],
-                    active->trajectories[static_cast<size_t>(index)].joint_pairs == 1
-                        ? frame_d : nullptr,
-                    active->trajectories[static_cast<size_t>(index)].pair_scale
+            std::vector<std::vector<double>> kweights(
+                static_cast<size_t>(active->count), std::vector<double>(static_cast<size_t>(m))
+            );
+            if (active->count > 1) {
+                std::vector<std::thread> workers;
+                workers.reserve(static_cast<size_t>(active->count));
+                for (int index = 0; index < active->count; ++index) {
+                    workers.emplace_back([&, index]() {
+                        const TrajectoryConfig& cfg = active->trajectories[static_cast<size_t>(index)];
+                        kweights[static_cast<size_t>(index)] = kspin_parity_weights(
+                            row, k, m, cfg.g, cfg.clip
+                        );
+                        const bool traj_joint = (cfg.joint_pairs == 1 && frame_joint);
+                        info_hards[static_cast<size_t>(index)] = run_kspin_trajectory(
+                            row, k, info_starts, info_cols, cfg,
+                            softs[static_cast<size_t>(index)],
+                            traj_joint ? &frame_tables[0].linear : nullptr,
+                            traj_joint ? &frame_tables[0].d : nullptr
+                        );
+                    });
+                }
+                for (std::thread& worker : workers) {
+                    worker.join();
+                }
+            } else {
+                const TrajectoryConfig& cfg = active->trajectories[0];
+                kweights[0] = kspin_parity_weights(row, k, m, cfg.g, cfg.clip);
+                const bool traj_joint = (cfg.joint_pairs == 1 && frame_joint);
+                info_hards[0] = run_kspin_trajectory(
+                    row, k, info_starts, info_cols, cfg, softs[0],
+                    traj_joint ? &frame_tables[0].linear : nullptr,
+                    traj_joint ? &frame_tables[0].d : nullptr
                 );
-                if (value < best_energy) {
-                    best_energy = value;
-                    decided = hards[static_cast<size_t>(index)];
+            }
+
+            std::vector<int> selected_info = info_hards[0];
+            if (active->combine == Combine::Energy) {
+                double best_energy = kspin_energy_score(
+                    selected_info, row, k, info_starts, info_cols, kweights[0],
+                    active->trajectories[0].joint_pairs == 1 && frame_joint
+                        ? &frame_tables[0].linear : nullptr,
+                    active->trajectories[0].joint_pairs == 1 && frame_joint
+                        ? &frame_tables[0].d : nullptr,
+                    active->trajectories[0].select_unclipped
+                );
+                for (int index = 1; index < active->count; ++index) {
+                    const TrajectoryConfig& cfg = active->trajectories[static_cast<size_t>(index)];
+                    const bool traj_joint = (cfg.joint_pairs == 1 && frame_joint);
+                    const double value = kspin_energy_score(
+                        info_hards[static_cast<size_t>(index)], row, k,
+                        info_starts, info_cols, kweights[static_cast<size_t>(index)],
+                        traj_joint ? &frame_tables[0].linear : nullptr,
+                        traj_joint ? &frame_tables[0].d : nullptr,
+                        cfg.select_unclipped
+                    );
+                    if (value < best_energy) {
+                        best_energy = value;
+                        selected_info = info_hards[static_cast<size_t>(index)];
+                    }
+                }
+            } else if (active->combine == Combine::Vote) {
+                for (int col = 0; col < k; ++col) {
+                    int ones = 0;
+                    for (int index = 0; index < active->count; ++index) {
+                        ones += info_hards[static_cast<size_t>(index)][static_cast<size_t>(col)];
+                    }
+                    selected_info[static_cast<size_t>(col)] = (2 * ones >= active->count) ? 1 : 0;
+                }
+            } else {
+                for (int col = 0; col < k; ++col) {
+                    double total = 0.0;
+                    for (int index = 0; index < active->count; ++index) {
+                        total += softs[static_cast<size_t>(index)][static_cast<size_t>(col)];
+                    }
+                    selected_info[static_cast<size_t>(col)] = (total < 0.0) ? 1 : 0;
                 }
             }
-        } else if (active->combine == Combine::Vote) {
-            for (int col = 0; col < n; ++col) {
-                int ones = 0;
-                for (int index = 0; index < active->count; ++index) {
-                    ones += hards[static_cast<size_t>(index)][static_cast<size_t>(col)];
-                }
-                decided[static_cast<size_t>(col)] = (2 * ones >= active->count) ? 1 : 0;
-            }
+            decided = encode_kspin_parity(selected_info, k, info_starts, info_cols);
         } else {
-            for (int col = 0; col < n; ++col) {
-                double total = 0.0;
+            std::vector<std::vector<int>> hards(static_cast<size_t>(active->count));
+            std::vector<std::vector<double>> softs(static_cast<size_t>(active->count));
+            std::vector<double> lambdas(static_cast<size_t>(active->count));
+            if (active->count > 1) {
+                std::vector<std::thread> workers;
+                workers.reserve(static_cast<size_t>(active->count));
                 for (int index = 0; index < active->count; ++index) {
-                    total += softs[static_cast<size_t>(index)][static_cast<size_t>(col)];
+                    workers.emplace_back([&, index]() {
+                        hards[static_cast<size_t>(index)] = run_trajectory(
+                            row, starts, cols, active->trajectories[index],
+                            softs[static_cast<size_t>(index)], row_channel, frame_d
+                        );
+                        lambdas[static_cast<size_t>(index)] =
+                            active->trajectories[index].energy_lambda;
+                    });
                 }
-                decided[static_cast<size_t>(col)] = (total < 0.0) ? 1 : 0;
+                for (std::thread& worker : workers) {
+                    worker.join();
+                }
+            } else {
+                hards[0] = run_trajectory(
+                    row, starts, cols, active->trajectories[0], softs[0],
+                    row_channel, frame_d
+                );
+                lambdas[0] = active->trajectories[0].energy_lambda;
+            }
+
+            decided = hards[0];
+            if (active->combine == Combine::Energy) {
+                double best_energy = energy_score(
+                    decided, *row_channel, starts, cols, lambdas[0],
+                    active->trajectories[0].joint_pairs == 1 ? frame_d : nullptr,
+                    active->trajectories[0].pair_scale
+                );
+                for (int index = 1; index < active->count; ++index) {
+                    const double value = energy_score(
+                        hards[static_cast<size_t>(index)], *row_channel, starts, cols,
+                        lambdas[static_cast<size_t>(index)],
+                        active->trajectories[static_cast<size_t>(index)].joint_pairs == 1
+                            ? frame_d : nullptr,
+                        active->trajectories[static_cast<size_t>(index)].pair_scale
+                    );
+                    if (value < best_energy) {
+                        best_energy = value;
+                        decided = hards[static_cast<size_t>(index)];
+                    }
+                }
+            } else if (active->combine == Combine::Vote) {
+                for (int col = 0; col < n; ++col) {
+                    int ones = 0;
+                    for (int index = 0; index < active->count; ++index) {
+                        ones += hards[static_cast<size_t>(index)][static_cast<size_t>(col)];
+                    }
+                    decided[static_cast<size_t>(col)] = (2 * ones >= active->count) ? 1 : 0;
+                }
+            } else {
+                for (int col = 0; col < n; ++col) {
+                    double total = 0.0;
+                    for (int index = 0; index < active->count; ++index) {
+                        total += softs[static_cast<size_t>(index)][static_cast<size_t>(col)];
+                    }
+                    decided[static_cast<size_t>(col)] = (total < 0.0) ? 1 : 0;
+                }
             }
         }
 
@@ -659,18 +1003,31 @@ def validate_case(case: object, label: str) -> dict:
         schedules.append(entry)
         beta_values = _beta_values(traj.get("beta", 0.0), f"{label}: trajectory {index} beta")
         beta_schedules.append(beta_values)
-        if mode != "bsb" and (any(value != 0.0 for value in beta_values) or float(traj.get("parity_scale", 1.0)) != 1.0):
+        parity_scale = _finite(traj.get("parity_scale", 1.0), f"{label}: trajectory {index} parity_scale")
+        if mode == "kspin":
+            if parity_scale != 1.0:
+                raise ValueError(f"{label}: kspin does not use parity_scale (trajectory {index})")
+            if any(value != 1.0 for value in entry["lambd"]):
+                raise ValueError(f"{label}: kspin does not use lambd (trajectory {index})")
+        elif mode != "bsb" and (any(value != 0.0 for value in beta_values) or parity_scale != 1.0):
             raise ValueError(f"{label}: beta/parity_scale require bsb mode (trajectory {index})")
         joint = int(traj.get("joint_pairs", 0))
         if joint not in (0, 1):
             raise ValueError(f"{label}: trajectory {index} joint_pairs must be 0 or 1")
         if joint:
-            if mode != "bsb":
-                raise ValueError(f"{label}: trajectory {index} joint_pairs requires bsb mode")
+            if mode not in ("bsb", "kspin"):
+                raise ValueError(f"{label}: trajectory {index} joint_pairs requires bsb or kspin mode")
             if int(case.get("n", 0)) % 4 != 0:
                 raise ValueError(f"{label}: trajectory {index} joint_pairs requires n divisible by 4")
             _finite(traj.get("pair_gamma", 0.0), f"{label}: trajectory {index} pair_gamma")
             _finite(traj.get("pair_scale", 1.0), f"{label}: trajectory {index} pair_scale")
+        g_value = _finite(traj.get("g", 1.0), f"{label}: trajectory {index} g")
+        clip_value = _finite(traj.get("clip", 1.0e30), f"{label}: trajectory {index} clip")
+        if mode == "kspin" and clip_value <= 0.0:
+            raise ValueError(f"{label}: kspin clip must be positive (trajectory {index})")
+        select_unclipped = int(traj.get("select_unclipped", 0))
+        if select_unclipped not in (0, 1):
+            raise ValueError(f"{label}: select_unclipped must be 0 or 1 (trajectory {index})")
         if combine == "energy" and "energy_lambda" not in traj:
             raise ValueError(
                 f"{label}: energy combine requires energy_lambda on trajectory {index}"
@@ -689,6 +1046,8 @@ def validate_case(case: object, label: str) -> dict:
     k = case.get("k")
     if not isinstance(n, int) or not isinstance(k, int) or n < 0 or k < 0 or k > n:
         raise ValueError(f"{label}: invalid n={n!r} k={k!r}")
+    if mode == "kspin" and (k % 2 != 0 or (n - k) <= 0):
+        raise ValueError(f"{label}: kspin requires even K and positive M")
     snr = _finite(case.get("snr"), f"{label}: snr")
     return {
         "n": n,
@@ -775,7 +1134,10 @@ def make_case_block(index: int, case: dict) -> tuple[str, str]:
                    beta_ptr,
                    str(int(traj.get("joint_pairs", 0))),
                    _fmt(_finite(traj.get("pair_gamma", 0.0), f"{prefix} pair_gamma")),
-                   _fmt(_finite(traj.get("pair_scale", 1.0), f"{prefix} pair_scale"))]
+                   _fmt(_finite(traj.get("pair_scale", 1.0), f"{prefix} pair_scale")),
+                    _fmt(_finite(traj.get("g", 1.0), f"{prefix} g")),
+                    _fmt(_finite(traj.get("clip", 1.0e30), f"{prefix} clip")),
+                    str(int(traj.get("select_unclipped", 0)))]
             )
             + "}"
         )
@@ -786,7 +1148,7 @@ def make_case_block(index: int, case: dict) -> tuple[str, str]:
     )
     entry = (
         f"{{{case['n']}, {case['k']}, {_fmt(case['snr'])}, "
-        f"{COMBINES[case['combine']]}, {len(rows)}, {prefix}}}"
+        f"{COMBINES[case['combine']]}, {MODES[case['mode']]}, {len(rows)}, {prefix}}}"
     )
     return "\n".join(schedule_blocks + [array]), entry
 

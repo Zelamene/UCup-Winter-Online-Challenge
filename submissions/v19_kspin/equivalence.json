@@ -1,0 +1,87 @@
+{
+  "all_passed": true,
+  "binary": "C:\\Users\\shazi\\.local\\share\\opencode\\worktree\\bd12e4\\phase12-tap-tuning\\artifacts\\phase16\\final\\v19.exe",
+  "frames": 3,
+  "manifest": "C:\\Users\\shazi\\.local\\share\\opencode\\worktree\\bd12e4\\phase12-tap-tuning\\artifacts\\phase16_case_manifest_v19.json",
+  "results": [
+    {
+      "all_equal": true,
+      "batched_equals_cpp_selected": true,
+      "frames": 3,
+      "k": 324,
+      "n": 648,
+      "per_trajectory_scalar_equals_batched": [
+        true
+      ],
+      "scalar_equals_batched_selected": true,
+      "scalar_equals_cpp_selected": true,
+      "selected_indices": [
+        0,
+        0,
+        0
+      ],
+      "snr": 6.0,
+      "trajectory_count": 1
+    },
+    {
+      "all_equal": true,
+      "batched_equals_cpp_selected": true,
+      "frames": 3,
+      "k": 648,
+      "n": 1296,
+      "per_trajectory_scalar_equals_batched": [
+        true
+      ],
+      "scalar_equals_batched_selected": true,
+      "scalar_equals_cpp_selected": true,
+      "selected_indices": [
+        0,
+        0,
+        0
+      ],
+      "snr": 6.0,
+      "trajectory_count": 1
+    },
+    {
+      "all_equal": true,
+      "batched_equals_cpp_selected": true,
+      "frames": 3,
+      "k": 972,
+      "n": 1944,
+      "per_trajectory_scalar_equals_batched": [
+        true,
+        true,
+        true
+      ],
+      "scalar_equals_batched_selected": true,
+      "scalar_equals_cpp_selected": true,
+      "selected_indices": [
+        2,
+        2,
+        1
+      ],
+      "snr": 6.0,
+      "trajectory_count": 3
+    },
+    {
+      "all_equal": true,
+      "batched_equals_cpp_selected": true,
+      "frames": 3,
+      "k": 1944,
+      "n": 3888,
+      "per_trajectory_scalar_equals_batched": [
+        true
+      ],
+      "scalar_equals_batched_selected": true,
+      "scalar_equals_cpp_selected": true,
+      "selected_indices": [
+        0,
+        0,
+        0
+      ],
+      "snr": 6.0,
+      "trajectory_count": 1
+    }
+  ],
+  "seed": 911
+}

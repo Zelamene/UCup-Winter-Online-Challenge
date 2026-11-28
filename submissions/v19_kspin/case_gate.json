@@ -1,0 +1,164 @@
+{
+  "all_passed": true,
+  "baseline": "artifacts/baseline_cache_v18",
+  "manifest": "C:\\Users\\shazi\\.local\\share\\opencode\\worktree\\bd12e4\\phase12-tap-tuning\\artifacts\\phase16_case_manifest_v19.json",
+  "min_gain": 2000.0,
+  "results": [
+    {
+      "baseline_errors": 8394,
+      "baseline_score": 128554.60496671598,
+      "candidate_errors": 7219,
+      "candidate_score": 135103.79727292905,
+      "case": 1,
+      "elapsed_s": 6.566,
+      "frames": 500,
+      "gain": 6549.192306213066,
+      "gain_ci_95": [
+        3502.764697289873,
+        9600.67178229469
+      ],
+      "gate_passed": true,
+      "k": 324,
+      "n": 648,
+      "seed": 2024,
+      "trajectory_count": 1
+    },
+    {
+      "baseline_errors": 15239,
+      "baseline_score": 132758.8541151261,
+      "candidate_errors": 12199,
+      "candidate_score": 142422.07788992272,
+      "case": 4,
+      "elapsed_s": 17.51,
+      "frames": 500,
+      "gain": 9663.223774796614,
+      "gain_ci_95": [
+        6905.978555137948,
+        12459.951478072671
+      ],
+      "gate_passed": true,
+      "k": 648,
+      "n": 1296,
+      "seed": 2024,
+      "trajectory_count": 1
+    },
+    {
+      "baseline_errors": 14881,
+      "baseline_score": 151400.41525760002,
+      "candidate_errors": 13591,
+      "candidate_score": 155338.48567899736,
+      "case": 7,
+      "elapsed_s": 91.554,
+      "frames": 500,
+      "gain": 3938.0704213973368,
+      "gain_ci_95": [
+        966.5422608247507,
+        6990.949317622109
+      ],
+      "gate_passed": true,
+      "k": 972,
+      "n": 1944,
+      "seed": 2024,
+      "trajectory_count": 3
+    },
+    {
+      "baseline_errors": 24315,
+      "baseline_score": 160179.19910220784,
+      "candidate_errors": 20093,
+      "candidate_score": 168462.14806829093,
+      "case": 10,
+      "elapsed_s": 79.556,
+      "frames": 500,
+      "gain": 8282.948966083088,
+      "gain_ci_95": [
+        5494.9942546894135,
+        11241.432933125763
+      ],
+      "gate_passed": true,
+      "k": 1944,
+      "n": 3888,
+      "seed": 2024,
+      "trajectory_count": 1
+    },
+    {
+      "baseline_errors": 7891,
+      "baseline_score": 131238.29711605367,
+      "candidate_errors": 6762,
+      "candidate_score": 137943.9848112881,
+      "case": 1,
+      "elapsed_s": 7.96,
+      "frames": 500,
+      "gain": 6705.687695234432,
+      "gain_ci_95": [
+        4191.70126819692,
+        9630.397343921315
+      ],
+      "gate_passed": true,
+      "k": 324,
+      "n": 648,
+      "seed": 31337,
+      "trajectory_count": 1
+    },
+    {
+      "baseline_errors": 12876,
+      "baseline_score": 140076.40421930363,
+      "candidate_errors": 10471,
+      "candidate_score": 149055.68506153268,
+      "case": 4,
+      "elapsed_s": 18.637,
+      "frames": 500,
+      "gain": 8979.280842229055,
+      "gain_ci_95": [
+        6260.69100697152,
+        11886.448553868599
+      ],
+      "gate_passed": true,
+      "k": 648,
+      "n": 1296,
+      "seed": 31337,
+      "trajectory_count": 1
+    },
+    {
+      "baseline_errors": 13703,
+      "baseline_score": 154982.06115354443,
+      "candidate_errors": 11206,
+      "candidate_score": 163718.56511307438,
+      "case": 7,
+      "elapsed_s": 86.676,
+      "frames": 500,
+      "gain": 8736.503959529946,
+      "gain_ci_95": [
+        5799.209264466948,
+        11983.55458029916
+      ],
+      "gate_passed": true,
+      "k": 972,
+      "n": 1944,
+      "seed": 31337,
+      "trajectory_count": 3
+    },
+    {
+      "baseline_errors": 22235,
+      "baseline_score": 164062.91311413213,
+      "candidate_errors": 17500,
+      "candidate_score": 174462.82162399802,
+      "case": 10,
+      "elapsed_s": 75.147,
+      "frames": 500,
+      "gain": 10399.908509865898,
+      "gain_ci_95": [
+        7093.814572125507,
+        13623.916105316925
+      ],
+      "gate_passed": true,
+      "k": 1944,
+      "n": 3888,
+      "seed": 31337,
+      "trajectory_count": 1
+    }
+  ],
+  "seeds": [
+    2024,
+    31337
+  ]
+}

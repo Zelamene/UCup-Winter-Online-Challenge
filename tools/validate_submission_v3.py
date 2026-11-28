@@ -9,7 +9,7 @@ import math
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-MODES = {"dsb", "bsb"}
+MODES = {"dsb", "bsb", "kspin"}
 COMBINES = {"energy", "vote", "soft_vote"}
 
 # Phase 13 ceiling analysis is offline-only.  Reject generated sources that
@@ -99,8 +99,8 @@ def validate_case(case: dict, label: str) -> tuple[dict, list[str]]:
         if "joint_pairs" in traj and traj["joint_pairs"] not in (0, 1):
             errors.append(f"{label}: trajectory {index} joint_pairs must be 0 or 1")
         if int(traj.get("joint_pairs", 0)):
-            if case.get("mode") != "bsb":
-                errors.append(f"{label}: trajectory {index} joint_pairs requires bsb mode")
+            if case.get("mode") not in ("bsb", "kspin"):
+                errors.append(f"{label}: trajectory {index} joint_pairs requires bsb or kspin mode")
             if int(case.get("n", 0)) % 4 != 0:
                 errors.append(f"{label}: trajectory {index} joint_pairs requires n divisible by 4")
         for pair_key in ("pair_gamma", "pair_scale"):
@@ -108,6 +108,18 @@ def validate_case(case: dict, label: str) -> tuple[dict, list[str]]:
                 value = traj[pair_key]
                 if not isinstance(value, (int, float)) or not math.isfinite(value):
                     errors.append(f"{label}: trajectory {index} invalid {pair_key}={value!r}")
+        for scalar_key in ("g", "clip"):
+            if scalar_key in traj:
+                value = traj[scalar_key]
+                if not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
+                    errors.append(f"{label}: trajectory {index} invalid {scalar_key}={value!r}")
+        if "select_unclipped" in traj and traj["select_unclipped"] not in (0, 1):
+            errors.append(f"{label}: trajectory {index} select_unclipped must be 0 or 1")
+        if case.get("mode") == "kspin":
+            if float(traj.get("parity_scale", 1.0)) != 1.0:
+                errors.append(f"{label}: trajectory {index} kspin does not use parity_scale")
+            if int(case.get("k", 1)) % 2 != 0:
+                errors.append(f"{label}: kspin requires even K")
         energy_lambda = traj.get("energy_lambda")
         if case.get("combine") == "energy":
             if not isinstance(energy_lambda, (int, float)) or energy_lambda < 0:
