@@ -33,7 +33,9 @@ NOISE_SCALE = 1.001120
 V17_MANIFEST = ROOT / "submissions" / "v17_joint_pairs" / "manifest.json"
 V17_CACHE = ROOT / "artifacts" / "baseline_cache_v17"
 V18_CACHE = ROOT / "artifacts" / "baseline_cache_v18"
+V19_CACHE = ROOT / "artifacts" / "baseline_cache_v19"
 PHASE15_ARTIFACTS = ROOT / "artifacts" / "phase15"
+PHASE17_ARTIFACTS = ROOT / "artifacts" / "phase17"
 CONFIG_KEYS = (
     "tau", "xi", "lambd", "delta", "dt", "beta", "parity_scale",
     "joint_pairs", "pair_gamma", "pair_scale", "energy_lambda",

@@ -33,6 +33,9 @@ Objective: increase the judge score beyond the current accepted best while keepi
 | v19 per-case scores | `[135526,177394,185451,154670,179802,183299,159042,184164,184485,170456,182587,185024]` |
 | v19 judge runtime | `396–5,664ms` per case — well under the 2-minute limit |
 | v19 source | `46,677` bytes; SHA-256 `9A940D50831F1A2FAAE7E3BF9435E588259C5868BDC784EAF0FDE1516F2696B7` |
+| Torch | `2.15.0+cpu` installed from the CPU wheel index; no numpy-adjoint fallback needed |
+| Phase 17 baseline | `artifacts/baseline_cache_v19/` (generated from the submitted v19 source) |
+| Phase 17 gate | `tools/phase17_case_gate.py` — 1,000-frame seeds against v19 |
 
 The best accepted architecture is:
 
@@ -208,7 +211,7 @@ A3 joint tuning passed on cases 4 (`N=1296`, `+2,508 / +4,973`), 7 (`N=1944`, `+
 
 Track B completed the offline joint-likelihood ceiling ladder in `tools/ceiling/bp_variants.py` and `tools/ceiling/phase14_track_b_report.py`. v18 was **not** promoted: at `N=3888, R=2/3`, joint BP beat per-bit BP by only `+780` (95% CI `[+515, +1,047]`), far below the `>5,000` trigger. Joint likelihood helped `R=1/2` substantially (`+12,058` at `N=1944`, `+20,554` at `N=3888`). With the small omitted `R=1/2` cases sampled at only `100 / 60` frames (`±3–5k`), the partial judge-scaled achievable-decoder headline is `≈ 2.25M (partial; 3/4 cases ML-limited)`; the live top `2,517,863` remains unmodelled by the BP/OSD variants tested. This is an achievable lower bound, not a formal ceiling. OSD-2 on joint BP lost `−5k` to `−10k` at `R=1/2`, with maximum-likelihood selection choosing a wrong codeword in `0.34 / 0.70 / 0.58` fractions on the sampled cases. OSD-2 was only a 100-frame side-by-side screen; no order-3 OSD or list-MAP ceiling is claimed. Reports: `artifacts/phase14/track_b_ceiling_report.md` and `.json`.
 
-Track C completed C1–C4 screens in `tools/screen_joint_structural.py` with default-off decoder extensions in `tools/bsb_vectorized.py`. **No variant was promoted.** C1 (sign/magnitude bit classes) came closest but was seed-unstable and below the bar; C2 (exact pair TAP cross term), C3 (single amplitude coordinate), and C4 (`pair_scale` ramp) all lost score. C5 gradient deep unfolding is blocked because torch is not installed. The decoder extensions are default-off; scalar v17 behavior remained bit-identical, verified by 11 unit tests and three-way Python/batched/C++ identity on cases 4/7/10. Reports: `artifacts/phase14/track_c_report.md` and `.json`.
+Track C completed C1–C4 screens in `tools/screen_joint_structural.py` with default-off decoder extensions in `tools/bsb_vectorized.py`. **No variant was promoted.** C1 (sign/magnitude bit classes) came closest but was seed-unstable and below the bar; C2 (exact pair TAP cross term), C3 (single amplitude coordinate), and C4 (`pair_scale` ramp) all lost score. C5 gradient deep unfolding was blocked at the time because torch was not installed; Phase 17 installs `torch 2.15.0+cpu` and revisits unfolding under track U. The decoder extensions are default-off; scalar v17 behavior remained bit-identical, verified by 11 unit tests and three-way Python/batched/C++ identity on cases 4/7/10. Reports: `artifacts/phase14/track_c_report.md` and `.json`.
 
 ## Phase 15 — v18 research plan
 
@@ -265,6 +268,25 @@ Two identity defects found during the gate were fixed and covered by tests: scal
 The submitted source was accepted on all 12 cases at `2,081,900`, exactly `+30,000` over v18b. Per-case scores are `[135526, 177394, 185451, 154670, 179802, 183299, 159042, 184164, 184485, 170456, 182587, 185024]`: case 1 gained `+5,547`, case 4 `+9,519`, case 7 `+9,012`, case 10 `+5,922`, and the eight unchanged cases kept their v18b scores. Judge runtime was `396–5,664ms` with `19.5 MiB` peak memory. The result landed inside the pre-submission projection of `2,080,000–2,087,000`. `submissions/v19_kspin/judge_result.json` records the full result.
 
 Status: **submitted and accepted**. v19 is the new best submission and the base for future work; v18b remains the fallback.
+
+## Phase 17 — v20/v21 research tracks (in progress)
+
+Phase 17 starts from accepted v19 (`2,081,900`) and targets submission on Fri 4 Dec, with an optional v21 on Sun 6 Dec and a fallback-only window on 7–8 Dec. All comparisons are paired against the exact v19 frames; gate seeds are `2024` and `31337` at `1,000` frames plus fresh seed `6060` at `300`, with `1,000`-resample bootstrap CIs. Training seeds are disjoint from all gate seeds.
+
+Three parallel worktrees:
+
+- **U — deep-unfolded K-spin:** learn per-step and per-bit-class coefficients of the same 50-step K-spin TAP-bSB dynamics, initialised from v19 so step 0 is exactly v19. CPU torch `2.15.0+cpu` is installed; the numpy-adjoint fallback is not needed. Case 4 is the pilot, with a kill rule after the first gate.
+- **T — tuning and portfolios:** per-bit vs joint on case 1, coordinate tuning on cases 1/7/10, then greedy K-spin portfolios of at most six trajectories.
+- **R — rate extension:** tune case 5 in per-bit and joint modes, transfer to cases 11/8/2 only if case 5 passes, and screen rate 3/4 with no expectation of a win.
+
+Step 0 tooling:
+
+- `tools/phase17_step0.py` generates and verifies `artifacts/baseline_cache_v19/` from the submitted v19 source: `911` at 300 frames, `2024`/`31337` at 1,000 frames, and `6060` at 300 frames for all 12 cases. It also repeats one cache and checks bench case ordering against the published v19 judge ordering.
+- `tools/phase17_case_gate.py` extends the Phase 16 gate to the 1,000-frame v19 cache, with `--cache-dir`, `--min-gain`, `--frames`, and a positive-CI requirement.
+- Step 0 passed: 48/48 cache files valid, source hash correct, repeated case 4 error array bit-identical, and the four changed rate-1/2 cases keep their exact judge order. Overall Spearman rank correlation is `0.895`; the eight unchanged cases are close enough that finite bench sampling reorders some of them.
+- No v20 or v21 source is submitted until its full checklist passes and submission is explicitly approved.
+
+Official endgame rule (challenge home page): **the last three non-zero-scoring submissions**, not just the final one, undergo post-contest System Test. The last submission therefore still matters, but v19 will remain inside the three-submission window if the schedule is v19 → v20 → v21. Plan: submit v20 on Fri 4 Dec, submit v21 on Sun 6 Dec only if it is strictly better than v20, and make no further submission unless a v20/v21 regression is discovered; in that case resubmit the best accepted source last. This is robust whether the System Test ranking takes the best of the three or uses the latest one. Avoid submitting anything on 8 Dec unless it is the best known source.
 
 ## Submission history
 

@@ -28,10 +28,15 @@ def main() -> None:
     parser.add_argument("--samples", type=int, default=500)
     parser.add_argument("--seed", type=int, default=2024)
     parser.add_argument("--max-judge-seconds", type=float, default=60.0)
+    parser.add_argument(
+        "--judge-result", type=Path, default=V18_JUDGE_RESULT,
+        help="accepted judge result whose per-case times anchor the estimate",
+    )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
 
-    payload = json.loads(V18_JUDGE_RESULT.read_text(encoding="utf-8"))
+    payload = json.loads(args.judge_result.read_text(encoding="utf-8"))
+    base_version = str(payload.get("version", payload.get("submission_label", "v18b")))
     judge_times = {
         int(item["case"]): float(item["time_ms"]) / 1000.0
         for item in payload["per_case"]
@@ -60,6 +65,8 @@ def main() -> None:
                     "n": n,
                     "k": k,
                     "rate": rate,
+                    "base_version": base_version,
+                    "base_judge_seconds": round(judge_times[index], 3),
                     "v18_judge_seconds": round(judge_times[index], 3),
                     "v18_local_seconds": round(base_seconds, 3),
                     "candidate_local_seconds": round(cand_seconds, 3),
@@ -79,6 +86,8 @@ def main() -> None:
     result = {
         "samples": args.samples,
         "seed": args.seed,
+        "judge_result": str(args.judge_result.resolve()),
+        "base_version": base_version,
         "max_judge_seconds": args.max_judge_seconds,
         "worst": worst,
         "cases": cases,
